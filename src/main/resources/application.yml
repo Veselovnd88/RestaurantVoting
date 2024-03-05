@@ -11,17 +11,20 @@ spring:
     password:
 
   jpa:
-    properties:
-      hibernate:
-        jpa:
-          compliance:
-            proxy: false
-        format_sql: true
-        use_sql_comments: true
-    show-sql: true
+    open-in-view: false
     hibernate:
       ddl-auto: validate
-    open-in-view: false
+    properties:
+      #  http://docs.jboss.org/hibernate/orm/5.3/userguide/html_single/Hibernate_User_Guide.html#configurations
+      hibernate:
+        #hibernate.jpa.compliance.proxy (e.g. true or false (default value))
+        format_sql: true
+        show_sql: true
+        use_sql_comments: true
+        # https://stackoverflow.com/questions/21257819/what-is-the-difference-between-hibernate-jdbc-fetch-size-and-hibernate-jdbc-batc
+        default_batch_fetch_size: 20
+        jdbc:
+          batch_size: 20
 
   sql:
     init:
