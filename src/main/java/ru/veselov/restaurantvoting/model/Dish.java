@@ -11,9 +11,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.validator.constraints.Range;
-
-import java.time.LocalDate;
 
 @Entity
 @Table(name = "dish")
@@ -21,25 +20,22 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Getter
 @Setter
+@ToString(callSuper = true)
 public class Dish extends AbstractNamedEntity {
 
     @Column(name = "price")
     @Range(min = 100, max = 100000)
     private Integer price;
 
-    @Column(name = "added_at")
-    @NotNull
-    private LocalDate addedAt;
-
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "restaurant_id")
+    @JoinColumn(name = "menu_id")
     @NotNull
-    private Restaurant restaurant;
+    @ToString.Exclude
+    private Menu menu;
 
-    public Dish(Integer id, String name, Integer price, LocalDate addedAt, Restaurant restaurant) {
+    public Dish(Integer id, String name, Integer price, Menu menu) {
         super(id, name);
         this.price = price;
-        this.addedAt = addedAt;
-        this.restaurant = restaurant;
+        this.menu = menu;
     }
 }

@@ -17,6 +17,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import org.springframework.util.CollectionUtils;
 
 import java.util.Collection;
@@ -29,6 +30,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Getter
 @Setter
+@ToString(callSuper = true)
 public class User extends AbstractNamedEntity {
 
     @Column(name = "email", nullable = false, unique = true)
@@ -40,6 +42,7 @@ public class User extends AbstractNamedEntity {
     @Column(name = "password", nullable = false)
     @NotBlank
     @Size(min = 5, max = 128)
+    @ToString.Exclude
     private String password;
 
     @Column(name = "enabled", nullable = false, columnDefinition = "bool default true")
