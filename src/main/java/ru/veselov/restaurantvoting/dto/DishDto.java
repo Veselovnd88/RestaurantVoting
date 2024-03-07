@@ -1,4 +1,4 @@
-package ru.veselov.restaurantvoting.to;
+package ru.veselov.restaurantvoting.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

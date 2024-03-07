@@ -4,7 +4,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
 import ru.veselov.restaurantvoting.model.Restaurant;
-import ru.veselov.restaurantvoting.to.RestaurantTo;
+import ru.veselov.restaurantvoting.dto.RestaurantTo;
 
 import java.util.List;
 

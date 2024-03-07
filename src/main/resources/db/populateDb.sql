@@ -3,10 +3,14 @@ FROM user_role;
 
 DELETE
 FROM users;
-
+DELETE
+FROM menu_dish;
+DELETE
+FROM menu;
 DELETE
 FROM dish;
-DELETE FROM vote;
+DELETE
+FROM vote;
 DELETE
 FROM restaurant;
 
@@ -24,25 +28,39 @@ VALUES ('USER', 100000),
        ('USER', 100002);
 
 INSERT INTO restaurant (name)
-VALUES ('SushiWok'), --3
+VALUES ('SushiWok'),  --3
        ('DoDoPizza'), --4
        ('BurgerPizza'); --5
 
-INSERT INTO dish (name, price, added_at, restaurant_id)
-VALUES ('Unagi', 40000, now(), 100003), --6
-       ('Philadelphia', 30000, now(), 100003), --7
-       ('TastyRoll', 55000, now(), 100003), --8
-       ('Pizza Arriva', 60000, now(), 100004), --9
-       ('Diablo Pizza', 85000, now(), 100004), --10
-       ('Margarita', 55000, now(), 100004), --11
-       ('Double Burger', 65000, now(), 100005), --12
-       ('Triple Burger', 75000, now(), 100005), --13
-       ('Fries Potato', 35000, now(), 100005); --14
+INSERT INTO menu(restaurant_id)
+VALUES (100003), --6
+       (100004), --7
+       (100005); --8
 
-INSERT INTO vote (voted_at, vote_day, user_id, restaurant_id)
-VALUES (now(), now(), 100000, 100004), --15
-       (now(), now(), 100001, 100004), --16
-       (now(), now(), 100002, 100004), --17
-      (now(), now(), 100000, 100003) --18
+INSERT INTO dish (name, price)
+VALUES ('Unagi', 40000),         --9
+       ('Philadelphia', 30000),  --10
+       ('TastyRoll', 55000),     --11
+       ('Pizza Arriva', 60000),  --12
+       ('Diablo Pizza', 85000),  --13
+       ('Margarita', 55000),     --14
+       ('Double Burger', 65000), --15
+       ('Triple Burger', 75000), --16
+       ('Fries Potato', 35000); --17
 
+INSERT INTO menu_dish(menu_id, dish_id)
+VALUES (100006, 100009),
+       (100006, 100010),
+       (100006, 100011),
+       (100007, 100012),
+       (100007, 100013),
+       (100007, 100014),
+       (100008, 100015),
+       (100008, 100016),
+       (100008, 100017);
 
+INSERT INTO vote (user_id, restaurant_id)
+VALUES (100000, 100004), --18
+       (100001, 100004), --19
+       (100002, 100004), --20
+       (100000, 100003) --21
