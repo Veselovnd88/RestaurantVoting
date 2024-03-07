@@ -4,9 +4,11 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -28,11 +30,17 @@ public class Menu extends AbstractBaseEntity {
     @NotNull
     private LocalDate addedAt;
 
-    @OneToMany(mappedBy = "menu", fetch = FetchType.EAGER)
-    private List<Dish> dishes;
-
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "restaurant_id")
     @NotNull
     private Restaurant restaurant;
+
+    @ManyToMany
+    @JoinTable(
+            name = "menu_dish",
+            joinColumns = {@JoinColumn(name = "menu_id")},
+            inverseJoinColumns = {@JoinColumn(name = "dish_id")},
+            uniqueConstraints = @UniqueConstraint(columnNames = {"menu_id", "dish_id"}, name = "menu_dish_idx")
+    )
+    private List<Dish> dishes;
 }
