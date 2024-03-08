@@ -53,4 +53,11 @@ public class Menu extends AbstractBaseEntity {
             uniqueConstraints = @UniqueConstraint(columnNames = {"menu_id", "dish_id"}, name = "menu_dish_idx")
     )
     private List<Dish> dishes;
+
+    public Menu(Integer id, LocalDate addedAt, Restaurant restaurant, Dish... dishes) {
+        super(id);
+        this.addedAt = addedAt;
+        this.restaurant = restaurant;
+        this.dishes = List.of(dishes);
+    }
 }

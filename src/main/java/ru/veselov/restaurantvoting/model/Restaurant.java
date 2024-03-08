@@ -43,14 +43,8 @@ public class Restaurant extends AbstractNamedEntity {
     @ToString.Exclude
     private List<Vote> votes;
 
-    public Restaurant(Integer id, String name, List<Menu> menus, List<Vote> votes) {
-        super(id, name);
-        this.menus = menus;
-        this.votes = votes;
-    }
 
-    public Restaurant(Integer id, String name, List<Menu> menus) {
+    public Restaurant(Integer id, String name) {
         super(id, name);
-        this.menus = menus;
     }
 }
