@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "vote")
@@ -24,7 +24,7 @@ public class Vote extends AbstractBaseEntity {
 
     @Column(name = "voted_at")
     @NotNull
-    private LocalDateTime votedAt;
+    private LocalDate votedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
