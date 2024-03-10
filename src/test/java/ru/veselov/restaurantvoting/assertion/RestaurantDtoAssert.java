@@ -1,4 +1,4 @@
 package ru.veselov.restaurantvoting.assertion;
 
-public class RestaurantAssert {
+public class RestaurantDtoAssert {
 }

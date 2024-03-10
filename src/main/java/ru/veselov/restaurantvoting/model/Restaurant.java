@@ -4,7 +4,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.NamedAttributeNode;
 import jakarta.persistence.NamedEntityGraph;
-import jakarta.persistence.NamedEntityGraphs;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -22,14 +21,8 @@ import java.util.List;
 @Getter
 @Setter
 @ToString(callSuper = true)
-@NamedEntityGraphs({
-        @NamedEntityGraph(name = Restaurant.MENU_ENTITY_GRAPH, attributeNodes = {
-                @NamedAttributeNode("menus")
-        }),
-        @NamedEntityGraph(name = Restaurant.ALL_ATTR_ENTITY_GRAPH, includeAllAttributes = true)
-}
-)
-
+@NamedEntityGraph(name = Restaurant.MENU_ENTITY_GRAPH, attributeNodes = {@NamedAttributeNode("menus")})
+@NamedEntityGraph(name = Restaurant.ALL_ATTR_ENTITY_GRAPH, includeAllAttributes = true)
 public class Restaurant extends AbstractNamedEntity {
 
     public static final String MENU_ENTITY_GRAPH = "menuEntityGraph";

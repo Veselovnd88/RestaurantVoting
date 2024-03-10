@@ -3,8 +3,8 @@ package ru.veselov.restaurantvoting.mapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
+import ru.veselov.restaurantvoting.dto.RestaurantDto;
 import ru.veselov.restaurantvoting.model.Restaurant;
-import ru.veselov.restaurantvoting.dto.RestaurantTo;
 
 import java.util.List;
 
@@ -12,9 +12,9 @@ import java.util.List;
 public interface RestaurantMapper {
 
     @Mapping(target = "voteCount", expression = "java(restaurant.getVotes()==null?0:restaurant.getVotes().size())")
-    RestaurantTo entityToDto(Restaurant restaurant);
+    RestaurantDto entityToDto(Restaurant restaurant);
 
-    List<RestaurantTo> entitiesToDto(List<Restaurant> restaurants);
+    List<RestaurantDto> entitiesToDto(List<Restaurant> restaurants);
 
-    Restaurant toEntity(RestaurantTo restaurantTo);
+    Restaurant toEntity(RestaurantDto restaurantDto);
 }

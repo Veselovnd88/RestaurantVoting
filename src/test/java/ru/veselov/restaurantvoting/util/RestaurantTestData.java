@@ -8,7 +8,7 @@ public class RestaurantTestData {
 
     public static final int DB_COUNT = 3;
 
-    public static final MatcherFactory.Matcher<Restaurant> RESTAURANT_MATCHER_NO_VOTES = MatcherFactory
+    public static final MatcherFactory.Matcher<Restaurant> RESTAURANT_MATCHER_NO_VOTES_NO_MENUS = MatcherFactory
             .usingIgnoringFieldsComparator("votes", "menus");
 
     public static Restaurant sushiRestaurant = new Restaurant(100003, "SushiWok");

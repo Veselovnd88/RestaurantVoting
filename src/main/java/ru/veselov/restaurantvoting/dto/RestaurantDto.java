@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class RestaurantTo {
+public class RestaurantDto {
 
     private Integer id;
 
