@@ -11,10 +11,11 @@ import java.util.List;
 import java.util.Optional;
 
 public interface RestaurantRepository extends JpaRepository<Restaurant, Integer> {
+
     @NonNull
     List<Restaurant> findAll();
 
-    @Query("SELECT r FROM Restaurant r LEFT JOIN FETCH r.menus m WHERE m.addedAt=:addedAt")
+    @Query("SELECT r FROM Restaurant r LEFT JOIN FETCH r.menus m WHERE m.addedAt=:addedAt ORDER BY r.name")
     List<Restaurant> findAllWithMenuByDate(@Param("addedAt") LocalDate addedAt);
 
     @Query("SELECT r FROM  Restaurant r LEFT JOIN r.menus m WHERE r.id=:id AND m.addedAt=:addedAt")

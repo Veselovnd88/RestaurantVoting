@@ -6,6 +6,8 @@ import ru.veselov.restaurantvoting.model.Dish;
 @UtilityClass
 public class DishTestData {
 
+    public static MatcherFactory.Matcher<Dish> DISH_MATCHER = MatcherFactory.usingIgnoringFieldsComparator("menus");
+
     public static Dish unagi = new Dish(100009, "Unagi", 40000);
 
     public static Dish philadelphia = new Dish(100010, "Philadelphia", 30000);

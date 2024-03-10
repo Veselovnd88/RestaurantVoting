@@ -7,7 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
+import ru.veselov.restaurantvoting.model.Menu;
 import ru.veselov.restaurantvoting.model.Restaurant;
+import ru.veselov.restaurantvoting.util.DishTestData;
 import ru.veselov.restaurantvoting.util.MenuTestData;
 import ru.veselov.restaurantvoting.util.RestaurantTestData;
 
@@ -36,12 +38,15 @@ class RestaurantRepositoryTest {
         Assertions.assertThat(allWithMenus).hasSize(RestaurantTestData.DB_COUNT);
 
         RestaurantTestData.RESTAURANT_MATCHER_NO_VOTES.assertMatch(allWithMenus, List.of(
-                RestaurantTestData.sushiRestaurant, RestaurantTestData.pizzaRestaurant, RestaurantTestData.burgerRestaurant
+                RestaurantTestData.burgerRestaurant, RestaurantTestData.pizzaRestaurant, RestaurantTestData.sushiRestaurant
         ));
-        MenuTestData.MENU_MATCHER.assertMatch(
-                allWithMenus.stream().flatMap(r -> r.getMenus().stream()).collect(Collectors.toList()),
-                List.of(MenuTestData.sushiRestaurantMenu, MenuTestData.pizzaRestaurantMenu, MenuTestData.burgerRestaurantMenu)
+        List<Menu> menus = allWithMenus.stream().flatMap(r -> r.getMenus().stream()).toList();
+        MenuTestData.MENU_MATCHER.assertMatch(menus,
+                List.of(MenuTestData.burgerRestaurantMenu, MenuTestData.pizzaRestaurantMenu, MenuTestData.sushiRestaurantMenu)
         );
-
+        DishTestData.DISH_MATCHER.assertMatch(menus.stream().flatMap(menu -> menu.getDishes().stream()).collect(Collectors.toList()),
+                List.of(DishTestData.doubleBurger, DishTestData.friesPotato, DishTestData.tripleBurger,
+                        DishTestData.diabloPizza, DishTestData.margarita, DishTestData.pizzaArriva,
+                        DishTestData.philadelphia, DishTestData.tastyRoll, DishTestData.unagi));
     }
 }

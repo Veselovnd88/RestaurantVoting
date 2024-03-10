@@ -10,6 +10,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.NamedAttributeNode;
 import jakarta.persistence.NamedEntityGraph;
 import jakarta.persistence.NamedEntityGraphs;
+import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.NotNull;
@@ -52,6 +53,7 @@ public class Menu extends AbstractBaseEntity {
             inverseJoinColumns = {@JoinColumn(name = "dish_id")},
             uniqueConstraints = @UniqueConstraint(columnNames = {"menu_id", "dish_id"}, name = "menu_dish_idx")
     )
+    @OrderBy("name")
     private List<Dish> dishes;
 
     public Menu(Integer id, LocalDate addedAt, Restaurant restaurant, Dish... dishes) {
