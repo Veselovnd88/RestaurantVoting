@@ -3,7 +3,6 @@ package ru.veselov.restaurantvoting.service;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
@@ -36,7 +35,6 @@ class RestaurantServiceImplTest {
         RestaurantDto foundRestaurant = restaurantService.findByIdWithMenuAndVotesBetweenDates(RestaurantTestData.sushiRestaurant.id(),
                 VoteTestData.VOTED_AT_DATE, VoteTestData.VOTED_AT_DATE);
 
-        Assertions.assertThat(foundRestaurant).extracting(RestaurantDto::getVoteCount)
-                .isEqualTo(1);
+        Assertions.assertThat(foundRestaurant).extracting(RestaurantDto::getVoteCount).isEqualTo(1);
     }
 }
