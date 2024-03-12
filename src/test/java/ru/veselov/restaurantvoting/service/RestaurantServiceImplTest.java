@@ -3,15 +3,17 @@ package ru.veselov.restaurantvoting.service;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
+import ru.veselov.restaurantvoting.dto.MenuDto;
 import ru.veselov.restaurantvoting.dto.RestaurantDto;
+import ru.veselov.restaurantvoting.mapper.DishMapper;
 import ru.veselov.restaurantvoting.mapper.RestaurantMapper;
 import ru.veselov.restaurantvoting.repository.MenuRepository;
 import ru.veselov.restaurantvoting.repository.RestaurantRepository;
 import ru.veselov.restaurantvoting.repository.VoteRepository;
+import ru.veselov.restaurantvoting.util.DishTestData;
 import ru.veselov.restaurantvoting.util.RestaurantTestData;
 import ru.veselov.restaurantvoting.util.VoteTestData;
 
@@ -35,6 +37,9 @@ class RestaurantServiceImplTest {
     @Autowired
     MenuRepository menuRepository;
 
+    @Autowired
+    DishMapper dishMapper;
+
     @Test
     void findByIdWithMenuAndVotesBetweenDates_AllOk_ReturnRestaurantDtoWithVoteCount() {
         RestaurantDto foundRestaurant = restaurantService.findByIdWithMenuAndVotesBetweenDates(RestaurantTestData.sushiRestaurant.id(),
@@ -42,5 +47,14 @@ class RestaurantServiceImplTest {
 
         Assertions.assertThat(foundRestaurant).extracting(RestaurantDto::getVoteCount)
                 .isEqualTo(1);
+
+        Assertions.assertThat(foundRestaurant.getMenus()).hasSize(1);
+
+        MenuDto menuDto = foundRestaurant.getMenus().get(0);
+        Assertions.assertThat(menuDto.getDishes()).contains(
+                dishMapper.toDto(DishTestData.philadelphia),
+                dishMapper.toDto(DishTestData.tastyRoll),
+                dishMapper.toDto(DishTestData.unagi)
+        );
     }
 }

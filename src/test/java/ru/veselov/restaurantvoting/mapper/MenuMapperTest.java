@@ -1,24 +1,23 @@
 package ru.veselov.restaurantvoting.mapper;
 
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.test.util.ReflectionTestUtils;
+import org.junit.jupiter.api.extension.ExtendWith;
 import ru.veselov.restaurantvoting.dto.MenuDto;
+import ru.veselov.restaurantvoting.extension.MapperParameterResolver;
+import ru.veselov.restaurantvoting.extension.annotation.InjectMapper;
 import ru.veselov.restaurantvoting.util.MenuTestData;
 
 class MenuMapperTest {
 
-    MenuMapper menuMapper = new MenuMapperImpl();
-    DishMapper dishMapper = new DishMapperImpl();
+    MenuMapper menuMapper;
 
-    @BeforeEach
-    void setUp() {
-        ReflectionTestUtils.setField(menuMapper, "dishMapper", dishMapper, DishMapper.class);
+    public MenuMapperTest(@InjectMapper MenuMapper menuMapper) {
+        this.menuMapper = menuMapper;
     }
 
     @Test
-    void toDto_AllOk_ReturnCorrectMappedMenuDto() {
+    void toDto_AllOk_ReturnCorrectMappedMenuDto(@InjectMapper DishMapper dishMapper) {
         Assertions.assertThat(menuMapper.toDto(MenuTestData.sushiRestaurantMenu))
                 .extracting(MenuDto::getId, MenuDto::getAddedAt, MenuDto::getDishes)
                 .containsExactly(MenuTestData.sushiRestaurantMenu.id(),
