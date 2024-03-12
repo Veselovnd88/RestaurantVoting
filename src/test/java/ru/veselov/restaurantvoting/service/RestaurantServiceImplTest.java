@@ -56,5 +56,6 @@ class RestaurantServiceImplTest {
                 dishMapper.toDto(DishTestData.tastyRoll),
                 dishMapper.toDto(DishTestData.unagi)
         );
+        Assertions.assertThat(foundRestaurant).extracting(RestaurantDto::getVoteCount).isEqualTo(1);
     }
 }
