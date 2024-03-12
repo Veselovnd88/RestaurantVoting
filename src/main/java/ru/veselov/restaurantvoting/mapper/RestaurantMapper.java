@@ -3,6 +3,7 @@ package ru.veselov.restaurantvoting.mapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
+import ru.veselov.restaurantvoting.dto.NewRestaurantDto;
 import ru.veselov.restaurantvoting.dto.RestaurantDto;
 import ru.veselov.restaurantvoting.model.Restaurant;
 
@@ -16,5 +17,5 @@ public interface RestaurantMapper {
 
     List<RestaurantDto> entitiesToDto(List<Restaurant> restaurants);
 
-    Restaurant toEntity(RestaurantDto restaurantDto);
+    Restaurant toEntity(NewRestaurantDto restaurantDto);
 }

@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.veselov.restaurantvoting.dto.NewRestaurantDto;
 import ru.veselov.restaurantvoting.dto.RestaurantDto;
 import ru.veselov.restaurantvoting.mapper.RestaurantMapper;
 import ru.veselov.restaurantvoting.model.Restaurant;
@@ -28,6 +29,14 @@ public class RestaurantServiceImpl implements RestaurantService {
     private final RestaurantMapper mapper;
     private final VoteRepository voteRepository;
     private final MenuRepository menuRepository;
+
+    @Override
+    @Transactional
+    public RestaurantDto create(NewRestaurantDto restaurantDto) {
+        Restaurant savedRestaurant = repository.save(mapper.toEntity(restaurantDto));
+        log.info("New restaurant: {} successfully saved", savedRestaurant.getName());
+        return mapper.entityToDto(savedRestaurant);
+    }
 
     public List<RestaurantDto> getAll() {
         log.debug("Retrieving restaurants with votes from repository");
