@@ -29,25 +29,6 @@ class RestaurantRepositoryTest {
         RestaurantTestData.burgerRestaurant.setMenus(List.of(MenuTestData.burgerRestaurantMenu));
     }
 
-    /*@Test
-    void findAllWithMenus_ReturnAllRestaurantsWithAllMenus() {
-        List<Restaurant> allWithMenus = repository.findAllWithMenuByDate(MenuTestData.MENU_ADDED_DATE);
-
-        Assertions.assertThat(allWithMenus).hasSize(RestaurantTestData.DB_COUNT);
-
-        RestaurantTestData.RESTAURANT_MATCHER_NO_VOTES.assertMatch(allWithMenus,
-                List.of(RestaurantTestData.burgerRestaurant, RestaurantTestData.pizzaRestaurant,
-                        RestaurantTestData.sushiRestaurant));
-        List<Menu> menus = allWithMenus.stream().flatMap(r -> r.getMenus().stream()).toList();
-        MenuTestData.MENU_MATCHER.assertMatch(menus,
-                List.of(MenuTestData.burgerRestaurantMenu, MenuTestData.pizzaRestaurantMenu,
-                        MenuTestData.sushiRestaurantMenu));
-        DishTestData.DISH_MATCHER.assertMatch(menus.stream().flatMap(menu -> menu.getDishes().stream()).collect(Collectors.toList()),
-                List.of(DishTestData.doubleBurger, DishTestData.friesPotato, DishTestData.tripleBurger,
-                        DishTestData.diabloPizza, DishTestData.margarita, DishTestData.pizzaArriva,
-                        DishTestData.philadelphia, DishTestData.tastyRoll, DishTestData.unagi));
-    }*/
-
     @Test
     void findAll_ReturnAllRestaurantsFromDB() {
         List<Restaurant> restaurants = repository.findAll(Sort.by(Sort.Direction.ASC, "name"));
@@ -59,7 +40,7 @@ class RestaurantRepositoryTest {
     }
 
     @Test
-    void findByIdWithMenusAndVotes_AllOk_ReturnSushiRestaurant() {
+    void findById_AllOk_ReturnSushiRestaurant() {
         Optional<Restaurant> restaurantOptional = repository.findById(100003);
         Assertions.assertThat(restaurantOptional).isPresent();
         Restaurant restaurant = restaurantOptional.get();
@@ -67,7 +48,7 @@ class RestaurantRepositoryTest {
     }
 
     @Test
-    void findByIdWithMenusAndVotes_AllOk_ReturnEmptyOptional() {
+    void findById_AllOk_ReturnEmptyOptional() {
         Assertions.assertThat(repository.findById(9999)).isEmpty();
     }
 }

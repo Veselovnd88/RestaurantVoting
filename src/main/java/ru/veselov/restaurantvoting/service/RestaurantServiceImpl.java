@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.veselov.restaurantvoting.dto.RestaurantDto;
 import ru.veselov.restaurantvoting.mapper.RestaurantMapper;
 import ru.veselov.restaurantvoting.model.Restaurant;
-import ru.veselov.restaurantvoting.model.Vote;
+import ru.veselov.restaurantvoting.repository.MenuRepository;
 import ru.veselov.restaurantvoting.repository.RestaurantRepository;
 import ru.veselov.restaurantvoting.repository.VoteRepository;
 
@@ -27,6 +27,7 @@ public class RestaurantServiceImpl implements RestaurantService {
     private final RestaurantRepository repository;
     private final RestaurantMapper mapper;
     private final VoteRepository voteRepository;
+    private final MenuRepository menuRepository;
 
     public List<RestaurantDto> getAll() {
         log.debug("Retrieving restaurants with votes from repository");
@@ -36,8 +37,9 @@ public class RestaurantServiceImpl implements RestaurantService {
     public RestaurantDto findByIdWithMenuAndVotesBetweenDates(int id, LocalDate from, LocalDate to) {
         Restaurant restaurant = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Restaurant with [id:%s] not found".formatted(id)));
-        List<Vote> votesBetweenDates = voteRepository.findAllBetweenDatesByRestaurant(id, from, to);
-        restaurant.setVotes(votesBetweenDates);
+        restaurant.setVotes(voteRepository.findAllBetweenDatesByRestaurant(id, from, to));
+        restaurant.setMenus(menuRepository.findAllBetweenDatesByRestaurant(id, from, to));
+        log.debug("Retrieving restaurant id: {} with votes and menu between dates: {} | {}", id, from, to);
         return mapper.entityToDto(restaurant);
     }
 }

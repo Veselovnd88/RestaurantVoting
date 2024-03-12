@@ -9,9 +9,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class DishDto {
 
-    Integer id;
+    private Integer id;
 
-    String name;
+    private String name;
 
-    Integer price;
+    private Integer price;
 }

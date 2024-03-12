@@ -9,6 +9,7 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 import ru.veselov.restaurantvoting.dto.RestaurantDto;
 import ru.veselov.restaurantvoting.mapper.RestaurantMapper;
+import ru.veselov.restaurantvoting.repository.MenuRepository;
 import ru.veselov.restaurantvoting.repository.RestaurantRepository;
 import ru.veselov.restaurantvoting.repository.VoteRepository;
 import ru.veselov.restaurantvoting.util.RestaurantTestData;
@@ -30,6 +31,9 @@ class RestaurantServiceImplTest {
 
     @Autowired
     VoteRepository voteRepository;
+
+    @Autowired
+    MenuRepository menuRepository;
 
     @Test
     void findByIdWithMenuAndVotesBetweenDates_AllOk_ReturnRestaurantDtoWithVoteCount() {

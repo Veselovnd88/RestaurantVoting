@@ -9,7 +9,6 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.NamedAttributeNode;
 import jakarta.persistence.NamedEntityGraph;
-import jakarta.persistence.NamedEntityGraphs;
 import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
@@ -28,25 +27,21 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 @Setter
-@NamedEntityGraphs({
-        @NamedEntityGraph(name = Menu.DISHES_ENTITY_GRAPH, attributeNodes = {
-                @NamedAttributeNode("dishes")
-        })
-})
+@NamedEntityGraph(name = Menu.DISHES_ENTITY_GRAPH, attributeNodes = {@NamedAttributeNode("dishes")})
 public class Menu extends AbstractBaseEntity {
 
-    public static final String DISHES_ENTITY_GRAPH = "dishesEntityGraph";
+    public static final String DISHES_ENTITY_GRAPH = "Menu.dishes";
 
     @Column(name = "added_at")
     @NotNull
     private LocalDate addedAt;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "restaurant_id")
     @NotNull
     private Restaurant restaurant;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "menu_dish",
             joinColumns = {@JoinColumn(name = "menu_id")},
