@@ -14,10 +14,7 @@ import java.util.List;
 public class RestaurantDto {
 
     private Integer id;
-
     private String name;
-
     private List<MenuDto> menus;
-
     private Integer voteCount;
 }

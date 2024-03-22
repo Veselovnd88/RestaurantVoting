@@ -51,4 +51,21 @@ public class RestaurantServiceImpl implements RestaurantService {
         log.debug("Retrieving restaurant id: {} with votes and menu between dates: {} | {}", id, from, to);
         return mapper.entityToDto(restaurant);
     }
+
+    @Override
+    @Transactional
+    public RestaurantDto update(int id, NewRestaurantDto restaurantDto) {
+        Restaurant restaurant = repository.findById(id).orElseThrow(() ->
+                new EntityNotFoundException("Restaurant with id: %s not found".formatted(id)));
+        restaurant.setName(restaurantDto.getName());
+        Restaurant updatedRestaurant = repository.save(restaurant);
+        log.info("Restaurant with id: {} updated", id);
+        return mapper.entityToDto(updatedRestaurant);
+    }
+
+    @Override
+    public void delete(int id) {
+        repository.deleteById(id);
+        log.info("Restaurant with id: {} deleted", id);
+    }
 }
