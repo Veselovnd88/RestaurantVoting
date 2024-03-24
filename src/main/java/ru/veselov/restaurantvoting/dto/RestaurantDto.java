@@ -17,4 +17,10 @@ public class RestaurantDto {
     private String name;
     private List<MenuDto> menus;
     private Integer voteCount;
+
+    public RestaurantDto(Integer id, String name, Integer voteCount) {
+        this.id = id;
+        this.name = name;
+        this.voteCount = voteCount;
+    }
 }

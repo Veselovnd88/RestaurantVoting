@@ -17,6 +17,8 @@ import ru.veselov.restaurantvoting.util.DishTestData;
 import ru.veselov.restaurantvoting.util.RestaurantTestData;
 import ru.veselov.restaurantvoting.util.VoteTestData;
 
+import java.util.List;
+
 
 @SpringBootTest
 @Sql(scripts = {"classpath:db/init.sql", "classpath:db/populateDbTest.sql"}, config = @SqlConfig(encoding = "UTF-8"))
@@ -41,6 +43,13 @@ class RestaurantServiceImplTest {
     DishMapper dishMapper;
 
     @Test
+    void getAll_AllOk_ReturnAllRestaurants() {
+        List<RestaurantDto> allRestaurants = restaurantService.getAll();
+
+        Assertions.assertThat(allRestaurants).isEqualTo(RestaurantTestData.restaurantDtos);
+    }
+
+    @Test
     void findByIdWithMenuAndVotesBetweenDates_AllOk_ReturnRestaurantDtoWithVoteCount() {
         RestaurantDto foundRestaurant = restaurantService.findByIdWithMenuAndVotesBetweenDates(RestaurantTestData.sushiRestaurant.id(),
                 VoteTestData.VOTED_AT_DATE, VoteTestData.VOTED_AT_DATE);
@@ -57,5 +66,12 @@ class RestaurantServiceImplTest {
                 dishMapper.toDto(DishTestData.unagi)
         );
         Assertions.assertThat(foundRestaurant).extracting(RestaurantDto::getVoteCount).isEqualTo(1);
+    }
+
+    @Test
+    void create_AllOk_CreateAndReturnSavedRestaurantDto() {
+        RestaurantDto restaurantDto = restaurantService.create(RestaurantTestData.newRestaurantDto);
+
+        Assertions.assertThat(restaurantDto).isEqualTo(RestaurantTestData.savedRestaurantDto);
     }
 }

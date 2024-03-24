@@ -36,7 +36,6 @@ public class Restaurant extends AbstractNamedEntity {
     @ToString.Exclude
     private List<Vote> votes;
 
-
     public Restaurant(Integer id, String name) {
         super(id, name);
     }
