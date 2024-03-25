@@ -56,7 +56,7 @@ public class RestaurantController {
                     content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                             schema = @Schema(implementation = RestaurantDto.class))})})
     @GetMapping("/{id}/with-menus")
-    public RestaurantDto getRestaurantWithWeeklyRatingAndMenus(@PathVariable Integer id) {
-        return service.findByIdWithMenuAndVotesBetweenDates(id, LocalDate.now().minusDays(7), LocalDate.now());
+    public RestaurantDto getRestaurantWithMenuAndVotesByDate(@PathVariable Integer id) {
+        return service.findByIdWithMenuAndVotesForDate(id, LocalDate.now());
     }
 }

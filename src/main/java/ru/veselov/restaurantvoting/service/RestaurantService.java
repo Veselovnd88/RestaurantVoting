@@ -12,7 +12,7 @@ public interface RestaurantService {
 
     List<RestaurantDto> getAll();
 
-    RestaurantDto findByIdWithMenuAndVotesBetweenDates(int id, LocalDate from, LocalDate to);
+    RestaurantDto findByIdWithMenuAndVotesForDate(int id, LocalDate date);
 
     RestaurantDto findById(int id);
 

@@ -4,6 +4,8 @@ import lombok.experimental.UtilityClass;
 import ru.veselov.restaurantvoting.dto.DishDto;
 import ru.veselov.restaurantvoting.model.Dish;
 
+import java.util.List;
+
 @UtilityClass
 public class DishTestData {
 
@@ -14,6 +16,8 @@ public class DishTestData {
     public static Dish philadelphia = new Dish(100010, "Philadelphia", 30000);
 
     public static Dish tastyRoll = new Dish(100011, "TastyRoll", 55000);
+
+    public static List<Dish> sushiDishes = List.of(philadelphia, tastyRoll, unagi);
 
     public static Dish pizzaArriva = new Dish(100012, "Pizza Arriva", 60000);
 
@@ -32,4 +36,6 @@ public class DishTestData {
     public static DishDto tastyRollDto = new DishDto(100011, "TastyRoll", 55000);
 
     public static DishDto unagiDto = new DishDto(100009, "Unagi", 40000);
+
+    public static List<DishDto> sushiDishesDtos = List.of(philadelphiaDto, tastyRollDto, unagiDto);
 }

@@ -17,4 +17,6 @@ public class MenuDto {
     private LocalDate addedAt;
 
     private List<DishDto> dishes;
+
+    private List<VoteDto> votes;
 }

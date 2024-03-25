@@ -55,18 +55,14 @@ class RestaurantServiceImplTest {
     }
 
     @Test
-    void findByIdWithMenuAndVotesBetweenDates_AllOk_ReturnRestaurantDtoWithVoteCount() {
-        RestaurantDto foundRestaurant = restaurantService.findByIdWithMenuAndVotesBetweenDates(RestaurantTestData.sushiRestaurant.id(),
-                VoteTestData.VOTED_AT_DATE, VoteTestData.VOTED_AT_DATE);
-
-        Assertions.assertThat(foundRestaurant).extracting(RestaurantDto::getVoteCount)
-                .isEqualTo(1);
+    void findByIdWithMenuAndVotes() {
+        RestaurantDto foundRestaurant = restaurantService
+                .findByIdWithMenuAndVotesForDate(RestaurantTestData.SUSHI_ID, VoteTestData.VOTED_AT_DATE);
 
         Assertions.assertThat(foundRestaurant.getMenus()).hasSize(1);
         MenuDto menuDto = foundRestaurant.getMenus().get(0);
         Assertions.assertThat(menuDto.getDishes()).contains(DishTestData.philadelphiaDto, DishTestData.tastyRollDto,
                 DishTestData.unagiDto);
-        Assertions.assertThat(foundRestaurant).extracting(RestaurantDto::getVoteCount).isEqualTo(1);
     }
 
     @Test

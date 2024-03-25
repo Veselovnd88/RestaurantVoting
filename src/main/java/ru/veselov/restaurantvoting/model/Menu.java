@@ -9,6 +9,7 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.NamedAttributeNode;
 import jakarta.persistence.NamedEntityGraph;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
@@ -17,6 +18,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -54,10 +56,22 @@ public class Menu extends AbstractBaseEntity {
     @OrderBy("name")
     private List<Dish> dishes;
 
+    @OneToMany(mappedBy = "menu", fetch = FetchType.LAZY)
+    @OrderBy("id")
+    @ToString.Exclude
+    private List<Vote> votes;
+
     public Menu(Integer id, LocalDate addedAt, Restaurant restaurant, Dish... dishes) {
         super(id);
         this.addedAt = addedAt;
         this.restaurant = restaurant;
         this.dishes = List.of(dishes);
+    }
+
+    public Menu(Integer id, LocalDate addedAt, Restaurant restaurant, List<Dish> dishes) {
+        super(id);
+        this.addedAt = addedAt;
+        this.restaurant = restaurant;
+        this.dishes = dishes;
     }
 }

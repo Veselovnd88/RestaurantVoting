@@ -28,10 +28,6 @@ public class Restaurant extends AbstractNamedEntity {
     @ToString.Exclude
     private List<Menu> menus;
 
-    @OneToMany(mappedBy = "restaurant", fetch = FetchType.LAZY)
-    @ToString.Exclude
-    private List<Vote> votes;
-
     public Restaurant(Integer id, String name) {
         super(id, name);
     }

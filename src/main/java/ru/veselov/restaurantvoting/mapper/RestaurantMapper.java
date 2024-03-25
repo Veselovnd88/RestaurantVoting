@@ -16,12 +16,10 @@ import java.util.List;
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface RestaurantMapper {
 
-    @Mapping(target = "voteCount", expression = "java(restaurant.getVotes()==null?0:restaurant.getVotes().size())")
     RestaurantDto entityToDtoWithMenus(Restaurant restaurant);
 
 
     @Mapping(target = "menus", ignore = true)
-    @Mapping(target = "voteCount", expression = "java(restaurant.getVotes()==null?0:restaurant.getVotes().size())")
     @WithoutMenu
     RestaurantDto entityToDto(Restaurant restaurant);
 

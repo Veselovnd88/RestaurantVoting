@@ -68,6 +68,14 @@ public class User extends AbstractNamedEntity {
         setRoles(roles);
     }
 
+    public User(Integer id, String name, String email, String password, boolean enabled, Collection<Role> roles) {
+        super(id, name);
+        this.email = email;
+        this.password = password;
+        this.enabled = enabled;
+        setRoles(roles);
+    }
+
     public void setRoles(Collection<Role> roles) {
         this.roles = CollectionUtils.isEmpty(roles) ? EnumSet.noneOf(Role.class) : EnumSet.copyOf(roles);
     }

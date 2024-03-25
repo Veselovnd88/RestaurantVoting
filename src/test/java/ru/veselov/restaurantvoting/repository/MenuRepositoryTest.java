@@ -1,7 +1,6 @@
 package ru.veselov.restaurantvoting.repository;
 
 import org.assertj.core.api.Assertions;
-import org.assertj.core.api.InstanceOfAssertFactories;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -10,9 +9,9 @@ import org.springframework.test.context.jdbc.SqlConfig;
 import ru.veselov.restaurantvoting.model.Menu;
 import ru.veselov.restaurantvoting.util.DishTestData;
 import ru.veselov.restaurantvoting.util.MenuTestData;
-import ru.veselov.restaurantvoting.util.RestaurantTestData;
+import ru.veselov.restaurantvoting.util.VoteTestData;
 
-import java.util.List;
+import java.util.Optional;
 
 @DataJpaTest
 @Sql(scripts = {"classpath:db/init.sql", "classpath:db/populateDbTest.sql"}, config = @SqlConfig(encoding = "UTF-8"))
@@ -22,13 +21,13 @@ class MenuRepositoryTest {
     MenuRepository menuRepository;
 
     @Test
-    void findAllBetweenDatesByRestaurant() {
-        List<Menu> menus = menuRepository.findAllBetweenDatesByRestaurant(RestaurantTestData.sushiRestaurant.id(),
-                MenuTestData.ADDED_DATE, MenuTestData.ADDED_DATE);
+    void findOneById_AllOK_ReturnMenuWithDishesAndVotes() {
+        Optional<Menu> foundById = menuRepository.findById(100006);
 
-        Assertions.assertThat(menus).hasSize(1).element(0).extracting(Menu::getAddedAt)
-                .asInstanceOf(InstanceOfAssertFactories.LOCAL_DATE)
-                .isEqualTo(MenuTestData.ADDED_DATE);
-        DishTestData.DISH_MATCHER.assertMatch(menus.get(0).getDishes(), List.of(DishTestData.philadelphia, DishTestData.tastyRoll, DishTestData.unagi));
+        Assertions.assertThat(foundById).isPresent();
+        Menu menu = foundById.get();
+        MenuTestData.MENU_MATCHER.assertMatch(menu, MenuTestData.sushiRestaurantMenu);
+        DishTestData.DISH_MATCHER.assertMatch(menu.getDishes(), DishTestData.sushiDishes);
+        VoteTestData.VOTE_MATCHER.assertMatch(menu.getVotes(), VoteTestData.sushiVotes);
     }
 }

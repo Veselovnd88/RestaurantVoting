@@ -49,12 +49,10 @@ public class RestaurantServiceImpl implements RestaurantService {
                 .orElseThrow(() -> new EntityNotFoundException("Restaurant with [id:%s] not found".formatted(id))));
     }
 
-    public RestaurantDto findByIdWithMenuAndVotesBetweenDates(int id, LocalDate from, LocalDate to) {
-        Restaurant restaurant = repository.findById(id)
+    public RestaurantDto findByIdWithMenuAndVotesForDate(int id, LocalDate date) {
+        Restaurant restaurant = repository.findByIdWithMenuByDate(id, date)
                 .orElseThrow(() -> new EntityNotFoundException("Restaurant with [id:%s] not found".formatted(id)));
-        restaurant.setVotes(voteRepository.findAllBetweenDatesByRestaurant(id, from, to));
-        restaurant.setMenus(menuRepository.findAllBetweenDatesByRestaurant(id, from, to));
-        log.debug("Retrieving restaurant id: {} with votes and menu between dates: {} | {}", id, from, to);
+        log.debug("Retrieving restaurant id: {} with votes and menu by date {}", id, date);
         return mapper.entityToDtoWithMenus(restaurant);
     }
 
