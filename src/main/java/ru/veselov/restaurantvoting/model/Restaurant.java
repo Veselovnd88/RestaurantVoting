@@ -21,9 +21,6 @@ import java.util.List;
 @ToString(callSuper = true)
 public class Restaurant extends AbstractNamedEntity {
 
-    public static final String MENU_ENTITY_GRAPH = "menuEntityGraph";
-    public static final String ALL_ATTR_ENTITY_GRAPH = "allAttributesEntityGraph";
-
     @OneToMany(mappedBy = "restaurant", fetch = FetchType.LAZY)
     @ToString.Exclude
     private List<Menu> menus;

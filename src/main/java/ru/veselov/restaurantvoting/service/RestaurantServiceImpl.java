@@ -9,13 +9,16 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.veselov.restaurantvoting.dto.NewRestaurantDto;
 import ru.veselov.restaurantvoting.dto.RestaurantDto;
 import ru.veselov.restaurantvoting.mapper.RestaurantMapper;
+import ru.veselov.restaurantvoting.model.Menu;
 import ru.veselov.restaurantvoting.model.Restaurant;
 import ru.veselov.restaurantvoting.repository.MenuRepository;
 import ru.veselov.restaurantvoting.repository.RestaurantRepository;
 import ru.veselov.restaurantvoting.repository.VoteRepository;
 
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -50,10 +53,12 @@ public class RestaurantServiceImpl implements RestaurantService {
     }
 
     public RestaurantDto findByIdWithMenuAndVotesForDate(int id, LocalDate date) {
-        Restaurant restaurant = repository.findByIdWithMenuByDate(id, date)
+        Restaurant restaurant = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Restaurant with [id:%s] not found".formatted(id)));
+        Optional<Menu> byRestaurantIdByDate = menuRepository.findByRestaurantIdByDate(id, date);
+        restaurant.setMenus(byRestaurantIdByDate.map(List::of).orElse(Collections.emptyList()));
         log.debug("Retrieving restaurant id: {} with votes and menu by date {}", id, date);
-        return mapper.entityToDtoWithMenus(restaurant);
+        return new RestaurantDto();
     }
 
     @Override
