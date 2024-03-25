@@ -22,12 +22,12 @@ class RestaurantMapperTest {
     @Test
     void toRestaurantTo_OneVote_MapToOneVote() {
         RestaurantTestData.sushiRestaurant.setVotes(List.of(new Vote()));
-        Assertions.assertThat(restaurantMapper.entityToDto(RestaurantTestData.sushiRestaurant).getVoteCount())
+        Assertions.assertThat(restaurantMapper.entityToDtoWithMenus(RestaurantTestData.sushiRestaurant).getVoteCount())
                 .isEqualTo(1);
     }
 
     @Test
     void toRestaurantTo_NullVotes_MapToZeroVotes() {
-        Assertions.assertThat(restaurantMapper.entityToDto(RestaurantTestData.sushiRestaurant).getVoteCount()).isZero();
+        Assertions.assertThat(restaurantMapper.entityToDtoWithMenus(RestaurantTestData.sushiRestaurant).getVoteCount()).isZero();
     }
 }

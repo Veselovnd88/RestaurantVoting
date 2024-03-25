@@ -35,12 +35,18 @@ public class RestaurantServiceImpl implements RestaurantService {
     public RestaurantDto create(NewRestaurantDto restaurantDto) {
         Restaurant savedRestaurant = repository.save(mapper.toEntity(restaurantDto));
         log.info("New restaurant: {} successfully saved", savedRestaurant.getName());
-        return mapper.entityToDto(savedRestaurant);
+        return mapper.entityToDtoWithMenus(savedRestaurant);
     }
 
     public List<RestaurantDto> getAll() {
         log.debug("Retrieving restaurants with votes from repository");
         return mapper.entitiesToDto(repository.findAll(SORT_BY_NAME));
+    }
+
+    public RestaurantDto findById(int id) {
+        log.debug("Retrieving restaurant by id");
+        return mapper.entityToDto(repository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Restaurant with [id:%s] not found".formatted(id))));
     }
 
     public RestaurantDto findByIdWithMenuAndVotesBetweenDates(int id, LocalDate from, LocalDate to) {
@@ -49,7 +55,7 @@ public class RestaurantServiceImpl implements RestaurantService {
         restaurant.setVotes(voteRepository.findAllBetweenDatesByRestaurant(id, from, to));
         restaurant.setMenus(menuRepository.findAllBetweenDatesByRestaurant(id, from, to));
         log.debug("Retrieving restaurant id: {} with votes and menu between dates: {} | {}", id, from, to);
-        return mapper.entityToDto(restaurant);
+        return mapper.entityToDtoWithMenus(restaurant);
     }
 
     @Override
@@ -64,6 +70,7 @@ public class RestaurantServiceImpl implements RestaurantService {
     }
 
     @Override
+    @Transactional
     public void delete(int id) {
         repository.deleteById(id);
         log.info("Restaurant with id: {} deleted", id);

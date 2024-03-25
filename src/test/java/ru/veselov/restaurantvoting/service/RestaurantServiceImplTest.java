@@ -1,5 +1,6 @@
 package ru.veselov.restaurantvoting.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,8 +9,6 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 import ru.veselov.restaurantvoting.dto.MenuDto;
 import ru.veselov.restaurantvoting.dto.RestaurantDto;
-import ru.veselov.restaurantvoting.mapper.DishMapper;
-import ru.veselov.restaurantvoting.mapper.RestaurantMapper;
 import ru.veselov.restaurantvoting.repository.MenuRepository;
 import ru.veselov.restaurantvoting.repository.RestaurantRepository;
 import ru.veselov.restaurantvoting.repository.VoteRepository;
@@ -28,9 +27,6 @@ class RestaurantServiceImplTest {
     RestaurantService restaurantService;
 
     @Autowired
-    RestaurantMapper restaurantMapper;
-
-    @Autowired
     RestaurantRepository repository;
 
     @Autowired
@@ -39,14 +35,23 @@ class RestaurantServiceImplTest {
     @Autowired
     MenuRepository menuRepository;
 
-    @Autowired
-    DishMapper dishMapper;
-
     @Test
     void getAll_AllOk_ReturnAllRestaurants() {
         List<RestaurantDto> allRestaurants = restaurantService.getAll();
 
         Assertions.assertThat(allRestaurants).isEqualTo(RestaurantTestData.restaurantDtos);
+    }
+
+    @Test
+    void findById_AllOk_ReturnOneRestaurant() {
+        Assertions.assertThat(restaurantService.findById(RestaurantTestData.SUSHI_ID))
+                .isEqualTo(RestaurantTestData.sushiRestaurantDto);
+    }
+
+    @Test
+    void findById_NotFound_ThrowException() {
+        Assertions.assertThatThrownBy(() -> restaurantService.findById(RestaurantTestData.NOT_FOUND))
+                .isInstanceOf(EntityNotFoundException.class);
     }
 
     @Test
@@ -58,13 +63,9 @@ class RestaurantServiceImplTest {
                 .isEqualTo(1);
 
         Assertions.assertThat(foundRestaurant.getMenus()).hasSize(1);
-
         MenuDto menuDto = foundRestaurant.getMenus().get(0);
-        Assertions.assertThat(menuDto.getDishes()).contains(
-                dishMapper.toDto(DishTestData.philadelphia),
-                dishMapper.toDto(DishTestData.tastyRoll),
-                dishMapper.toDto(DishTestData.unagi)
-        );
+        Assertions.assertThat(menuDto.getDishes()).contains(DishTestData.philadelphiaDto, DishTestData.tastyRollDto,
+                DishTestData.unagiDto);
         Assertions.assertThat(foundRestaurant).extracting(RestaurantDto::getVoteCount).isEqualTo(1);
     }
 
@@ -73,5 +74,21 @@ class RestaurantServiceImplTest {
         RestaurantDto restaurantDto = restaurantService.create(RestaurantTestData.newRestaurantDto);
 
         Assertions.assertThat(restaurantDto).isEqualTo(RestaurantTestData.savedRestaurantDto);
+    }
+
+    @Test
+    void update_AllOk_UpdateAndReturnUpdated() {
+        RestaurantDto update = restaurantService.update(RestaurantTestData.SUSHI_ID, RestaurantTestData.restaurantDtoToUpdate);
+
+        Assertions.assertThat(update).isEqualTo(RestaurantTestData.sushiRestaurantUpdated);
+        Assertions.assertThat(restaurantService.findById(RestaurantTestData.SUSHI_ID)).isEqualTo(RestaurantTestData.sushiRestaurantUpdated);
+    }
+
+    @Test
+    void delete_AllOk_DeleteWithMenusAndVotes() {
+        restaurantService.delete(RestaurantTestData.SUSHI_ID);
+
+        Assertions.assertThatThrownBy(() -> restaurantService.findById(RestaurantTestData.SUSHI_ID))
+                .isInstanceOf(EntityNotFoundException.class);
     }
 }

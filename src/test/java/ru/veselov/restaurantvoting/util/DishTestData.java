@@ -1,6 +1,7 @@
 package ru.veselov.restaurantvoting.util;
 
 import lombok.experimental.UtilityClass;
+import ru.veselov.restaurantvoting.dto.DishDto;
 import ru.veselov.restaurantvoting.model.Dish;
 
 @UtilityClass
@@ -25,4 +26,10 @@ public class DishTestData {
     public static Dish tripleBurger = new Dish(100016, "Triple Burger", 75000);
 
     public static Dish friesPotato = new Dish(100017, "Fries Potato", 35000);
+
+    public static DishDto philadelphiaDto = new DishDto(100010, "Philadelphia", 30000);
+
+    public static DishDto tastyRollDto = new DishDto(100011, "TastyRoll", 55000);
+
+    public static DishDto unagiDto = new DishDto(100009, "Unagi", 40000);
 }

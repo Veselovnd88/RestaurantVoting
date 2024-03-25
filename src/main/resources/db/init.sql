@@ -56,8 +56,8 @@ CREATE TABLE menu_dish
 (
     menu_id INTEGER NOT NULL,
     dish_id INTEGER NOT NULL,
-    FOREIGN KEY (menu_id) REFERENCES menu (id),
-    FOREIGN KEY (dish_id) REFERENCES dish (id),
+    FOREIGN KEY (menu_id) REFERENCES menu (id) ON DELETE CASCADE,
+    FOREIGN KEY (dish_id) REFERENCES dish (id) ON DELETE CASCADE,
     CONSTRAINT menu_dish_idx UNIQUE (menu_id, dish_id)
 );
 

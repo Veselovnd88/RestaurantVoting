@@ -7,7 +7,7 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.mapstruct.ReportingPolicy;
 import ru.veselov.restaurantvoting.dto.NewRestaurantDto;
 import ru.veselov.restaurantvoting.dto.RestaurantDto;
-import ru.veselov.restaurantvoting.mapper.annotation.NoMenu;
+import ru.veselov.restaurantvoting.mapper.annotation.WithoutMenu;
 import ru.veselov.restaurantvoting.model.Restaurant;
 
 import java.util.List;
@@ -17,14 +17,15 @@ import java.util.List;
 public interface RestaurantMapper {
 
     @Mapping(target = "voteCount", expression = "java(restaurant.getVotes()==null?0:restaurant.getVotes().size())")
-    RestaurantDto entityToDto(Restaurant restaurant);
+    RestaurantDto entityToDtoWithMenus(Restaurant restaurant);
 
-    @NoMenu
+
     @Mapping(target = "menus", ignore = true)
     @Mapping(target = "voteCount", expression = "java(restaurant.getVotes()==null?0:restaurant.getVotes().size())")
-    RestaurantDto entityToDoWithoutMenus(Restaurant restaurant);
+    @WithoutMenu
+    RestaurantDto entityToDto(Restaurant restaurant);
 
-    @IterableMapping(qualifiedBy = NoMenu.class)
+    @IterableMapping(qualifiedBy = WithoutMenu.class)
     List<RestaurantDto> entitiesToDto(List<Restaurant> restaurants);
 
     Restaurant toEntity(NewRestaurantDto restaurantDto);

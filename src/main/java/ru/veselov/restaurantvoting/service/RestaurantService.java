@@ -14,6 +14,8 @@ public interface RestaurantService {
 
     RestaurantDto findByIdWithMenuAndVotesBetweenDates(int id, LocalDate from, LocalDate to);
 
+    RestaurantDto findById(int id);
+
     RestaurantDto update(int id, NewRestaurantDto restaurantDto);
 
     void delete(int id);
