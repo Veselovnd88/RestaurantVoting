@@ -30,7 +30,6 @@ public class RestaurantServiceImpl implements RestaurantService {
 
     private final RestaurantRepository repository;
     private final RestaurantMapper mapper;
-    private final VoteRepository voteRepository;
     private final MenuRepository menuRepository;
 
     @Override
@@ -58,7 +57,7 @@ public class RestaurantServiceImpl implements RestaurantService {
         Optional<Menu> byRestaurantIdByDate = menuRepository.findByRestaurantIdByDate(id, date);
         restaurant.setMenus(byRestaurantIdByDate.map(List::of).orElse(Collections.emptyList()));
         log.debug("Retrieving restaurant id: {} with votes and menu by date {}", id, date);
-        return new RestaurantDto();
+        return mapper.entityToDtoWithMenus(restaurant);
     }
 
     @Override

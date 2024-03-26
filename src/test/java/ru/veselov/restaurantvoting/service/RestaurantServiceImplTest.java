@@ -7,15 +7,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
-import ru.veselov.restaurantvoting.dto.MenuDto;
 import ru.veselov.restaurantvoting.dto.RestaurantDto;
 import ru.veselov.restaurantvoting.repository.MenuRepository;
 import ru.veselov.restaurantvoting.repository.RestaurantRepository;
 import ru.veselov.restaurantvoting.repository.VoteRepository;
-import ru.veselov.restaurantvoting.util.DishTestData;
+import ru.veselov.restaurantvoting.util.MenuTestData;
 import ru.veselov.restaurantvoting.util.RestaurantTestData;
 import ru.veselov.restaurantvoting.util.VoteTestData;
 
+import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -55,14 +56,30 @@ class RestaurantServiceImplTest {
     }
 
     @Test
-    void findByIdWithMenuAndVotes() {
+    void findByIdWithMenuAndVotesForDate_AllOk_ReturnDtoWithMenuAndVotesForDate() {
+        RestaurantTestData.sushiRestaurantDto.setMenus(List.of(MenuTestData.sushiRestaurantMenuDto));
+
         RestaurantDto foundRestaurant = restaurantService
                 .findByIdWithMenuAndVotesForDate(RestaurantTestData.SUSHI_ID, VoteTestData.VOTED_AT_DATE);
 
-        Assertions.assertThat(foundRestaurant.getMenus()).hasSize(1);
-        MenuDto menuDto = foundRestaurant.getMenus().get(0);
-        Assertions.assertThat(menuDto.getDishes()).contains(DishTestData.philadelphiaDto, DishTestData.tastyRollDto,
-                DishTestData.unagiDto);
+        Assertions.assertThat(foundRestaurant).isEqualTo(RestaurantTestData.sushiRestaurantDto);
+    }
+
+    @Test
+    void findByIdWithMenuAndVotesForDate_NoMenuForThisDate_ReturnDtoEmptyMenuList() {
+        RestaurantTestData.sushiRestaurantDto.setMenus(Collections.emptyList());
+
+        RestaurantDto foundRestaurant = restaurantService
+                .findByIdWithMenuAndVotesForDate(RestaurantTestData.SUSHI_ID, LocalDate.of(2020, 3, 3));
+
+        Assertions.assertThat(foundRestaurant).isEqualTo(RestaurantTestData.sushiRestaurantDto);
+    }
+
+    @Test
+    void findByIdWithMenuAndVotesForDate_NotFound_ThrowException() {
+        Assertions.assertThatThrownBy(() -> restaurantService
+                        .findByIdWithMenuAndVotesForDate(RestaurantTestData.NOT_FOUND, VoteTestData.VOTED_AT_DATE))
+                .isInstanceOf(EntityNotFoundException.class);
     }
 
     @Test
@@ -77,7 +94,8 @@ class RestaurantServiceImplTest {
         RestaurantDto update = restaurantService.update(RestaurantTestData.SUSHI_ID, RestaurantTestData.restaurantDtoToUpdate);
 
         Assertions.assertThat(update).isEqualTo(RestaurantTestData.sushiRestaurantUpdated);
-        Assertions.assertThat(restaurantService.findById(RestaurantTestData.SUSHI_ID)).isEqualTo(RestaurantTestData.sushiRestaurantUpdated);
+        Assertions.assertThat(restaurantService.findById(RestaurantTestData.SUSHI_ID))
+                .isEqualTo(RestaurantTestData.sushiRestaurantUpdated);
     }
 
     @Test

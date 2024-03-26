@@ -20,5 +20,11 @@ public class VoteTestData {
 
     public static List<Vote> sushiVotes = List.of(user1VoteSushi, adminVoteSushi, user2VoteSushi);
 
-    public static VoteDto userOneVoteSushiDto = new VoteDto(VOTED_AT_DATE, UserTestData.user1Dto);
+    public static VoteDto user1VoteSushiDto = new VoteDto(VOTED_AT_DATE, UserTestData.user1Dto);
+
+    public static VoteDto user2VoteSushiDto = new VoteDto(VOTED_AT_DATE, UserTestData.user2Dto);
+
+    public static VoteDto adminVoteSushiDto = new VoteDto(VOTED_AT_DATE, UserTestData.adminDto);
+
+    public static List<VoteDto> sushiVotesDto = List.of(user1VoteSushiDto, adminVoteSushiDto, user2VoteSushiDto);
 }

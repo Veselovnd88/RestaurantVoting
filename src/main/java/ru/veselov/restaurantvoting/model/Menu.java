@@ -9,6 +9,7 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.NamedAttributeNode;
 import jakarta.persistence.NamedEntityGraph;
+import jakarta.persistence.NamedSubgraph;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
@@ -23,7 +24,7 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.LocalDate;
-import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "menu")
@@ -31,10 +32,19 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 @Setter
-@NamedEntityGraph(name = Menu.DISHES_ENTITY_GRAPH, attributeNodes = {@NamedAttributeNode("dishes")})
+@NamedEntityGraph(name = Menu.GRAPH_DISHES_VOTES_USERS,
+        attributeNodes = {
+                @NamedAttributeNode(value = "dishes"),
+                @NamedAttributeNode(value = "votes", subgraph = "votes")
+        },
+        subgraphs = @NamedSubgraph(
+                name = "votes",
+                attributeNodes = {@NamedAttributeNode(value = "user")}
+        )
+)
 public class Menu extends AbstractBaseEntity {
 
-    public static final String DISHES_ENTITY_GRAPH = "Menu.dishes";
+    public static final String GRAPH_DISHES_VOTES_USERS = "Menu.dishes.votes.users";
 
     @Column(name = "added_at")
     @NotNull
@@ -54,21 +64,22 @@ public class Menu extends AbstractBaseEntity {
             uniqueConstraints = @UniqueConstraint(columnNames = {"menu_id", "dish_id"}, name = "menu_dish_idx")
     )
     @OrderBy("name")
-    private List<Dish> dishes;
+    private Set<Dish> dishes;
 
+    //https://stackoverflow.com/questions/4334970/hibernate-throws-multiplebagfetchexception-cannot-simultaneously-fetch-multipl/51055523#51055523
     @OneToMany(mappedBy = "menu", fetch = FetchType.LAZY)
     @OrderBy("id")
     @ToString.Exclude
-    private List<Vote> votes;
+    private Set<Vote> votes;
 
     public Menu(Integer id, LocalDate addedAt, Restaurant restaurant, Dish... dishes) {
         super(id);
         this.addedAt = addedAt;
         this.restaurant = restaurant;
-        this.dishes = List.of(dishes);
+        this.dishes = Set.of(dishes);
     }
 
-    public Menu(Integer id, LocalDate addedAt, Restaurant restaurant, List<Dish> dishes) {
+    public Menu(Integer id, LocalDate addedAt, Restaurant restaurant, Set<Dish> dishes) {
         super(id);
         this.addedAt = addedAt;
         this.restaurant = restaurant;

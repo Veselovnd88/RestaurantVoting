@@ -16,6 +16,7 @@ public interface MenuRepository extends JpaRepository<Menu, Integer> {
     @NonNull
     Optional<Menu> findById(@NonNull Integer id);
 
-    @Query("SELECT DISTINCT m FROM Menu m LEFT JOIN FETCH m.dishes WHERE m.restaurant.id=:restaurantId AND m.addedAt=:date")
+    @EntityGraph(value = Menu.GRAPH_DISHES_VOTES_USERS)
+    @Query("SELECT m FROM Menu m WHERE m.restaurant.id=:restaurantId AND m.addedAt=:date")
     Optional<Menu> findByRestaurantIdByDate(@Param("restaurantId") int restaurantId, @Param("date") LocalDate date);
 }

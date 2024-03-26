@@ -7,7 +7,7 @@ import ru.veselov.restaurantvoting.dto.MenuDto;
 import ru.veselov.restaurantvoting.util.MenuTestData;
 import ru.veselov.restaurantvoting.util.VoteTestData;
 
-import java.util.List;
+import java.util.LinkedHashSet;
 
 class MenuMapperTest {
 
@@ -20,7 +20,7 @@ class MenuMapperTest {
 
     @Test
     void toDto_AllOk_ReturnCorrectMappedMenuDto() {
-        MenuTestData.sushiRestaurantMenu.setVotes(List.of(VoteTestData.user1VoteSushi));
+        MenuTestData.sushiRestaurantMenu.setVotes(new LinkedHashSet<>(VoteTestData.sushiVotes));
 
         MenuDto menuDto = menuMapper.toDto(MenuTestData.sushiRestaurantMenu);
 
