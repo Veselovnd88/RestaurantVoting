@@ -4,6 +4,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
 import ru.veselov.restaurantvoting.dto.DishDto;
+import ru.veselov.restaurantvoting.dto.NewDishDto;
 import ru.veselov.restaurantvoting.model.Dish;
 
 import java.util.List;
@@ -17,4 +18,6 @@ public interface DishMapper {
     DishDto toDto(Dish dish);
 
     List<DishDto> toDtos(List<Dish> dishes);
+
+    Dish toEntity(NewDishDto dishDto);
 }

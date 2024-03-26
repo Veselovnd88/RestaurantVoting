@@ -14,7 +14,6 @@ import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.validator.constraints.Range;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -43,10 +42,5 @@ public class Dish extends AbstractNamedEntity {
     public Dish(Integer id, String name, Integer price) {
         super(id, name);
         this.price = price;
-    }
-
-    public void addMenu(Menu menu) {
-        List<Menu> menuList = menus == null ? new ArrayList<>() : menus;
-        menuList.add(menu);
     }
 }
