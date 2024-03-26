@@ -1,6 +1,5 @@
 package ru.veselov.restaurantvoting.web;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -27,11 +26,9 @@ public class RestaurantController {
 
     private final RestaurantService service;
 
-    private final ObjectMapper objectMapper;
-
     @Operation(summary = "Получить все рестораны")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Рестораны получены",
+            @ApiResponse(responseCode = "200", description = "Рестораны загружены",
                     content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                             schema = @Schema(implementation = RestaurantDto.class))})})
     @GetMapping
@@ -41,16 +38,15 @@ public class RestaurantController {
 
     @Operation(summary = "Получить ресторан по id")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Рестораны с id найден",
+            @ApiResponse(responseCode = "200", description = "Ресторан с id найден",
                     content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                             schema = @Schema(implementation = RestaurantDto.class))})})
     @GetMapping("/{id}")
     public RestaurantDto getRestaurant(@PathVariable Integer id) {
-        objectMapper.getDateFormat();
         return service.findById(id);
     }
 
-    @Operation(summary = "Получить ресторан по id, с меню за неделю")
+    @Operation(summary = "Получить ресторан по id, с меню и голосами на дату")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Рестораны с id найден",
                     content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE,

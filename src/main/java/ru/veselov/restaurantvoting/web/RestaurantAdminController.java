@@ -61,9 +61,7 @@ public class RestaurantAdminController {
 
     @Operation(summary = "Удалить ресторан")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "Обновлено",
-                    content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = RestaurantDto.class))})
+            @ApiResponse(responseCode = "204", description = "Ресторан удален")
     })
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)

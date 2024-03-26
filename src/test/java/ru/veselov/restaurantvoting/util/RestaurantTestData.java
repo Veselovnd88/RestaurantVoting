@@ -20,8 +20,11 @@ public class RestaurantTestData {
 
     public static final int NOT_FOUND = 200000;
 
-    public static final MatcherFactory.Matcher<Restaurant> RESTAURANT_MATCHER_NO_VOTES_NO_MENUS = MatcherFactory
-            .usingIgnoringFieldsComparator("votes", "menus");
+    public static final MatcherFactory.Matcher<Restaurant> RESTAURANT_MATCHER = MatcherFactory
+            .usingIgnoringFieldsComparator(Restaurant.class, "votes", "menus");
+
+    public static final MatcherFactory.Matcher<RestaurantDto> RESTAURANT_DTO_MATCHER =
+            MatcherFactory.usingIgnoringFieldsComparator(RestaurantDto.class);
 
     public static Restaurant sushiRestaurant = new Restaurant(SUSHI_ID, "SushiWok");
 

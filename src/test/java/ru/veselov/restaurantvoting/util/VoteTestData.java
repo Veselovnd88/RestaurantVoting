@@ -8,7 +8,7 @@ import java.util.List;
 
 public class VoteTestData {
 
-    public static final MatcherFactory.Matcher<Vote> VOTE_MATCHER = MatcherFactory.usingIgnoringFieldsComparator("user", "menu");
+    public static final MatcherFactory.Matcher<Vote> VOTE_MATCHER = MatcherFactory.usingIgnoringFieldsComparator(Vote.class,"user", "menu");
 
     public static final LocalDate VOTED_AT_DATE = LocalDate.of(2024, 3, 6);
 

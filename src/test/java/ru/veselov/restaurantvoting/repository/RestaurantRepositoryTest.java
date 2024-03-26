@@ -26,7 +26,7 @@ class RestaurantRepositoryTest {
 
         Assertions.assertThat(restaurants).hasSize(RestaurantTestData.DB_COUNT);
 
-        RestaurantTestData.RESTAURANT_MATCHER_NO_VOTES_NO_MENUS.assertMatch(restaurants,
+        RestaurantTestData.RESTAURANT_MATCHER.assertMatch(restaurants,
                 List.of(RestaurantTestData.burgerRestaurant, RestaurantTestData.pizzaRestaurant,
                         RestaurantTestData.sushiRestaurant));
     }
@@ -36,7 +36,7 @@ class RestaurantRepositoryTest {
         Optional<Restaurant> restaurantOptional = repository.findById(RestaurantTestData.SUSHI_ID);
 
         Assertions.assertThat(restaurantOptional).isPresent();
-        RestaurantTestData.RESTAURANT_MATCHER_NO_VOTES_NO_MENUS.assertMatch(restaurantOptional.get(),
+        RestaurantTestData.RESTAURANT_MATCHER.assertMatch(restaurantOptional.get(),
                 RestaurantTestData.sushiRestaurant);
     }
 
