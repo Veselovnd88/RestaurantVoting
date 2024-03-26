@@ -26,8 +26,4 @@ public class JacksonConfiguration {
         log.info("Configuring jackson mapper");
         return objectMapper;
     }
-
-    public static ObjectMapper getMapper() {
-        return new ObjectMapper();
-    }
 }

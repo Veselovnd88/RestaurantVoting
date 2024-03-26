@@ -13,7 +13,6 @@ import ru.veselov.restaurantvoting.model.Menu;
 import ru.veselov.restaurantvoting.model.Restaurant;
 import ru.veselov.restaurantvoting.repository.MenuRepository;
 import ru.veselov.restaurantvoting.repository.RestaurantRepository;
-import ru.veselov.restaurantvoting.repository.VoteRepository;
 
 import java.time.LocalDate;
 import java.util.Collections;
@@ -32,6 +31,12 @@ public class RestaurantServiceImpl implements RestaurantService {
     private final RestaurantMapper mapper;
     private final MenuRepository menuRepository;
 
+    /**
+     * Create restaurant
+     *
+     * @param restaurantDto dto with initial data about restaurant
+     * @return {@link RestaurantDto} dto with data about saved restaurant
+     */
     @Override
     @Transactional
     public RestaurantDto create(NewRestaurantDto restaurantDto) {
@@ -40,17 +45,36 @@ public class RestaurantServiceImpl implements RestaurantService {
         return mapper.entityToDtoWithMenus(savedRestaurant);
     }
 
+    /**
+     * Get all restaurants with names and ids
+     *
+     * @return {@link RestaurantDto} list of dtos
+     */
     public List<RestaurantDto> getAll() {
         log.debug("Retrieving restaurants with votes from repository");
         return mapper.entitiesToDto(repository.findAll(SORT_BY_NAME));
     }
 
+    /**
+     * Get restaurant by id
+     *
+     * @param id restaurant id
+     * @return {@link RestaurantDto} found restaurant
+     */
     public RestaurantDto findById(int id) {
         log.debug("Retrieving restaurant by id");
         return mapper.entityToDto(repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Restaurant with [id:%s] not found".formatted(id))));
     }
 
+    /**
+     * Find restaurant by and and bind menu with votes by date
+     *
+     * @param date preffered date to find menu and votes
+     * @param id   restaurant id
+     * @return {@link RestaurantDto} found restaurant
+     * @throws EntityNotFoundException if restaurant with such id not found
+     */
     public RestaurantDto findByIdWithMenuAndVotesForDate(int id, LocalDate date) {
         Restaurant restaurant = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Restaurant with [id:%s] not found".formatted(id)));
@@ -60,6 +84,14 @@ public class RestaurantServiceImpl implements RestaurantService {
         return mapper.entityToDtoWithMenus(restaurant);
     }
 
+    /**
+     * Update restaurant data
+     *
+     * @param id            restaurant id for update
+     * @param restaurantDto dto with data to update
+     * @return {@link RestaurantDto} updated restaurant
+     * @throws EntityNotFoundException if restaurant with such id not found
+     */
     @Override
     @Transactional
     public RestaurantDto update(int id, NewRestaurantDto restaurantDto) {
@@ -71,6 +103,11 @@ public class RestaurantServiceImpl implements RestaurantService {
         return mapper.entityToDto(updatedRestaurant);
     }
 
+    /**
+     * Delete restaurant
+     *
+     * @param id restaurant id
+     */
     @Override
     @Transactional
     public void delete(int id) {

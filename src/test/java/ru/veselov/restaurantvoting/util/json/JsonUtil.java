@@ -1,19 +1,23 @@
 package ru.veselov.restaurantvoting.util.json;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
-import ru.veselov.restaurantvoting.configuration.JacksonConfiguration;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import java.io.IOException;
 import java.util.List;
 
 public class JsonUtil {
 
-    public static ObjectMapper mapper = JacksonConfiguration.getMapper();
+    public static ObjectMapper mapper = createMapper();
 
     public static <T> List<T> readValues(String json, Class<T> clazz) {
-        ObjectReader reader =mapper.readerFor(clazz);
+        ObjectReader reader = mapper.readerFor(clazz);
         try {
             return reader.<T>readValues(json).readAll();
         } catch (IOException e) {
@@ -35,5 +39,16 @@ public class JsonUtil {
         } catch (JsonProcessingException e) {
             throw new IllegalStateException("Invalid write to JSON:\n'" + obj + "'", e);
         }
+    }
+
+    private static ObjectMapper createMapper() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+
+        objectMapper.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.NONE);
+        objectMapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
+        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        return objectMapper;
     }
 }

@@ -39,6 +39,7 @@ class RestaurantControllerTest extends AbstractRestControllerTest {
         mockMvc.perform(MockMvcUtils.getOneRestaurantWithMenuAndVotes(RestaurantTestData.SUSHI_ID).param("date", "2024-03-06"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andDo(MockMvcResultHandlers.print())
-                .andExpect(RestaurantTestData.RESTAURANT_DTO_MATCHER.contentJson(RestaurantTestData.sushiRestaurantDto));
+                .andExpect(RestaurantTestData.RESTAURANT_DTO_MATCHER
+                        .contentJson(RestaurantTestData.getSushiRestaurantDtoWithMenuByDate()));
     }
 }

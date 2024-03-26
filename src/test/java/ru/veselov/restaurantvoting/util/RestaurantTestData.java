@@ -32,8 +32,6 @@ public class RestaurantTestData {
 
     public static Restaurant burgerRestaurant = new Restaurant(BURGER_ID, "BurgerPizza");
 
-    public static Restaurant newRestaurant = new Restaurant(100022, "New tasty restaurant");
-
     public static NewRestaurantDto newRestaurantDto = new NewRestaurantDto("New tasty restaurant");
 
     public static NewRestaurantDto restaurantDtoToUpdate = new NewRestaurantDto("Updated tasty restaurant");
@@ -50,4 +48,9 @@ public class RestaurantTestData {
 
     public static List<RestaurantDto> restaurantDtos = List.of(burgerRestaurantDto, pizzaRestaurantDto, sushiRestaurantDto);
 
+    public static RestaurantDto getSushiRestaurantDtoWithMenuByDate() {
+        RestaurantDto restaurantDto = new RestaurantDto(100003, "SushiWok");
+        restaurantDto.setMenus(List.of(MenuTestData.sushiRestaurantMenuDto));
+        return restaurantDto;
+    }
 }

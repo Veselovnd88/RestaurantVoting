@@ -11,7 +11,6 @@ import ru.veselov.restaurantvoting.dto.RestaurantDto;
 import ru.veselov.restaurantvoting.repository.MenuRepository;
 import ru.veselov.restaurantvoting.repository.RestaurantRepository;
 import ru.veselov.restaurantvoting.repository.VoteRepository;
-import ru.veselov.restaurantvoting.util.MenuTestData;
 import ru.veselov.restaurantvoting.util.RestaurantTestData;
 import ru.veselov.restaurantvoting.util.VoteTestData;
 
@@ -57,12 +56,10 @@ class RestaurantServiceImplTest {
 
     @Test
     void findByIdWithMenuAndVotesForDate_AllOk_ReturnDtoWithMenuAndVotesForDate() {
-        RestaurantTestData.sushiRestaurantDto.setMenus(List.of(MenuTestData.sushiRestaurantMenuDto));
-
         RestaurantDto foundRestaurant = restaurantService
                 .findByIdWithMenuAndVotesForDate(RestaurantTestData.SUSHI_ID, VoteTestData.VOTED_AT_DATE);
 
-        Assertions.assertThat(foundRestaurant).isEqualTo(RestaurantTestData.sushiRestaurantDto);
+        Assertions.assertThat(foundRestaurant).isEqualTo(RestaurantTestData.getSushiRestaurantDtoWithMenuByDate());
     }
 
     @Test
