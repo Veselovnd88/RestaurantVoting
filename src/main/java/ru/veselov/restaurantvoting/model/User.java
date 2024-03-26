@@ -17,6 +17,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import org.springframework.util.CollectionUtils;
 
 import java.util.Collection;
@@ -29,6 +30,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Getter
 @Setter
+@ToString(callSuper = true)
 public class User extends AbstractNamedEntity {
 
     @Column(name = "email", nullable = false, unique = true)
@@ -40,6 +42,7 @@ public class User extends AbstractNamedEntity {
     @Column(name = "password", nullable = false)
     @NotBlank
     @Size(min = 5, max = 128)
+    @ToString.Exclude
     private String password;
 
     @Column(name = "enabled", nullable = false, columnDefinition = "bool default true")
@@ -53,7 +56,7 @@ public class User extends AbstractNamedEntity {
     @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"),
             uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "role"}, name = "uk_user_role")})
     @Column(name = "role")
-    @ElementCollection(fetch = FetchType.EAGER)
+    @ElementCollection(fetch = FetchType.LAZY)
     private Set<Role> roles;
 
     public User(Integer id, String name, String email, String password, boolean enabled, Date registered, Collection<Role> roles) {
@@ -62,6 +65,14 @@ public class User extends AbstractNamedEntity {
         this.password = password;
         this.enabled = enabled;
         this.registered = registered;
+        setRoles(roles);
+    }
+
+    public User(Integer id, String name, String email, String password, boolean enabled, Collection<Role> roles) {
+        super(id, name);
+        this.email = email;
+        this.password = password;
+        this.enabled = enabled;
         setRoles(roles);
     }
 

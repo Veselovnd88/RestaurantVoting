@@ -10,27 +10,40 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "vote")
 @NoArgsConstructor
 @Getter
 @Setter
+@ToString
 public class Vote extends AbstractBaseEntity {
 
     @Column(name = "voted_at")
     @NotNull
-    private LocalDateTime votedAt;
+    private LocalDate votedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     @NotNull
+    @ToString.Exclude
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "restaurant_id", nullable = false)
+    @JoinColumn(name = "menu_id", nullable = false)
     @NotNull
-    private Restaurant restaurant;
+    @ToString.Exclude
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private Menu menu;
+
+    public Vote(Integer id, LocalDate votedAt, User user) {
+        super(id);
+        this.votedAt = votedAt;
+        this.user = user;
+    }
 }

@@ -16,10 +16,10 @@ FROM restaurant;
 
 ALTER SEQUENCE global_seq RESTART WITH 100000;
 
-INSERT INTO users (name, email, password)
-VALUES ('User1', 'user@yandex.ru', 'password'),
-       ('Admin', 'admin@gmail.com', 'admin'),
-       ('User2', 'user2@gmail.com', 'another');
+INSERT INTO users (name, email, password, registered)
+VALUES ('User1', 'user@yandex.ru', 'password', '2024-03-06 00:00:01'),
+       ('Admin', 'admin@gmail.com', 'admin', '2024-03-06 00:00:01'),
+       ('User2', 'user2@gmail.com', 'another', '2024-03-06 00:00:01');
 
 INSERT INTO user_role (role, user_id)
 VALUES ('USER', 100000),
@@ -32,10 +32,10 @@ VALUES ('SushiWok'),  --3
        ('DoDoPizza'), --4
        ('BurgerPizza'); --5
 
-INSERT INTO menu(restaurant_id)
-VALUES (100003), --6
-       (100004), --7
-       (100005); --8
+INSERT INTO menu(restaurant_id, added_at)
+VALUES (100003, '2024-03-06'), --6
+       (100004, '2024-03-06'), --7
+       (100005, '2024-03-06'); --8
 
 INSERT INTO dish (name, price)
 VALUES ('Unagi', 40000),         --9
@@ -59,8 +59,8 @@ VALUES (100006, 100009),
        (100008, 100016),
        (100008, 100017);
 
-INSERT INTO vote (user_id, menu_id)
-VALUES (100000, 100006), --18
-       (100001, 100006), --19
-       (100002, 100006), --20
-       (100000, 100007) --21
+INSERT INTO vote (user_id, voted_at, menu_id)
+VALUES (100000, '2024-03-06', 100006), --18
+       (100001, '2024-03-06', 100006), --19
+       (100002, '2024-03-06', 100006), --20
+       (100000, '2024-03-06', 100007) --21
