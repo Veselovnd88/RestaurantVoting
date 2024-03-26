@@ -1,5 +1,6 @@
 package ru.veselov.restaurantvoting.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,6 +14,7 @@ public class RestaurantDto {
 
     private Integer id;
     private String name;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<MenuDto> menus;
 
     public RestaurantDto(Integer id, String name) {

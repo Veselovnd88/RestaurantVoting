@@ -10,6 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.veselov.restaurantvoting.dto.RestaurantDto;
 import ru.veselov.restaurantvoting.service.RestaurantService;
@@ -32,7 +33,7 @@ public class RestaurantController {
                     content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                             schema = @Schema(implementation = RestaurantDto.class))})})
     @GetMapping
-    public List<RestaurantDto> getAllRestaurants() {
+    public List<RestaurantDto> getAll() {
         return service.getAll();
     }
 
@@ -42,17 +43,18 @@ public class RestaurantController {
                     content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                             schema = @Schema(implementation = RestaurantDto.class))})})
     @GetMapping("/{id}")
-    public RestaurantDto getRestaurant(@PathVariable Integer id) {
+    public RestaurantDto getOne(@PathVariable int id) {
         return service.findById(id);
     }
 
     @Operation(summary = "Получить ресторан по id, с меню и голосами на дату")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Рестораны с id найден",
+            @ApiResponse(responseCode = "200", description = "Ресторан с id найден",
                     content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                             schema = @Schema(implementation = RestaurantDto.class))})})
-    @GetMapping("/{id}/with-menus")
-    public RestaurantDto getRestaurantWithMenuAndVotesByDate(@PathVariable Integer id) {
-        return service.findByIdWithMenuAndVotesForDate(id, LocalDate.now());
+    @GetMapping("/{id}/with-menu")
+    public RestaurantDto getWithMenuAndVotesByDate(@PathVariable int id,
+                                                   @RequestParam(value = "date", required = false) LocalDate date) {
+        return service.findByIdWithMenuAndVotesForDate(id, date == null ? LocalDate.now() : date);
     }
 }

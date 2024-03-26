@@ -2,26 +2,14 @@ package ru.veselov.restaurantvoting.web;
 
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.jdbc.Sql;
-import org.springframework.test.context.jdbc.SqlConfig;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import ru.veselov.restaurantvoting.util.MockMvcUtils;
 import ru.veselov.restaurantvoting.util.RestaurantTestData;
 
-@SpringBootTest
-@Sql(scripts = {"classpath:db/init.sql", "classpath:db/populateDbTest.sql"}, config = @SqlConfig(encoding = "UTF-8"))
-@WithMockUser(roles = "ADMIN")
-@AutoConfigureMockMvc
-class RestaurantAdminControllerTest {
-
-    @Autowired
-    private MockMvc mockMvc;
+@WithMockUser(value = "ADMIN")
+class RestaurantAdminControllerTest extends AbstractRestControllerTest {
 
     @Test
     @SneakyThrows
