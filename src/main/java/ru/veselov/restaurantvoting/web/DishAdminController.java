@@ -18,51 +18,48 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import ru.veselov.restaurantvoting.dto.NewRestaurantDto;
-import ru.veselov.restaurantvoting.dto.RestaurantDto;
-import ru.veselov.restaurantvoting.service.RestaurantService;
+import ru.veselov.restaurantvoting.dto.DishDto;
+import ru.veselov.restaurantvoting.service.DishService;
 
 import java.net.URI;
 
 @RestController
-@RequestMapping(value = RestaurantAdminController.REST_URL)
+@RequestMapping(value = DishAdminController.REST_URL)
 @RequiredArgsConstructor
-public class RestaurantAdminController {
+public class DishAdminController {
 
-    public static final String REST_URL = "/api/v1/admin/restaurants";
+    private final DishService service;
 
-    private final RestaurantService service;
+    public static final String REST_URL = "/api/v1/admin/dishes";
 
-    @Operation(summary = "Add restaurant")
+    @Operation(summary = "Add new dish")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Restaurant created",
+            @ApiResponse(responseCode = "201", description = "Dish created",
                     content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = RestaurantDto.class))})})
+                            schema = @Schema(implementation = DishDto.class))})})
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<RestaurantDto> create(@RequestBody NewRestaurantDto restaurantDto) {
-        RestaurantDto created = service.create(restaurantDto);
+    public ResponseEntity<DishDto> create(@RequestBody DishDto dishDto) {
+        DishDto created = service.save(dishDto);
         URI uriOfResource = ServletUriComponentsBuilder.fromCurrentContextPath()
-                .path(RestaurantController.REST_URL + "/{id}")
-                .buildAndExpand(created.getId()).toUri();
+                .path(DishController.REST_URL + "/{id}")
+                .buildAndExpand(created.id()).toUri();
         return ResponseEntity.created(uriOfResource).body(created);
     }
 
-    @Operation(summary = "Обновить данные ресторана")
+    @Operation(summary = "Update dish")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Обновлено",
+            @ApiResponse(responseCode = "200", description = "Dish updated",
                     content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = RestaurantDto.class))})
-    })
+                            schema = @Schema(implementation = DishDto.class))})})
     @PutMapping("/{id}")
-    public RestaurantDto update(@PathVariable int id, @RequestBody NewRestaurantDto restaurantDto) {
-        return service.update(id, restaurantDto);
+    public DishDto update(@PathVariable int id, @RequestBody DishDto dishDto) {
+        return service.update(id, dishDto);
     }
 
-    @Operation(summary = "Удалить ресторан")
+    @Operation(summary = "Delete dish")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "Ресторан удален")
-    })
+            @ApiResponse(responseCode = "204", description = "Dish delete")})
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable int id) {

@@ -6,7 +6,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.veselov.restaurantvoting.dto.DishDto;
-import ru.veselov.restaurantvoting.dto.NewDishDto;
 import ru.veselov.restaurantvoting.mapper.DishMapper;
 import ru.veselov.restaurantvoting.model.Dish;
 import ru.veselov.restaurantvoting.repository.DishRepository;
@@ -31,7 +30,7 @@ public class DishServiceImpl implements DishService {
      */
     @Override
     @Transactional
-    public DishDto save(NewDishDto dishDto) {
+    public DishDto save(DishDto dishDto) {
         Dish savedDish = repository.save(mapper.toEntity(dishDto));
         log.info("New dish saved with id: {}", savedDish.getId());
         return mapper.toDto(savedDish);
@@ -46,11 +45,11 @@ public class DishServiceImpl implements DishService {
      */
     @Override
     @Transactional
-    public DishDto update(int id, NewDishDto dishDto) {
+    public DishDto update(int id, DishDto dishDto) {
         Dish foundDish = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_MSG.formatted(id)));
-        foundDish.setName(dishDto.getName());
-        foundDish.setPrice(dishDto.getPrice());
+        foundDish.setName(dishDto.name());
+        foundDish.setPrice(dishDto.price());
         Dish updatedDish = repository.save(foundDish);
         log.info("Dish with id: {}} successfully updated", id);
         return mapper.toDto(updatedDish);

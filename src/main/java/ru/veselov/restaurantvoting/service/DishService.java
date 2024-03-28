@@ -1,15 +1,14 @@
 package ru.veselov.restaurantvoting.service;
 
 import ru.veselov.restaurantvoting.dto.DishDto;
-import ru.veselov.restaurantvoting.dto.NewDishDto;
 
 import java.util.List;
 
 public interface DishService {
 
-    DishDto save(NewDishDto dishDto);
+    DishDto save(DishDto dishDto);
 
-    DishDto update(int id, NewDishDto dishDto);
+    DishDto update(int id, DishDto dishDto);
 
     void delete(int id);
 
