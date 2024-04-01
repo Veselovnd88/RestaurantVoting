@@ -11,6 +11,8 @@ public class DishTestData {
 
     public static MatcherFactory.Matcher<Dish> DISH_MATCHER = MatcherFactory.usingIgnoringFieldsComparator(Dish.class, "menus");
 
+    public static MatcherFactory.Matcher<DishDto> DISH_DTO_MATCHER = MatcherFactory.usingIgnoringFieldsComparator(DishDto.class);
+
     public static Dish unagi = new Dish(100009, "Unagi", 40000);
 
     public static Dish philadelphia = new Dish(100010, "Philadelphia", 30000);
@@ -38,4 +40,8 @@ public class DishTestData {
     public static DishDto unagiDto = new DishDto(100009, "Unagi", 40000);
 
     public static List<DishDto> sushiDishesDtos = List.of(philadelphiaDto, tastyRollDto, unagiDto);
+
+    public static DishDto newTastyDish = new DishDto(null, "veryTasty", 10000);
+
+    public static DishDto savedNewTastyDish = new DishDto(100022, "veryTasty", 10000);
 }
