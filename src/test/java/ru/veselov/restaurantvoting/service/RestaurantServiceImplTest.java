@@ -15,7 +15,6 @@ import ru.veselov.restaurantvoting.util.RestaurantTestData;
 import ru.veselov.restaurantvoting.util.VoteTestData;
 
 import java.time.LocalDate;
-import java.util.Collections;
 import java.util.List;
 
 
@@ -64,12 +63,10 @@ class RestaurantServiceImplTest {
 
     @Test
     void findByIdWithMenuAndVotesForDate_NoMenuForThisDate_ReturnDtoEmptyMenuList() {
-        RestaurantTestData.sushiRestaurantDto.setMenus(Collections.emptyList());
-
         RestaurantDto foundRestaurant = restaurantService
                 .findByIdWithMenuAndVotesForDate(RestaurantTestData.SUSHI_ID, LocalDate.of(2020, 3, 3));
 
-        Assertions.assertThat(foundRestaurant).isEqualTo(RestaurantTestData.sushiRestaurantDto);
+        Assertions.assertThat(foundRestaurant).isEqualTo(RestaurantTestData.sushiRestaurantDtoWithEmptyMenus);
     }
 
     @Test

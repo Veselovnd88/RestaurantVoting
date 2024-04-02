@@ -5,6 +5,7 @@ import ru.veselov.restaurantvoting.dto.NewRestaurantDto;
 import ru.veselov.restaurantvoting.dto.RestaurantDto;
 import ru.veselov.restaurantvoting.model.Restaurant;
 
+import java.util.Collections;
 import java.util.List;
 
 @UtilityClass
@@ -39,6 +40,8 @@ public class RestaurantTestData {
     public static RestaurantDto savedRestaurantDto = new RestaurantDto(100022, "New tasty restaurant");
 
     public static RestaurantDto sushiRestaurantDto = new RestaurantDto(100003, "SushiWok");
+
+    public static RestaurantDto sushiRestaurantDtoWithEmptyMenus = new RestaurantDto(100003, "SushiWok", Collections.emptyList());
 
     public static RestaurantDto pizzaRestaurantDto = new RestaurantDto(100004, "DoDoPizza");
 
