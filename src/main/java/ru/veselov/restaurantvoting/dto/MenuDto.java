@@ -1,22 +1,16 @@
 package ru.veselov.restaurantvoting.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
 import java.time.LocalDate;
 import java.util.List;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-public class MenuDto {
 
-    private Integer id;
+public record MenuDto(
 
-    private LocalDate addedAt;
+        Integer id,
 
-    private List<DishDto> dishes;
+        LocalDate addedAt,
 
-    private List<VoteDto> votes;
+        List<DishDto> dishes,
+
+        List<VoteDto> votes) {
 }
