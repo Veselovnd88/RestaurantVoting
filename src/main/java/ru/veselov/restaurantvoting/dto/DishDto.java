@@ -1,17 +1,35 @@
 package ru.veselov.restaurantvoting.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+import org.hibernate.validator.constraints.Range;
+import org.springframework.lang.Nullable;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-public class DishDto {
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
+public record DishDto(
 
-    private Integer id;
+        @Schema(description = "Dish id", defaultValue = "1000000")
+        @Nullable
+        Integer id,
 
-    private String name;
+        @Schema(description = "Dish name", defaultValue = "salmon sushi")
+        @NotBlank
+        @Size(min = 2, max = 255)
+        String name,
 
-    private Integer price;
+        @Schema(description = "Dish price", defaultValue = "100000")
+        @Range(min = 100, max = 100000)
+        int price) {
+
+    @JsonCreator //constructor need int for Jackson mapping
+    public DishDto(@JsonProperty("id") Integer id, @JsonProperty("name") String name,
+                   @JsonProperty("price") int price) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
+    }
 }
