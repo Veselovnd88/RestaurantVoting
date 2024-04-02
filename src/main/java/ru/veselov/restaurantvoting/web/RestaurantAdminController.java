@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -27,6 +28,7 @@ import java.net.URI;
 @RestController
 @RequestMapping(value = RestaurantAdminController.REST_URL)
 @RequiredArgsConstructor
+@Tag(name = "Restaurant management", description = "Manage restaurants for admin")
 public class RestaurantAdminController {
 
     public static final String REST_URL = "/api/v1/admin/restaurants";

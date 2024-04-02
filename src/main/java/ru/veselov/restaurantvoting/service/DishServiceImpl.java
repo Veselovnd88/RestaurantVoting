@@ -3,6 +3,7 @@ package ru.veselov.restaurantvoting.service;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.veselov.restaurantvoting.dto.DishDto;
@@ -19,6 +20,8 @@ import java.util.List;
 public class DishServiceImpl implements DishService {
 
     public static final String NOT_FOUND_MSG = "Dish with id: %s not found";
+
+    private static final Sort SORT_BY_NAME = Sort.by(Sort.Direction.ASC, "name");
     private final DishRepository repository;
     private final DishMapper mapper;
 
@@ -89,6 +92,17 @@ public class DishServiceImpl implements DishService {
     @Override
     public List<DishDto> findAll() {
         log.debug("Retrieving all dishes from db");
-        return mapper.toDtos(repository.findAll());
+        return mapper.toDtos(repository.findAll(SORT_BY_NAME));
+    }
+
+    /**
+     * Get all by restaurant id
+     *
+     * @param id of restaurant
+     * @return {@link DishDto} list of dish dtos
+     */
+    @Override
+    public List<DishDto> findAllByRestaurantId(int id) {
+        return mapper.toDtos(repository.findAllByRestaurantId(id, SORT_BY_NAME));
     }
 }

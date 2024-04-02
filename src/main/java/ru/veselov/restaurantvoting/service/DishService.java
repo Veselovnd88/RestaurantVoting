@@ -15,4 +15,6 @@ public interface DishService {
     DishDto findOne(int id);
 
     List<DishDto> findAll();
+
+    List<DishDto> findAllByRestaurantId(int id);
 }
