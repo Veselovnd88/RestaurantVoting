@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.veselov.restaurantvoting.dto.MenuDto;
 import ru.veselov.restaurantvoting.dto.NewMenuDto;
-import ru.veselov.restaurantvoting.mapper.DishMapper;
 import ru.veselov.restaurantvoting.mapper.MenuMapper;
 import ru.veselov.restaurantvoting.model.Menu;
 import ru.veselov.restaurantvoting.model.Restaurant;
@@ -16,7 +15,6 @@ import ru.veselov.restaurantvoting.repository.MenuRepository;
 import ru.veselov.restaurantvoting.repository.RestaurantRepository;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -29,7 +27,6 @@ public class MenuServiceImpl implements MenuService {
     private final MenuRepository repository;
     private final RestaurantRepository restaurantRepository;
     private final MenuMapper mapper;
-    private final DishMapper dishMapper;
 
     /**
      * Create new menu for restaurant for date
@@ -55,7 +52,7 @@ public class MenuServiceImpl implements MenuService {
     @Transactional
     public void updateMenu(int id, NewMenuDto menuDto) {
         Menu menu = getById(id);
-        menu.setDishes(menuDto.dishes().stream().map(dishMapper::toEntity).collect(Collectors.toSet()));
+        mapper.toEntityUpdate(menu, menuDto);
         repository.save(menu);
         log.info("Menu id: {} updated", id);
     }
