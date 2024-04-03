@@ -7,9 +7,9 @@ import java.util.List;
 
 public interface MenuService {
 
-    void add(int restaurantId, NewMenuDto newMenuDto);
+    void create(int restaurantId, NewMenuDto newMenuDto);
 
-    void updateMenu(int id, NewMenuDto menuDto);
+    void update(int id, NewMenuDto menuDto);
 
     MenuDto getMenuById(int id);
 

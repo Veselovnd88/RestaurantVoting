@@ -33,7 +33,7 @@ public class MenuServiceImpl implements MenuService {
      */
     @Override
     @Transactional
-    public void add(int restaurantId, NewMenuDto menuDto) {
+    public void create(int restaurantId, NewMenuDto menuDto) {
         Restaurant restaurant = restaurantRepository.findById(restaurantId)
                 .orElseThrow(() -> new EntityNotFoundException("Restaurant not found"));
         Menu menu = mapper.toEntity(menuDto);
@@ -50,7 +50,7 @@ public class MenuServiceImpl implements MenuService {
      */
     @Override
     @Transactional
-    public void updateMenu(int id, NewMenuDto menuDto) {
+    public void update(int id, NewMenuDto menuDto) {
         Menu menu = getById(id);
         mapper.toEntityUpdate(menu, menuDto);
         repository.save(menu);

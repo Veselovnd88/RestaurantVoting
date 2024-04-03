@@ -27,12 +27,12 @@ public class MenuAdminController {
 
     @PostMapping("/restaurants/{restaurantId}")
     public void add(@PathVariable int restaurantId, @Valid NewMenuDto menuDto) {
-        service.add(restaurantId, menuDto);
+        service.create(restaurantId, menuDto);
     }
 
     @PutMapping("/{id}")
     void update(@PathVariable int id, NewMenuDto menuDto) {
-        service.updateMenu(id, menuDto);
+        service.update(id, menuDto);
     }
 
     @DeleteMapping("/{id}")
