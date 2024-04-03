@@ -13,7 +13,9 @@ public class MenuTestData {
     public static final MatcherFactory.Matcher<Menu> MENU_MATCHER = MatcherFactory.usingIgnoringFieldsComparator(
             Menu.class, "restaurant", "votes", "dishes");
 
-    public final LocalDate ADDED_DATE = LocalDate.of(2024, 3, 6);
+    public static final LocalDate ADDED_DATE = LocalDate.of(2024, 3, 6);
+
+    public static final int SUSHI_MENU_ID = 100006;
 
     public static Menu sushiRestaurantMenu = new Menu(100006, ADDED_DATE, RestaurantTestData.sushiRestaurant,
             new LinkedHashSet<>(DishTestData.sushiDishes));

@@ -10,6 +10,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import ru.veselov.restaurantvoting.service.DishService;
 import ru.veselov.restaurantvoting.util.DishTestData;
+import ru.veselov.restaurantvoting.util.MenuTestData;
 import ru.veselov.restaurantvoting.util.MockMvcUtils;
 
 @WithMockUser(value = "ADMIN")
@@ -21,7 +22,7 @@ class DishAdminControllerTest extends AbstractRestControllerTest {
     @Test
     @SneakyThrows
     void create_AllOk_ReturnCreateDtoAndLocation() {
-        mockMvc.perform(MockMvcUtils.createDish(DishTestData.newTastyDish))
+        mockMvc.perform(MockMvcUtils.createDish(MenuTestData.SUSHI_MENU_ID, DishTestData.newTastyDish))
                 .andExpect(MockMvcResultMatchers.status().isCreated())
                 .andExpect(MockMvcResultMatchers.header().exists("Location"))
                 .andDo(MockMvcResultHandlers.print())

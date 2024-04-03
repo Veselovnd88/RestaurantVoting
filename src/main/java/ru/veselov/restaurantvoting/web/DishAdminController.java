@@ -34,15 +34,15 @@ public class DishAdminController {
 
     private final DishService service;
 
-    @Operation(summary = "Add new dish")
+    @Operation(summary = "Add new dish to menu")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Dish created",
                     content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                             schema = @Schema(implementation = DishDto.class))})})
-    @PostMapping
+    @PostMapping("/menus/{menuId}")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<DishDto> create(@RequestBody DishDto dishDto) {
-        DishDto created = service.save(dishDto);
+    public ResponseEntity<DishDto> create(@PathVariable int menuId, @RequestBody DishDto dishDto) {
+        DishDto created = service.save(menuId,dishDto);
         URI uriOfResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(DishController.REST_URL + "/{id}")
                 .buildAndExpand(created.id()).toUri();

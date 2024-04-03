@@ -43,8 +43,8 @@ public class MockMvcUtils {
         return MockMvcRequestBuilders.get(RestaurantController.REST_URL + "/" + id + "/with-menu");
     }
 
-    public static MockHttpServletRequestBuilder createDish(DishDto dishDto) {
-        return MockMvcRequestBuilders.post(DishAdminController.REST_URL)
+    public static MockHttpServletRequestBuilder createDish(int menuId, DishDto dishDto) {
+        return MockMvcRequestBuilders.post(DishAdminController.REST_URL + "/menus/" + menuId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(dishDto));
     }

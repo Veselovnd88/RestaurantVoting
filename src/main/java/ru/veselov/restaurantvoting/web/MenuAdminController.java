@@ -2,7 +2,9 @@ package ru.veselov.restaurantvoting.web;
 
 
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,6 +19,7 @@ import java.time.LocalDate;
 @RestController
 @RequestMapping(value = MenuAdminController.REST_URL)
 @RequiredArgsConstructor
+@Validated
 @Tag(name = "Menu management", description = "Manage menus for admin")
 public class MenuAdminController {
 
@@ -24,9 +27,9 @@ public class MenuAdminController {
 
     private final MenuService service;
 
-    @PostMapping("/restaurants/{id}")
-    public void add(@PathVariable int id, LocalDate localDate, NewMenuDto menuDto) {
-        service.addMenu(id,localDate, menuDto);
+    @PostMapping("/restaurants/{restaurantId}")
+    public void add(@PathVariable int restaurantId, LocalDate localDate, @Valid NewMenuDto menuDto) {
+        service.add(restaurantId, localDate, menuDto);
     }
 
     @PutMapping("/{id}")

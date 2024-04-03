@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface MenuService {
 
-    void addMenu(int restaurantId, LocalDate localDate, NewMenuDto menuDto);
+    void add(int restaurantId, LocalDate localDate, NewMenuDto newMenuDto);
 
     void updateMenu(int id, NewMenuDto menuDto);
 

@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface DishService {
 
-    DishDto save(DishDto dishDto);
+    DishDto save(int menuId, DishDto dishDto);
 
     DishDto update(int id, DishDto dishDto);
 

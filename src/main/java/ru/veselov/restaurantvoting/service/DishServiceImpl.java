@@ -9,7 +9,9 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.veselov.restaurantvoting.dto.DishDto;
 import ru.veselov.restaurantvoting.mapper.DishMapper;
 import ru.veselov.restaurantvoting.model.Dish;
+import ru.veselov.restaurantvoting.model.Menu;
 import ru.veselov.restaurantvoting.repository.DishRepository;
+import ru.veselov.restaurantvoting.repository.MenuRepository;
 
 import java.util.List;
 
@@ -23,18 +25,22 @@ public class DishServiceImpl implements DishService {
 
     private static final Sort SORT_BY_NAME = Sort.by(Sort.Direction.ASC, "name");
     private final DishRepository repository;
+    private final MenuRepository menuRepository;
     private final DishMapper mapper;
 
     /**
      * Save new dish
-     *
+     * @param menuId id of chosen menu
      * @param dishDto dto for creating new Dish
      * @return {@link DishDto} saved dish
      */
     @Override
     @Transactional
-    public DishDto save(DishDto dishDto) {
-        Dish savedDish = repository.save(mapper.toEntity(dishDto));
+    public DishDto save(int menuId, DishDto dishDto) {
+        Menu menu = menuRepository.findById(menuId).orElseThrow(() -> new EntityNotFoundException("Menu with id not found"));
+        Dish dish = mapper.toEntity(dishDto);
+        dish.setMenu(menu);
+        Dish savedDish = repository.save(dish);
         log.info("New dish saved with id: {}", savedDish.getId());
         return mapper.toDto(savedDish);
     }
