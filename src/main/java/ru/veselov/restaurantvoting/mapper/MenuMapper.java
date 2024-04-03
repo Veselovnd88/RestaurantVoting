@@ -5,6 +5,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
 import ru.veselov.restaurantvoting.dto.MenuDto;
+import ru.veselov.restaurantvoting.dto.NewMenuDto;
 import ru.veselov.restaurantvoting.mapper.annotation.WithoutVotes;
 import ru.veselov.restaurantvoting.model.Menu;
 
@@ -30,4 +31,8 @@ public interface MenuMapper {
 
     @IterableMapping(qualifiedBy = WithoutVotes.class)
     List<MenuDto> toDtos(List<Menu> menus);
+
+    @Mapping(target = "addedAt", source = "addedAt")
+    @Mapping(target = "dishes", source = "dishes")
+    Menu toEntity(NewMenuDto menuDto);
 }

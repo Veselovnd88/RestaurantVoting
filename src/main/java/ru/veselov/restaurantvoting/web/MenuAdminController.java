@@ -14,8 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.veselov.restaurantvoting.dto.NewMenuDto;
 import ru.veselov.restaurantvoting.service.MenuService;
 
-import java.time.LocalDate;
-
 @RestController
 @RequestMapping(value = MenuAdminController.REST_URL)
 @RequiredArgsConstructor
@@ -28,8 +26,8 @@ public class MenuAdminController {
     private final MenuService service;
 
     @PostMapping("/restaurants/{restaurantId}")
-    public void add(@PathVariable int restaurantId, LocalDate localDate, @Valid NewMenuDto menuDto) {
-        service.add(restaurantId, localDate, menuDto);
+    public void add(@PathVariable int restaurantId, @Valid NewMenuDto menuDto) {
+        service.add(restaurantId, menuDto);
     }
 
     @PutMapping("/{id}")

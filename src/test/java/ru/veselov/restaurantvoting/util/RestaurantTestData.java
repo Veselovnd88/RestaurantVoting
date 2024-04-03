@@ -53,7 +53,7 @@ public class RestaurantTestData {
 
     public static RestaurantDto getSushiRestaurantDtoWithMenuByDate() {
         RestaurantDto restaurantDto = new RestaurantDto(100003, "SushiWok");
-        restaurantDto.setMenus(List.of(MenuTestData.sushiRestaurantMenuDto));
+        restaurantDto.setMenus(List.of(MenuTestData.sushiRestaurantMenuDtoWithVotes));
         return restaurantDto;
     }
 }

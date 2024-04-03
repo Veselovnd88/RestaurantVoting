@@ -15,7 +15,6 @@ import ru.veselov.restaurantvoting.model.Restaurant;
 import ru.veselov.restaurantvoting.repository.MenuRepository;
 import ru.veselov.restaurantvoting.repository.RestaurantRepository;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -37,15 +36,21 @@ public class MenuServiceImpl implements MenuService {
      */
     @Override
     @Transactional
-    public void add(int restaurantId, LocalDate localDate, NewMenuDto menuDto) {
+    public void add(int restaurantId, NewMenuDto menuDto) {
         Restaurant restaurant = restaurantRepository.findById(restaurantId)
                 .orElseThrow(() -> new EntityNotFoundException("Restaurant not found"));
-        Menu menu = new Menu(null, localDate, restaurant,
-                menuDto.dishes().stream().map(dishMapper::toEntity).collect(Collectors.toSet()));
+        Menu menu = mapper.toEntity(menuDto);
+        menu.setRestaurant(restaurant);
         repository.save(menu);
-        log.info("New menu for restaurant {} for date {} saved", restaurantId, localDate);
+        log.info("New menu for restaurant {} for date {} saved", restaurantId, menuDto.addedAt());
     }
 
+    /**
+     * Update menu
+     *
+     * @param id      menu id
+     * @param menuDto menu data to update
+     */
     @Override
     @Transactional
     public void updateMenu(int id, NewMenuDto menuDto) {
@@ -55,12 +60,24 @@ public class MenuServiceImpl implements MenuService {
         log.info("Menu id: {} updated", id);
     }
 
+    /**
+     * Get menu by id
+     *
+     * @param id menu id
+     * @return menu Dto with dishes but without votes
+     */
     @Override
     public MenuDto getMenuById(int id) {
         log.info("Retrieving menu by id: {}", id);
         return mapper.toDto(getById(id));
     }
 
+    /**
+     * Get all menus of restaurant
+     *
+     * @param restaurantId restaurant id
+     * @return list of menu dtos (with dishes, without votes)
+     */
     @Override
     public List<MenuDto> getMenusByRestaurant(int restaurantId) {
         log.info("Retrieving all menus for restaurant id: {}", restaurantId);
