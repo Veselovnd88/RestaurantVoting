@@ -33,13 +33,15 @@ public class MenuServiceImpl implements MenuService {
      */
     @Override
     @Transactional
-    public void create(int restaurantId, NewMenuDto menuDto) {
+    public MenuDto create(int restaurantId, NewMenuDto menuDto) {
         Restaurant restaurant = restaurantRepository.findById(restaurantId)
                 .orElseThrow(() -> new EntityNotFoundException("Restaurant not found"));
         Menu menu = mapper.toEntity(menuDto);
         menu.setRestaurant(restaurant);
-        repository.save(menu);
+
+        Menu saved = repository.save(menu);
         log.info("New menu for restaurant {} for date {} saved", restaurantId, menuDto.addedAt());
+        return mapper.toDto(saved);
     }
 
     /**
@@ -81,6 +83,11 @@ public class MenuServiceImpl implements MenuService {
         return mapper.toDtos(repository.findByRestaurantId(restaurantId, SORT_BY_DATE));
     }
 
+    /**
+     * Delete menu
+     *
+     * @param id menu id
+     */
     @Override
     @Transactional
     public void deleteMenu(int id) {
@@ -88,6 +95,11 @@ public class MenuServiceImpl implements MenuService {
         log.info("Menu with id: {} deleted", id);
     }
 
+    /**
+     * Get menu by id or throw exception
+     *
+     * @param id menu id
+     */
     private Menu getById(int id) {
         return repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("No menu found with id"));

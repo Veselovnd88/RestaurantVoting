@@ -5,10 +5,12 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import ru.veselov.restaurantvoting.dto.DishDto;
+import ru.veselov.restaurantvoting.dto.NewMenuDto;
 import ru.veselov.restaurantvoting.dto.NewRestaurantDto;
 import ru.veselov.restaurantvoting.util.json.JsonUtil;
 import ru.veselov.restaurantvoting.web.DishAdminController;
 import ru.veselov.restaurantvoting.web.DishController;
+import ru.veselov.restaurantvoting.web.MenuAdminController;
 import ru.veselov.restaurantvoting.web.RestaurantAdminController;
 import ru.veselov.restaurantvoting.web.RestaurantController;
 
@@ -69,5 +71,11 @@ public class MockMvcUtils {
 
     public static MockHttpServletRequestBuilder getAllDishesByRestaurantId(int id) {
         return MockMvcRequestBuilders.get(DishController.REST_URL + "/restaurants/" + id);
+    }
+
+    public static MockHttpServletRequestBuilder createMenu(int restaurantId, NewMenuDto menuDto) {
+        return MockMvcRequestBuilders.post(MenuAdminController.REST_URL + "/restaurants/" + restaurantId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(menuDto));
     }
 }

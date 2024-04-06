@@ -15,6 +15,9 @@ public class MenuTestData {
     public static final MatcherFactory.Matcher<Menu> MENU_MATCHER = MatcherFactory.usingIgnoringFieldsComparator(
             Menu.class, "restaurant", "votes", "dishes");
 
+    public static final MatcherFactory.Matcher<MenuDto> MENU_DTO_MATCHER = MatcherFactory
+            .usingIgnoringFieldsComparator(MenuDto.class);
+
     public static final LocalDate ADDED_DATE = LocalDate.of(2024, 3, 6);
 
     public static final int SUSHI_MENU_ID = 100006;
@@ -35,7 +38,10 @@ public class MenuTestData {
     public static Menu burgerRestaurantMenu = new Menu(100008, ADDED_DATE, RestaurantTestData.burgerRestaurant,
             DishTestData.doubleBurger, DishTestData.friesPotato, DishTestData.tripleBurger);
 
-    public static Menu menuToCreateWithoutId = new Menu(null, ADDED_DATE, null, null, null);
-    public static NewMenuDto menuDtoToCreate = new NewMenuDto(null, ADDED_DATE,
+    public static Menu menuToCreateWithoutId = new Menu(null, ADDED_DATE.plusDays(1), null, null, null);
+
+    public static MenuDto createdMenuDto = new MenuDto(100022, ADDED_DATE.plusDays(1), List.of(DishTestData.savedNewTastyDish), null);
+
+    public static NewMenuDto menuDtoToCreate = new NewMenuDto(null, ADDED_DATE.plusDays(1),
             List.of(DishTestData.newTastyDish));
 }
