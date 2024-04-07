@@ -67,7 +67,7 @@ public class MenuAdminController {
 
     @Operation(summary = "Delete menu and it's dishes")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "24", description = "Menu deleted")})
+            @ApiResponse(responseCode = "204", description = "Menu deleted")})
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     void delete(@PathVariable int id) {
