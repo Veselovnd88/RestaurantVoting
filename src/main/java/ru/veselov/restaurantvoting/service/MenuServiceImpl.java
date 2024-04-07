@@ -22,6 +22,7 @@ import java.util.List;
 @Slf4j
 public class MenuServiceImpl implements MenuService {
 
+    public static final String MENU_NOT_FOUND = "Menu with id: %s not found";
     private static final Sort SORT_BY_DATE = Sort.by(Sort.Direction.DESC, "addedAt");
 
     private final MenuRepository repository;
@@ -54,7 +55,7 @@ public class MenuServiceImpl implements MenuService {
     @Transactional
     public MenuDto update(int id, NewMenuDto menuDto) {
         Menu menu = repository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("No menu found with id: %s".formatted(id)));
+                .orElseThrow(() -> new EntityNotFoundException(MENU_NOT_FOUND.formatted(id)));
         mapper.toEntityUpdate(menu, menuDto);
         Menu updated = repository.save(menu);
         log.info("Menu id: {} updated", id);
@@ -68,10 +69,10 @@ public class MenuServiceImpl implements MenuService {
      * @return menu Dto with dishes but without votes
      */
     @Override
-    public MenuDto getMenuById(int id) {
+    public MenuDto getMenuByIdWithDishesAndVotes(int id) {
         log.info("Retrieving menu by id: {}", id);
         Menu menu = repository.findByIdWithDishesAndVotes(id)
-                .orElseThrow(() -> new EntityNotFoundException("No menu found with id"));
+                .orElseThrow(() -> new EntityNotFoundException(MENU_NOT_FOUND.formatted(id)));
         return mapper.toDto(menu);
     }
 
@@ -97,5 +98,11 @@ public class MenuServiceImpl implements MenuService {
     public void deleteMenu(int id) {
         repository.deleteById(id);
         log.info("Menu with id: {} deleted", id);
+    }
+
+    @Override
+    public Menu findMenuById(int id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(MENU_NOT_FOUND.formatted(id)));
     }
 }

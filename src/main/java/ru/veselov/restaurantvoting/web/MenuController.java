@@ -46,6 +46,6 @@ public class MenuController {
                             schema = @Schema(implementation = MenuDto.class))})})
     @GetMapping("/{id}")
     public MenuDto getMenu(@PathVariable int id) {
-        return service.getMenuById(id);
+        return service.getMenuByIdWithDishesAndVotes(id);
     }
 }

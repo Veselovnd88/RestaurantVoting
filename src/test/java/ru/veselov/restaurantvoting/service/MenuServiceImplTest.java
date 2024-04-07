@@ -96,19 +96,19 @@ class MenuServiceImplTest {
     }
 
     @Test
-    void getMenuById_AllOk_ReturnMenuDto() {
+    void getMenuById_AllOk_ReturnMenuDtoWithDishesAndVotes() {
         Mockito.when(menuRepository.findByIdWithDishesAndVotes(Mockito.anyInt())).thenReturn(Optional.of(MenuTestData.sushiRestaurantMenu));
 
-        MenuDto menuById = menuService.getMenuById(MenuTestData.SUSHI_MENU_ID);
+        MenuDto menuById = menuService.getMenuByIdWithDishesAndVotes(MenuTestData.SUSHI_MENU_ID);
 
         Assertions.assertThat(menuById).isEqualTo(MenuTestData.sushiRestaurantMenuDto);
     }
 
     @Test
-    void getMenuById_MenuNotFound_ThrowException() {
+    void getMenuById_MenuNotFound_ThrowExceptionWithDishesAndVotes() {
         Mockito.when(menuRepository.findByIdWithDishesAndVotes(Mockito.anyInt())).thenReturn(Optional.empty());
 
-        Assertions.assertThatThrownBy(() -> menuService.getMenuById(MenuTestData.SUSHI_MENU_ID))
+        Assertions.assertThatThrownBy(() -> menuService.getMenuByIdWithDishesAndVotes(MenuTestData.SUSHI_MENU_ID))
                 .isInstanceOf(EntityNotFoundException.class);
     }
 

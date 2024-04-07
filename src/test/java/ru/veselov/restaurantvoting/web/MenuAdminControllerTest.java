@@ -43,7 +43,7 @@ class MenuAdminControllerTest extends AbstractRestControllerTest {
     void update_AllOk_UpdateMenuWithNewDish() {
         mockMvc.perform(MockMvcUtils.updateMenu(MenuTestData.SUSHI_MENU_ID, MenuTestData.menuDtoToUpdate))
                 .andExpect(MockMvcResultMatchers.status().isOk());
-        MenuDto foundMenu = menuService.getMenuById(MenuTestData.SUSHI_MENU_ID);
+        MenuDto foundMenu = menuService.getMenuByIdWithDishesAndVotes(MenuTestData.SUSHI_MENU_ID);
         Assertions.assertThat(foundMenu.dishes()).hasSize(1).flatExtracting(DishDto::id, DishDto::name, DishDto::price)
                 .contains(100022, "veryTasty", 10000);
     }
@@ -57,7 +57,7 @@ class MenuAdminControllerTest extends AbstractRestControllerTest {
                 .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(MenuTestData.MENU_DTO_MATCHER.contentJson(MenuTestData.menuDtoToUpdateWithChangedDishAfterUpdate));
 
-        MenuDto foundMenu = menuService.getMenuById(MenuTestData.SUSHI_MENU_ID);
+        MenuDto foundMenu = menuService.getMenuByIdWithDishesAndVotes(MenuTestData.SUSHI_MENU_ID);
         Assertions.assertThat(foundMenu.dishes()).hasSize(3).contains(DishTestData.philadelphiaDto, DishTestData.tastyRollDto,
                 DishTestData.changedUnagiDto);
     }
@@ -68,7 +68,7 @@ class MenuAdminControllerTest extends AbstractRestControllerTest {
         mockMvc.perform(MockMvcUtils.deleteMenu(MenuTestData.SUSHI_MENU_ID))
                 .andExpect(MockMvcResultMatchers.status().isNoContent());
 
-        Assertions.assertThatThrownBy(() -> menuService.getMenuById(MenuTestData.SUSHI_MENU_ID))
+        Assertions.assertThatThrownBy(() -> menuService.getMenuByIdWithDishesAndVotes(MenuTestData.SUSHI_MENU_ID))
                 .isInstanceOf(EntityNotFoundException.class);
         Assertions.assertThatThrownBy(() -> dishService.findOne(DishTestData.TASTY_ROLL_ID))
                 .isInstanceOf(EntityNotFoundException.class);
