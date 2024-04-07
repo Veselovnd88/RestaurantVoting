@@ -34,6 +34,8 @@ public interface MenuMapper {
     MenuDto toDtoWithoutVotes(Menu menu);
 
     @IterableMapping(qualifiedBy = WithoutVotes.class)
+    List<MenuDto> toDtosWithoutVotes(List<Menu> menus);
+
     List<MenuDto> toDtos(List<Menu> menus);
 
     @Mapping(target = "addedAt", source = "addedAt")
@@ -50,6 +52,7 @@ public interface MenuMapper {
     @AfterMapping
     default void bindMenuToDishes(@MappingTarget Menu menu) {
         Set<Dish> dishes = menu.getDishes();
+        if (dishes == null) return;
         for (Dish dish : dishes) {
             dish.setMenu(menu);
         }

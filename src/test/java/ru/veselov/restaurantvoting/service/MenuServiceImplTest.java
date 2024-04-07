@@ -70,19 +70,19 @@ class MenuServiceImplTest {
 
         Assertions.assertThatThrownBy(() -> menuService.create(RestaurantTestData.SUSHI_ID, MenuTestData.menuDtoToCreate))
                 .isInstanceOf(EntityNotFoundException.class);
-
         Mockito.verifyNoInteractions(menuRepository);
     }
 
     @Test
-    void update_AllOk_UpdateMenu() {
-        Mockito.when(menuRepository.findById(Mockito.anyInt())).thenReturn(Optional.of(MenuTestData.sushiRestaurantMenu));
+    void update_AllOk_UpdateMenuAndReturnUpdated() {
+        Mockito.when(menuRepository.findById(Mockito.anyInt()))
+                .thenReturn(Optional.of(MenuTestData.getSushiRestaurantMenu()));
 
         menuService.update(MenuTestData.SUSHI_MENU_ID, MenuTestData.menuDtoToCreate);
 
         Mockito.verify(menuRepository, Mockito.times(1)).save(menuArgumentCaptor.capture());
         Menu captured = menuArgumentCaptor.getValue();
-        Assertions.assertThat(captured).extracting(Menu::getAddedAt).isEqualTo(MenuTestData.ADDED_DATE);
+        Assertions.assertThat(captured).extracting(Menu::getAddedAt).isEqualTo(MenuTestData.ADDED_DATE.plusDays(1));
         DishTestData.DISH_MATCHER.assertMatch(captured.getDishes(), Set.of(DishTestData.tastyDishEntity));
     }
 
@@ -97,7 +97,7 @@ class MenuServiceImplTest {
 
     @Test
     void getMenuById_AllOk_ReturnMenuDto() {
-        Mockito.when(menuRepository.findById(Mockito.anyInt())).thenReturn(Optional.of(MenuTestData.sushiRestaurantMenu));
+        Mockito.when(menuRepository.findByIdWithDishesAndVotes(Mockito.anyInt())).thenReturn(Optional.of(MenuTestData.sushiRestaurantMenu));
 
         MenuDto menuById = menuService.getMenuById(MenuTestData.SUSHI_MENU_ID);
 
@@ -106,7 +106,7 @@ class MenuServiceImplTest {
 
     @Test
     void getMenuById_MenuNotFound_ThrowException() {
-        Mockito.when(menuRepository.findById(Mockito.anyInt())).thenReturn(Optional.empty());
+        Mockito.when(menuRepository.findByIdWithDishesAndVotes(Mockito.anyInt())).thenReturn(Optional.empty());
 
         Assertions.assertThatThrownBy(() -> menuService.getMenuById(MenuTestData.SUSHI_MENU_ID))
                 .isInstanceOf(EntityNotFoundException.class);

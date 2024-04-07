@@ -52,11 +52,13 @@ public class MenuServiceImpl implements MenuService {
      */
     @Override
     @Transactional
-    public void update(int id, NewMenuDto menuDto) {
-        Menu menu = getById(id);
+    public MenuDto update(int id, NewMenuDto menuDto) {
+        Menu menu = repository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("No menu found with id: %s".formatted(id)));
         mapper.toEntityUpdate(menu, menuDto);
-        repository.save(menu);
+        Menu updated = repository.save(menu);
         log.info("Menu id: {} updated", id);
+        return mapper.toDto(updated);
     }
 
     /**
@@ -68,7 +70,9 @@ public class MenuServiceImpl implements MenuService {
     @Override
     public MenuDto getMenuById(int id) {
         log.info("Retrieving menu by id: {}", id);
-        return mapper.toDto(getById(id));
+        Menu menu = repository.findByIdWithDishesAndVotes(id)
+                .orElseThrow(() -> new EntityNotFoundException("No menu found with id"));
+        return mapper.toDto(menu);
     }
 
     /**
@@ -80,7 +84,7 @@ public class MenuServiceImpl implements MenuService {
     @Override
     public List<MenuDto> getMenusByRestaurant(int restaurantId) {
         log.info("Retrieving all menus for restaurant id: {}", restaurantId);
-        return mapper.toDtos(repository.findByRestaurantId(restaurantId, SORT_BY_DATE));
+        return mapper.toDtosWithoutVotes(repository.findByRestaurantId(restaurantId, SORT_BY_DATE));
     }
 
     /**
@@ -93,15 +97,5 @@ public class MenuServiceImpl implements MenuService {
     public void deleteMenu(int id) {
         repository.deleteById(id);
         log.info("Menu with id: {} deleted", id);
-    }
-
-    /**
-     * Get menu by id or throw exception
-     *
-     * @param id menu id
-     */
-    private Menu getById(int id) {
-        return repository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("No menu found with id"));
     }
 }

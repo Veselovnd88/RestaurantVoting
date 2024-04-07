@@ -9,7 +9,7 @@ public interface MenuService {
 
     MenuDto create(int restaurantId, NewMenuDto newMenuDto);
 
-    void update(int id, NewMenuDto menuDto);
+    MenuDto update(int id, NewMenuDto menuDto);
 
     MenuDto getMenuById(int id);
 

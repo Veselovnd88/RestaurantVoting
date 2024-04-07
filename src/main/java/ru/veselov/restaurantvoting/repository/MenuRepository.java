@@ -15,8 +15,9 @@ import java.util.Optional;
 public interface MenuRepository extends JpaRepository<Menu, Integer> {
 
     @EntityGraph(attributePaths = {"votes", "dishes"})
+    @Query("SELECT m FROM Menu m WHERE m.id= :id")
     @NonNull
-    Optional<Menu> findById(@NonNull Integer id);
+    Optional<Menu> findByIdWithDishesAndVotes(@Param("id") int id);
 
     @EntityGraph(value = Menu.GRAPH_DISHES_VOTES_USERS)
     @Query("SELECT m FROM Menu m WHERE m.restaurant.id=:restaurantId AND m.addedAt=:date")

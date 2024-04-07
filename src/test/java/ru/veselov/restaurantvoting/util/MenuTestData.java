@@ -3,7 +3,9 @@ package ru.veselov.restaurantvoting.util;
 import lombok.experimental.UtilityClass;
 import ru.veselov.restaurantvoting.dto.MenuDto;
 import ru.veselov.restaurantvoting.dto.NewMenuDto;
+import ru.veselov.restaurantvoting.model.Dish;
 import ru.veselov.restaurantvoting.model.Menu;
+import ru.veselov.restaurantvoting.model.Restaurant;
 
 import java.time.LocalDate;
 import java.util.LinkedHashSet;
@@ -40,8 +42,24 @@ public class MenuTestData {
 
     public static Menu menuToCreateWithoutId = new Menu(null, ADDED_DATE.plusDays(1), null, null, null);
 
-    public static MenuDto createdMenuDto = new MenuDto(100022, ADDED_DATE.plusDays(1), List.of(DishTestData.savedNewTastyDish), null);
+    public static MenuDto createdMenuDto = new MenuDto(100022, ADDED_DATE.plusDays(1),
+            List.of(DishTestData.savedWithMenuNewTastyDish), null);
 
     public static NewMenuDto menuDtoToCreate = new NewMenuDto(null, ADDED_DATE.plusDays(1),
             List.of(DishTestData.newTastyDish));
+
+    public static NewMenuDto menuDtoToUpdate = new NewMenuDto(SUSHI_MENU_ID, ADDED_DATE, List.of(DishTestData.newTastyDish));
+
+    public static NewMenuDto menuDtoToUpdateWithChangedDish = new NewMenuDto(SUSHI_MENU_ID, ADDED_DATE,
+            List.of(DishTestData.philadelphiaDto, DishTestData.tastyRollDto, DishTestData.changedUnagiDto));
+
+    public static MenuDto menuDtoToUpdateWithChangedDishAfterUpdate = new MenuDto(SUSHI_MENU_ID, ADDED_DATE,
+            List.of(DishTestData.philadelphiaDto, DishTestData.tastyRollDto, DishTestData.changedUnagiDto), VoteTestData.sushiVotesDto);
+
+    public static Menu getSushiRestaurantMenu() {
+        return new Menu(100006, MenuTestData.ADDED_DATE, new Restaurant(RestaurantTestData.SUSHI_ID, "SushiWok"),
+                new LinkedHashSet<>(List.of(new Dish(100010, "Philadelphia", 30000),
+                        new Dish(100011, "TastyRoll", 55000),
+                        new Dish(100009, "Unagi", 40000))));
+    }
 }

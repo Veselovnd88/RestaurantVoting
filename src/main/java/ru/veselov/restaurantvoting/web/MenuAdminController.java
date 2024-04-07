@@ -44,11 +44,12 @@ public class MenuAdminController {
     }
 
     @PutMapping("/{id}")
-    void update(@PathVariable int id, NewMenuDto menuDto) {
-        service.update(id, menuDto);
+    public MenuDto update(@PathVariable int id, @Valid @RequestBody NewMenuDto menuDto) {
+        return service.update(id, menuDto);
     }
 
     @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     void delete(@PathVariable int id) {
         service.deleteMenu(id);
     }

@@ -78,4 +78,18 @@ public class MockMvcUtils {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(menuDto));
     }
+
+    public static MockHttpServletRequestBuilder updateMenu(int id, NewMenuDto menuDto) {
+        return MockMvcRequestBuilders.put(MenuAdminController.REST_URL + "/" + id)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(menuDto));
+    }
+
+    public static MockHttpServletRequestBuilder getMenu(int id) {
+        return MockMvcRequestBuilders.get(MenuAdminController.REST_URL + "/" + id);
+    }
+
+    public static MockHttpServletRequestBuilder deleteMenu(int id) {
+        return MockMvcRequestBuilders.delete(MenuAdminController.REST_URL + "/" + id);
+    }
 }
