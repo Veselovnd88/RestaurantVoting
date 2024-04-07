@@ -45,7 +45,6 @@ public class MenuAdminController {
                     content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                             schema = @Schema(implementation = MenuDto.class))})})
     @PostMapping("/restaurants/{restaurantId}")
-    @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<MenuDto> add(@PathVariable int restaurantId, @Valid @RequestBody NewMenuDto menuDto) {
         MenuDto created = service.create(restaurantId, menuDto);
         URI uriOfResource = ServletUriComponentsBuilder.fromCurrentContextPath()
