@@ -48,7 +48,7 @@ public class MenuAdminController {
     public ResponseEntity<MenuDto> add(@PathVariable int restaurantId, @Valid @RequestBody NewMenuDto menuDto) {
         MenuDto created = service.create(restaurantId, menuDto);
         URI uriOfResource = ServletUriComponentsBuilder.fromCurrentContextPath()
-                .path(MenuAdminController.REST_URL + "/{id}")
+                .path(MenuController.REST_URL + "/{id}")
                 .buildAndExpand(created.id()).toUri();
         return ResponseEntity.created(uriOfResource).body(created);
     }

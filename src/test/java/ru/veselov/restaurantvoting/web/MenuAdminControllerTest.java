@@ -3,7 +3,6 @@ package ru.veselov.restaurantvoting.web;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.SneakyThrows;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -65,28 +64,17 @@ class MenuAdminControllerTest extends AbstractRestControllerTest {
 
     @Test
     @SneakyThrows
-    @Disabled
-    void getMenuById_AllOk_ReturnMenuDto() {
-        mockMvc.perform(MockMvcUtils.getMenu(MenuTestData.SUSHI_MENU_ID))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(MenuTestData.MENU_DTO_MATCHER.contentJson(MenuTestData.sushiRestaurantMenuDto));
-    }
-
-    @Test
-    @SneakyThrows
     void delete_AllOk_ReturnNoContent() {
         mockMvc.perform(MockMvcUtils.deleteMenu(MenuTestData.SUSHI_MENU_ID))
                 .andExpect(MockMvcResultMatchers.status().isNoContent());
 
         Assertions.assertThatThrownBy(() -> menuService.getMenuById(MenuTestData.SUSHI_MENU_ID))
                 .isInstanceOf(EntityNotFoundException.class);
-        Assertions.assertThatThrownBy(()-> dishService.findOne(DishTestData.TASTY_ROLL_ID))
+        Assertions.assertThatThrownBy(() -> dishService.findOne(DishTestData.TASTY_ROLL_ID))
                 .isInstanceOf(EntityNotFoundException.class);
-        Assertions.assertThatThrownBy(()-> dishService.findOne(DishTestData.UNAGI_ID))
+        Assertions.assertThatThrownBy(() -> dishService.findOne(DishTestData.UNAGI_ID))
                 .isInstanceOf(EntityNotFoundException.class);
-        Assertions.assertThatThrownBy(()-> dishService.findOne(DishTestData.PHILADELPHIA_ID))
+        Assertions.assertThatThrownBy(() -> dishService.findOne(DishTestData.PHILADELPHIA_ID))
                 .isInstanceOf(EntityNotFoundException.class);
     }
 }

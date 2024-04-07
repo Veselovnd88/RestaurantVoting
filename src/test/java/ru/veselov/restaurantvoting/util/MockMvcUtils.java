@@ -11,6 +11,7 @@ import ru.veselov.restaurantvoting.util.json.JsonUtil;
 import ru.veselov.restaurantvoting.web.DishAdminController;
 import ru.veselov.restaurantvoting.web.DishController;
 import ru.veselov.restaurantvoting.web.MenuAdminController;
+import ru.veselov.restaurantvoting.web.MenuController;
 import ru.veselov.restaurantvoting.web.RestaurantAdminController;
 import ru.veselov.restaurantvoting.web.RestaurantController;
 
@@ -86,7 +87,11 @@ public class MockMvcUtils {
     }
 
     public static MockHttpServletRequestBuilder getMenu(int id) {
-        return MockMvcRequestBuilders.get(MenuAdminController.REST_URL + "/" + id);
+        return MockMvcRequestBuilders.get(MenuController.REST_URL + "/" + id);
+    }
+
+    public static MockHttpServletRequestBuilder getMenusByRestaurantId(int restaurantId) {
+        return MockMvcRequestBuilders.get(MenuController.REST_URL + "/restaurants/" + restaurantId);
     }
 
     public static MockHttpServletRequestBuilder deleteMenu(int id) {
