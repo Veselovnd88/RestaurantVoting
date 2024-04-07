@@ -4,10 +4,13 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.util.ReflectionTestUtils;
 import ru.veselov.restaurantvoting.dto.MenuDto;
+import ru.veselov.restaurantvoting.model.Menu;
+import ru.veselov.restaurantvoting.util.DishTestData;
 import ru.veselov.restaurantvoting.util.MenuTestData;
-import ru.veselov.restaurantvoting.util.VoteTestData;
 
-import java.util.LinkedHashSet;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Set;
 
 class MenuMapperTest {
 
@@ -20,10 +23,39 @@ class MenuMapperTest {
 
     @Test
     void toDto_AllOk_ReturnCorrectMappedMenuDto() {
-        MenuTestData.sushiRestaurantMenu.setVotes(new LinkedHashSet<>(VoteTestData.sushiVotes));
+        MenuDto menuDto = menuMapper.toDto(MenuTestData.sushiRestaurantMenuWithVotes);
 
-        MenuDto menuDto = menuMapper.toDto(MenuTestData.sushiRestaurantMenu);
+        Assertions.assertThat(menuDto).isEqualTo(MenuTestData.sushiRestaurantMenuDtoWithVotes);
+    }
+
+    @Test
+    void toDtoWithoutVotes_AllOk_ReturnDtoWithoutVotes() {
+        MenuDto menuDto = menuMapper.toDtoWithoutVotes(MenuTestData.sushiRestaurantMenuWithVotes);
 
         Assertions.assertThat(menuDto).isEqualTo(MenuTestData.sushiRestaurantMenuDto);
+    }
+
+    @Test
+    void toDtosWithoutVotesWithoutVotes_AllOk_ReturnEntityWIthDishesAndDate() {
+        List<MenuDto> dtos = menuMapper.toDtosWithoutVotes(List.of(MenuTestData.sushiRestaurantMenuWithVotes));
+
+        Assertions.assertThat(dtos).hasSameElementsAs(List.of(MenuTestData.sushiRestaurantMenuDto));
+    }
+
+    @Test
+    void toEntity_AllOk_ReturnEntityWithDishes() {
+        Menu menu = menuMapper.toEntity(MenuTestData.menuDtoToCreate);
+
+        MenuTestData.MENU_MATCHER.assertMatch(menu, MenuTestData.menuToCreateWithoutId);
+        DishTestData.DISH_MATCHER.assertMatch(menu.getDishes(), Set.of(DishTestData.tastyDishEntity));
+    }
+
+    @Test
+    void toEntityUpdate_AllOk_ReturnEntityWithDishes() {
+        Menu menuToUpdate = new Menu(null, LocalDate.of(2019, 3, 3), null, null, null);
+        Menu menu = menuMapper.toEntityUpdate(menuToUpdate, MenuTestData.menuDtoToCreate);
+
+        Assertions.assertThat(menu).extracting(Menu::getAddedAt).isEqualTo(MenuTestData.ADDED_DATE.plusDays(1));
+        DishTestData.DISH_MATCHER.assertMatch(menu.getDishes(), Set.of(DishTestData.tastyDishEntity));
     }
 }

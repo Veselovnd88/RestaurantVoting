@@ -68,7 +68,7 @@ public class RestaurantServiceImpl implements RestaurantService {
     }
 
     /**
-     * Find restaurant by and and bind menu with votes by date
+     * Find restaurant by and bind menu with votes by date
      *
      * @param date preffered date to find menu and votes
      * @param id   restaurant id

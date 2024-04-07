@@ -3,14 +3,16 @@ FROM user_role;
 
 DELETE
 FROM users;
-DELETE
-FROM menu_dish;
-DELETE
-FROM menu;
+
 DELETE
 FROM dish;
+
 DELETE
 FROM vote;
+
+DELETE
+FROM menu;
+
 DELETE
 FROM restaurant;
 
@@ -37,27 +39,16 @@ VALUES (100003, '2024-03-06'), --6
        (100004, '2024-03-06'), --7
        (100005, '2024-03-06'); --8
 
-INSERT INTO dish (name, price)
-VALUES ('Unagi', 40000),         --9
-       ('Philadelphia', 30000),  --10
-       ('TastyRoll', 55000),     --11
-       ('Pizza Arriva', 60000),  --12
-       ('Diablo Pizza', 85000),  --13
-       ('Margarita', 55000),     --14
-       ('Double Burger', 65000), --15
-       ('Triple Burger', 75000), --16
-       ('Fries Potato', 35000); --17
-
-INSERT INTO menu_dish(menu_id, dish_id)
-VALUES (100006, 100009),
-       (100006, 100010),
-       (100006, 100011),
-       (100007, 100012),
-       (100007, 100013),
-       (100007, 100014),
-       (100008, 100015),
-       (100008, 100016),
-       (100008, 100017);
+INSERT INTO dish (name, price, menu_id)
+VALUES ('Unagi', 40000, 100006),         --9
+       ('Philadelphia', 30000, 100006),  --10
+       ('TastyRoll', 55000, 100006),     --11
+       ('Pizza Arriva', 60000, 100007),  --12
+       ('Diablo Pizza', 85000, 100007),  --13
+       ('Margarita', 55000, 100007),     --14
+       ('Double Burger', 65000, 100008), --15
+       ('Triple Burger', 75000, 100008), --16
+       ('Fries Potato', 35000, 100008); --17
 
 INSERT INTO vote (user_id, voted_at, menu_id)
 VALUES (100000, '2024-03-06', 100006), --18

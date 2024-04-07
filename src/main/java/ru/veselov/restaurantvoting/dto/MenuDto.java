@@ -1,22 +1,29 @@
 package ru.veselov.restaurantvoting.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.time.LocalDate;
 import java.util.List;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-public class MenuDto {
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public record MenuDto(
 
-    private Integer id;
+        Integer id,
 
-    private LocalDate addedAt;
+        LocalDate addedAt,
 
-    private List<DishDto> dishes;
+        List<DishDto> dishes,
 
-    private List<VoteDto> votes;
+        List<VoteDto> votes) {
+
+    @JsonCreator //constructor need int for Jackson mapping
+    public MenuDto(@JsonProperty("id") Integer id, @JsonProperty("addedAt") LocalDate addedAt,
+                   @JsonProperty("dishes") List<DishDto> dishes, @JsonProperty("votes") List<VoteDto> votes) {
+        this.id = id;
+        this.addedAt = addedAt;
+        this.dishes = dishes;
+        this.votes = votes;
+    }
 }

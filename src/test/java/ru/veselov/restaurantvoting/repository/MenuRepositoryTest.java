@@ -22,7 +22,7 @@ class MenuRepositoryTest {
 
     @Test
     void findOneById_AllOK_ReturnMenuWithDishesAndVotes() {
-        Optional<Menu> foundById = menuRepository.findById(100006);
+        Optional<Menu> foundById = menuRepository.findByIdWithDishesAndVotes(100006);
 
         Assertions.assertThat(foundById).isPresent();
         Menu menu = foundById.get();

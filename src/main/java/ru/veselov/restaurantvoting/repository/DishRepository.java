@@ -10,6 +10,6 @@ import java.util.List;
 
 public interface DishRepository extends JpaRepository<Dish, Integer> {
 
-    @Query("SELECT d FROM Dish d left JOIN d.menus m where m.restaurant.id = :id")
+    @Query("SELECT d FROM Dish d left JOIN d.menu m where m.restaurant.id = :id")
     List<Dish> findAllByRestaurantId(@Param("id") int id, Sort sort);
 }

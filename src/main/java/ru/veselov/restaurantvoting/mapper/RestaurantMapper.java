@@ -7,6 +7,7 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.mapstruct.ReportingPolicy;
 import ru.veselov.restaurantvoting.dto.NewRestaurantDto;
 import ru.veselov.restaurantvoting.dto.RestaurantDto;
+import ru.veselov.restaurantvoting.mapper.annotation.WithVotesAndDishes;
 import ru.veselov.restaurantvoting.mapper.annotation.WithoutMenu;
 import ru.veselov.restaurantvoting.model.Restaurant;
 
@@ -15,7 +16,7 @@ import java.util.List;
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE, uses = MenuMapper.class,
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface RestaurantMapper {
-
+    @Mapping(target = "menus", qualifiedBy = WithVotesAndDishes.class)
     RestaurantDto entityToDtoWithMenus(Restaurant restaurant);
 
 

@@ -1,11 +1,10 @@
 package ru.veselov.restaurantvoting.model;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.NamedAttributeNode;
 import jakarta.persistence.NamedEntityGraph;
@@ -13,7 +12,6 @@ import jakarta.persistence.NamedSubgraph;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -56,13 +54,7 @@ public class Menu extends AbstractBaseEntity {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Restaurant restaurant;
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "menu_dish",
-            joinColumns = {@JoinColumn(name = "menu_id")},
-            inverseJoinColumns = {@JoinColumn(name = "dish_id")},
-            uniqueConstraints = @UniqueConstraint(columnNames = {"menu_id", "dish_id"}, name = "menu_dish_idx")
-    )
+    @OneToMany(mappedBy = "menu", fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     @OrderBy("name")
     private Set<Dish> dishes;
 
@@ -84,5 +76,13 @@ public class Menu extends AbstractBaseEntity {
         this.addedAt = addedAt;
         this.restaurant = restaurant;
         this.dishes = dishes;
+    }
+
+    public Menu(Integer id, LocalDate addedAt, Restaurant restaurant, Set<Dish> dishes, Set<Vote> votes) {
+        super(id);
+        this.addedAt = addedAt;
+        this.restaurant = restaurant;
+        this.dishes = dishes;
+        this.votes = votes;
     }
 }
