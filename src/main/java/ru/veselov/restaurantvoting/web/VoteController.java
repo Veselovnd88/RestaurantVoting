@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import ru.veselov.restaurantvoting.service.VoteService;
 
+import java.time.Clock;
 import java.time.LocalDate;
 
 @RestController
@@ -22,9 +23,10 @@ import java.time.LocalDate;
 @Tag(name = "Voting management", description = "Accept votes")
 public class VoteController {
 
-    public static final String REST_URL = "/api/v1/voting";
+    public static final String REST_URL = "/api/v1/votes";
 
     private final VoteService service;
+    private final Clock clock;
 
     @Operation(summary = "Here user can vote for chosen menu")
     @ApiResponses(value = {
@@ -32,7 +34,7 @@ public class VoteController {
     @PostMapping("/menus/{menuId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void vote(@PathVariable("menuId") int menuId) {
-        service.vote(100000, menuId, LocalDate.now());
+        service.vote(100000, menuId, LocalDate.now(clock));
     }
 
     @Operation(summary = "Remove user's vote for today")
@@ -42,6 +44,6 @@ public class VoteController {
     @DeleteMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void removeVote() {
-        service.removeVote(100000, LocalDate.now());
+        service.removeVote(100000, LocalDate.now(clock));
     }
 }

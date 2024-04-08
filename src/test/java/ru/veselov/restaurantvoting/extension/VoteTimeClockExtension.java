@@ -22,13 +22,12 @@ public class VoteTimeClockExtension implements BeforeEachCallback {
     @Override
     public void beforeEach(ExtensionContext extensionContext) throws Exception {
         Object testInstance = extensionContext.getRequiredTestInstance();
-        AdjustClockMock adjustClockMock = AnnotationSupport
-                .findAnnotation(extensionContext.getRequiredTestMethod(), AdjustClockMock.class).orElse(null);
-        if (adjustClockMock == null) {
+        AdjustClockMockForVoting adjustClockMockForVoting = AnnotationSupport
+                .findAnnotation(extensionContext.getRequiredTestMethod(), AdjustClockMockForVoting.class).orElse(null);
+        if (adjustClockMockForVoting == null) {
             return;
         }
-        boolean exceeds = adjustClockMock.exceeds();
-        Field resultField = testInstance.getClass().getDeclaredField("voteService");
+        boolean exceeds = adjustClockMockForVoting.exceeds();
         Clock clock = Mockito.mock(Clock.class);
         if (exceeds) {
             Mockito.when(clock.instant())
@@ -38,9 +37,10 @@ public class VoteTimeClockExtension implements BeforeEachCallback {
                     .thenReturn(LocalDateTime.of(VoteTestData.VOTED_AT_DATE, LocalTime.of(22, 0, 0)).toInstant(ZoneOffset.UTC));
         }
         Mockito.when(clock.getZone()).thenReturn(ZoneOffset.UTC);
+        Field resultField = testInstance.getClass().getDeclaredField("voteService");
         resultField.setAccessible(true);
         VoteServiceImpl voteService = (VoteServiceImpl) resultField.get(testInstance);
         ReflectionTestUtils.setField(voteService, "clock", clock, Clock.class);
-        ReflectionTestUtils.setField(voteService, "timeLimit", LocalTime.of(23, 0, 0), LocalTime.class);
+        ReflectionTestUtils.setField(voteService, "limitTime", LocalTime.of(23, 0, 0), LocalTime.class);
     }
 }

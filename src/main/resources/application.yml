@@ -36,4 +36,4 @@ spring:
       mode: always
 
 vote:
-  time-limit: "23:00"
+  limit-time: "23:00"

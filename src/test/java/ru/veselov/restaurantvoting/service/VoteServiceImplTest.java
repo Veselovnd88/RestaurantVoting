@@ -11,7 +11,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.veselov.restaurantvoting.exception.VotingTimeLimitExceedsException;
-import ru.veselov.restaurantvoting.extension.AdjustClockMock;
+import ru.veselov.restaurantvoting.extension.AdjustClockMockForVoting;
 import ru.veselov.restaurantvoting.model.Vote;
 import ru.veselov.restaurantvoting.repository.UserRepository;
 import ru.veselov.restaurantvoting.repository.VoteRepository;
@@ -40,7 +40,7 @@ class VoteServiceImplTest {
     ArgumentCaptor<Vote> voteCaptor;
 
     @Test
-    @AdjustClockMock(exceeds = false)
+    @AdjustClockMockForVoting(exceeds = false)
     void vote_NewVoteForMenu_AddVote() {
         Mockito.when(voteRepository.findByUserIdForDate(Mockito.anyInt(), Mockito.any())).thenReturn(Optional.empty());
         Mockito.when(userRepository.findById(UserTestData.USER1_ID)).thenReturn(Optional.of(UserTestData.user1));
@@ -66,7 +66,7 @@ class VoteServiceImplTest {
     }
 
     @Test
-    @AdjustClockMock(exceeds = false)
+    @AdjustClockMockForVoting(exceeds = false)
     void vote_AlreadyVotedForAnotherMenuTimeDoesntExceedsLimit_MakeAnotherVote() {
         Mockito.when(voteRepository.findByUserIdForDate(Mockito.anyInt(), Mockito.any()))
                 .thenReturn(Optional.of(VoteTestData.getNewUser1VoteSushi()));
@@ -80,7 +80,7 @@ class VoteServiceImplTest {
     }
 
     @Test
-    @AdjustClockMock(exceeds = true)
+    @AdjustClockMockForVoting(exceeds = true)
     void vote_TimeExceedsLimit_ThrowException() {
         Mockito.when(voteRepository.findByUserIdForDate(Mockito.anyInt(), Mockito.any()))
                 .thenReturn(Optional.of(VoteTestData.getNewUser1VoteSushi()));
@@ -88,5 +88,19 @@ class VoteServiceImplTest {
         Assertions.assertThatThrownBy(() -> voteService.vote(UserTestData.USER1_ID, MenuTestData.BURGER_MENU_ID, VoteTestData.VOTED_AT_DATE))
                 .isInstanceOf(VotingTimeLimitExceedsException.class);
         Mockito.verify(voteRepository, Mockito.never()).save(Mockito.any());
+    }
+
+    @Test
+    @AdjustClockMockForVoting(exceeds = false)
+    void removeVote_AllOk_RemoveVote() {
+        voteService.removeVote(UserTestData.USER1_ID, VoteTestData.VOTED_AT_DATE);
+        Mockito.verify(voteRepository).deleteByUserIdForDate(Mockito.anyInt(), Mockito.any());
+    }
+
+    @Test
+    @AdjustClockMockForVoting(exceeds = true)
+    void removeVote_TimeExceeds_ThrowException() {
+        Assertions.assertThatThrownBy(() -> voteService.removeVote(UserTestData.USER1_ID, VoteTestData.VOTED_AT_DATE))
+                .isInstanceOf(VotingTimeLimitExceedsException.class);
     }
 }

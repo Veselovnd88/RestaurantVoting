@@ -32,7 +32,7 @@ public class VoteServiceImpl implements VoteService {
 
     @Value("${vote.limit-time}")
     @DateTimeFormat(pattern = "HH:mm")
-    private LocalTime timeLimit;
+    private LocalTime limitTime;
 
     @Override
     @Transactional
@@ -64,9 +64,9 @@ public class VoteServiceImpl implements VoteService {
     }
 
     private void checkVoteTimeExceedsLimit(int userId) {
-        if (LocalTime.now(clock).isAfter(timeLimit)) {
-            log.warn(VOTE_AFTER_LIMIT.formatted(userId, timeLimit));
-            throw new VotingTimeLimitExceedsException(VOTE_AFTER_LIMIT.formatted(userId, timeLimit));
+        if (LocalTime.now(clock).isAfter(limitTime)) {
+            log.warn(VOTE_AFTER_LIMIT.formatted(userId, limitTime));
+            throw new VotingTimeLimitExceedsException(VOTE_AFTER_LIMIT.formatted(userId, limitTime));
         }
     }
 }

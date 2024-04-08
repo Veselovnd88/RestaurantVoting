@@ -59,7 +59,7 @@ CREATE TABLE vote
     voted_at DATE DEFAULT now() NOT NULL,
     user_id  INTEGER            NOT NULL,
     menu_id  INTEGER            NOT NULL,
-    CONSTRAINT user_restaurant_day_idx UNIQUE (user_id, voted_at),
+    CONSTRAINT user_day_idx UNIQUE (user_id, voted_at),
     FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
     FOREIGN KEY (menu_id) REFERENCES menu (id) ON DELETE CASCADE
 );
