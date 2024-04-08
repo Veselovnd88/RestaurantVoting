@@ -24,7 +24,7 @@ import java.util.Optional;
 @Slf4j
 @Transactional(readOnly = true)
 public class VoteServiceImpl implements VoteService {
-    public static final String VOTE_AFTER_LIMIT = "User [id: %s] attempt to vote after %s";
+    public static final String VOTE_AFTER_LIMIT = "User [id: %s] attempt to vote after %s, current time: %s";
     private final VoteRepository repository;
     private final UserRepository userRepository;
     private final MenuService menuService;
@@ -64,9 +64,10 @@ public class VoteServiceImpl implements VoteService {
     }
 
     private void checkVoteTimeExceedsLimit(int userId) {
-        if (LocalTime.now(clock).isAfter(limitTime)) {
-            log.warn(VOTE_AFTER_LIMIT.formatted(userId, limitTime));
-            throw new VotingTimeLimitExceedsException(VOTE_AFTER_LIMIT.formatted(userId, limitTime));
+        LocalTime now = LocalTime.now(clock);
+        if (now.isAfter(limitTime)) {
+            log.warn(VOTE_AFTER_LIMIT.formatted(userId, limitTime,now ));
+            throw new VotingTimeLimitExceedsException(VOTE_AFTER_LIMIT.formatted(userId, limitTime, now));
         }
     }
 }

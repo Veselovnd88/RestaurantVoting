@@ -6,12 +6,14 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import ru.veselov.restaurantvoting.security.AuthorizedUser;
 import ru.veselov.restaurantvoting.service.VoteService;
 
 import java.time.Clock;
@@ -33,8 +35,8 @@ public class VoteController {
             @ApiResponse(responseCode = "204", description = "Vote accepted")})
     @PostMapping("/menus/{menuId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void vote(@PathVariable("menuId") int menuId) {
-        service.vote(100000, menuId, LocalDate.now(clock));
+    public void vote(@PathVariable("menuId") int menuId, @AuthenticationPrincipal AuthorizedUser user) {
+        service.vote(user.getId(), menuId, LocalDate.now(clock));
     }
 
     @Operation(summary = "Remove user's vote for today")
@@ -43,7 +45,7 @@ public class VoteController {
     })
     @DeleteMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void removeVote() {
-        service.removeVote(100000, LocalDate.now(clock));
+    public void removeVote(@AuthenticationPrincipal AuthorizedUser user) {
+        service.removeVote(user.getId(), LocalDate.now(clock));
     }
 }
