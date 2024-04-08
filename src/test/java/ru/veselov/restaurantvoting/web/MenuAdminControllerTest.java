@@ -17,6 +17,8 @@ import ru.veselov.restaurantvoting.util.DishTestData;
 import ru.veselov.restaurantvoting.util.MenuTestData;
 import ru.veselov.restaurantvoting.util.MockMvcUtils;
 import ru.veselov.restaurantvoting.util.RestaurantTestData;
+import ru.veselov.restaurantvoting.util.SecurityUtils;
+import ru.veselov.restaurantvoting.util.UserTestData;
 
 @WithMockUser(value = "ADMIN")
 class MenuAdminControllerTest extends AbstractRestControllerTest {
@@ -30,7 +32,8 @@ class MenuAdminControllerTest extends AbstractRestControllerTest {
     @Test
     @SneakyThrows
     void create_AllOk_CreateMenu() {
-        mockMvc.perform(MockMvcUtils.createMenu(RestaurantTestData.SUSHI_ID, MenuTestData.menuDtoToCreate))
+        mockMvc.perform(MockMvcUtils.createMenu(RestaurantTestData.SUSHI_ID, MenuTestData.menuDtoToCreate)
+                .with(SecurityUtils.userHttpBasic(UserTestData.admin)))
                 .andExpect(MockMvcResultMatchers.status().isCreated())
                 .andExpect(MockMvcResultMatchers.header().exists("Location"))
                 .andDo(MockMvcResultHandlers.print())
@@ -41,17 +44,19 @@ class MenuAdminControllerTest extends AbstractRestControllerTest {
     @Test
     @SneakyThrows
     void update_AllOk_UpdateMenuWithNewDish() {
-        mockMvc.perform(MockMvcUtils.updateMenu(MenuTestData.SUSHI_MENU_ID, MenuTestData.menuDtoToUpdate))
+        mockMvc.perform(MockMvcUtils.updateMenu(MenuTestData.SUSHI_MENU_ID, MenuTestData.menuDtoToUpdate)
+                .with(SecurityUtils.userHttpBasic(UserTestData.admin)))
                 .andExpect(MockMvcResultMatchers.status().isOk());
         MenuDto foundMenu = menuService.getMenuByIdWithDishesAndVotes(MenuTestData.SUSHI_MENU_ID);
         Assertions.assertThat(foundMenu.dishes()).hasSize(1).flatExtracting(DishDto::id, DishDto::name, DishDto::price)
-                .contains(100022, "veryTasty", 10000);
+                .contains(100021, "veryTasty", 10000);
     }
 
     @Test
     @SneakyThrows
     void update_AllOk_UpdateMenuWithRenamingDish() {
-        mockMvc.perform(MockMvcUtils.updateMenu(MenuTestData.SUSHI_MENU_ID, MenuTestData.menuDtoToUpdateWithChangedDish))
+        mockMvc.perform(MockMvcUtils.updateMenu(MenuTestData.SUSHI_MENU_ID, MenuTestData.menuDtoToUpdateWithChangedDish)
+                .with(SecurityUtils.userHttpBasic(UserTestData.admin)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -65,7 +70,8 @@ class MenuAdminControllerTest extends AbstractRestControllerTest {
     @Test
     @SneakyThrows
     void delete_AllOk_ReturnNoContent() {
-        mockMvc.perform(MockMvcUtils.deleteMenu(MenuTestData.SUSHI_MENU_ID))
+        mockMvc.perform(MockMvcUtils.deleteMenu(MenuTestData.SUSHI_MENU_ID)
+                .with(SecurityUtils.userHttpBasic(UserTestData.admin)))
                 .andExpect(MockMvcResultMatchers.status().isNoContent());
 
         Assertions.assertThatThrownBy(() -> menuService.getMenuByIdWithDishesAndVotes(MenuTestData.SUSHI_MENU_ID))

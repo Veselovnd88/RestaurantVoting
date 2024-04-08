@@ -14,6 +14,7 @@ import ru.veselov.restaurantvoting.service.MenuService;
 import ru.veselov.restaurantvoting.service.VoteService;
 import ru.veselov.restaurantvoting.util.MenuTestData;
 import ru.veselov.restaurantvoting.util.MockMvcUtils;
+import ru.veselov.restaurantvoting.util.SecurityUtils;
 import ru.veselov.restaurantvoting.util.UserTestData;
 import ru.veselov.restaurantvoting.util.VoteTestData;
 
@@ -44,7 +45,8 @@ class VoteControllerTest extends AbstractRestControllerTest {
         Mockito.when(clock.instant())
                 .thenReturn(LocalDateTime.of(VoteTestData.VOTED_AT_DATE, LocalTime.of(22, 0, 0)).toInstant(ZoneOffset.UTC));
 
-        mockMvc.perform(MockMvcUtils.vote(MenuTestData.BURGER_MENU_ID))
+        mockMvc.perform(MockMvcUtils.vote(MenuTestData.BURGER_MENU_ID)
+                .with(SecurityUtils.userHttpBasic(UserTestData.user2)))
                 .andExpect(MockMvcResultMatchers.status().isNoContent());
 
         MenuDto burgerMenu = menuService.getMenuByIdWithDishesAndVotes(MenuTestData.BURGER_MENU_ID);

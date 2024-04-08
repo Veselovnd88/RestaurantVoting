@@ -44,7 +44,7 @@ public class MenuTestData {
 
     public static Menu menuToCreateWithoutId = new Menu(null, ADDED_DATE.plusDays(1), null, null, null);
 
-    public static MenuDto createdMenuDto = new MenuDto(100022, ADDED_DATE.plusDays(1),
+    public static MenuDto createdMenuDto = new MenuDto(100021, ADDED_DATE.plusDays(1),
             List.of(DishTestData.savedWithMenuNewTastyDish), null);
 
     public static NewMenuDto menuDtoToCreate = new NewMenuDto(null, ADDED_DATE.plusDays(1),
