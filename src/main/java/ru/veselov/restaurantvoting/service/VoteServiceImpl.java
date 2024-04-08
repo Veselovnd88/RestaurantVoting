@@ -14,6 +14,7 @@ import ru.veselov.restaurantvoting.model.Vote;
 import ru.veselov.restaurantvoting.repository.UserRepository;
 import ru.veselov.restaurantvoting.repository.VoteRepository;
 
+import java.time.Clock;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Optional;
@@ -23,36 +24,49 @@ import java.util.Optional;
 @Slf4j
 @Transactional(readOnly = true)
 public class VoteServiceImpl implements VoteService {
-    public static final String VOTE_AFTER_LIMIT = "Attempt to vote after %s";
+    public static final String VOTE_AFTER_LIMIT = "User [id: %s] attempt to vote after %s";
     private final VoteRepository repository;
     private final UserRepository userRepository;
     private final MenuService menuService;
+    private final Clock clock;
 
     @Value("${vote.limit-time}")
     @DateTimeFormat(pattern = "HH:mm")
-    private LocalTime limitTime;
+    private LocalTime timeLimit;
 
     @Override
     @Transactional
     public void vote(int userId, int menuId, LocalDate localDate) {
-        Optional<Vote> voteOptional = repository.findByUserIdForToday(userId, localDate);
-        Menu menu = menuService.findMenuById(menuId);
+        Optional<Vote> voteOptional = repository.findByUserIdForDate(userId, localDate);
         if (voteOptional.isPresent()) {
+            checkVoteTimeExceedsLimit(userId);
+            Menu menu = menuService.findMenuById(menuId);
             Vote vote = voteOptional.get();
-            if (LocalTime.now().isBefore(limitTime)) {
-                vote.setMenu(menu);
-                repository.save(vote);
-                log.info("User id: {} changes his mind and re-voted for menu id: {}", userId, menuId);
-            } else {
-                log.warn(VOTE_AFTER_LIMIT.formatted(limitTime));
-                throw new VotingTimeLimitExceedsException(VOTE_AFTER_LIMIT.formatted(limitTime));
-            }
+            vote.setMenu(menu);
+            repository.save(vote);
+            log.info("User [id: {}] changes his mind and re-voted for menu id: {}", userId, menuId);
         } else {
             User user = userRepository.findById(userId)
                     .orElseThrow(() -> new EntityNotFoundException("User with id: %s not found".formatted(userId)));
-            Vote vote = new Vote(user, menu);
+            Menu menu = menuService.findMenuById(menuId);
+            Vote vote = new Vote(user, menu, LocalDate.now(clock));
             repository.save(vote);
-            log.info("User id: {} voted for menu id: {}", userId, menuId);
+            log.info("User [id: {}] voted for menu [id: {}]", userId, menuId);
+        }
+    }
+
+    @Override
+    @Transactional
+    public void removeVote(int userId, LocalDate localDate) {
+        checkVoteTimeExceedsLimit(userId);
+        repository.deleteByUserIdForDate(userId, localDate);
+        log.info("User [id: {}] decline his vote at [{}]", userId, localDate);
+    }
+
+    private void checkVoteTimeExceedsLimit(int userId) {
+        if (LocalTime.now(clock).isAfter(timeLimit)) {
+            log.warn(VOTE_AFTER_LIMIT.formatted(userId, timeLimit));
+            throw new VotingTimeLimitExceedsException(VOTE_AFTER_LIMIT.formatted(userId, timeLimit));
         }
     }
 }

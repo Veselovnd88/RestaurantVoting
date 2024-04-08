@@ -24,6 +24,8 @@ public class MenuTestData {
 
     public static final int SUSHI_MENU_ID = 100006;
 
+    public static final int BURGER_MENU_ID = 100008;
+
     public static Menu sushiRestaurantMenu = new Menu(100006, ADDED_DATE, RestaurantTestData.sushiRestaurant,
             new LinkedHashSet<>(DishTestData.sushiDishes));
 
@@ -37,7 +39,7 @@ public class MenuTestData {
     public static Menu pizzaRestaurantMenu = new Menu(100007, ADDED_DATE, RestaurantTestData.pizzaRestaurant,
             DishTestData.diabloPizza, DishTestData.margarita, DishTestData.pizzaArriva);
 
-    public static Menu burgerRestaurantMenu = new Menu(100008, ADDED_DATE, RestaurantTestData.burgerRestaurant,
+    public static Menu burgerRestaurantMenu = new Menu(BURGER_MENU_ID, ADDED_DATE, RestaurantTestData.burgerRestaurant,
             DishTestData.doubleBurger, DishTestData.friesPotato, DishTestData.tripleBurger);
 
     public static Menu menuToCreateWithoutId = new Menu(null, ADDED_DATE.plusDays(1), null, null, null);

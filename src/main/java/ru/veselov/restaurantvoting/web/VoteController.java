@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,5 +33,15 @@ public class VoteController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void vote(@PathVariable("menuId") int menuId) {
         service.vote(100000, menuId, LocalDate.now());
+    }
+
+    @Operation(summary = "Remove user's vote for today")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Vote removed")
+    })
+    @DeleteMapping
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void removeVote() {
+        service.removeVote(100000, LocalDate.now());
     }
 }

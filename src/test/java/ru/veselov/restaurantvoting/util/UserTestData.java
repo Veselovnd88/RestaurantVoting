@@ -10,7 +10,9 @@ import java.util.List;
 @UtilityClass
 public class UserTestData {
 
-    public static User user1 = new User(100000, "User1", "user@yandex.ru", "password", true, List.of(Role.USER));
+    public static int USER1_ID = 100000;
+
+    public static User user1 = new User(USER1_ID, "User1", "user@yandex.ru", "password", true, List.of(Role.USER));
 
     public static User admin = new User(100001, "Admin", "admin@gmail.com", "admin", true, List.of(Role.ADMIN, Role.USER));
 

@@ -4,6 +4,7 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.veselov.restaurantvoting.dto.MenuDto;
@@ -34,7 +35,7 @@ public class MenuServiceImpl implements MenuService {
      */
     @Override
     @Transactional
-    public MenuDto create(int restaurantId, NewMenuDto menuDto) {
+    public MenuDto create(int restaurantId, NewMenuDto menuDto) {//FIXME check constraints for dishes
         Restaurant restaurant = restaurantRepository.findById(restaurantId)
                 .orElseThrow(() -> new EntityNotFoundException("Restaurant not found"));
         Menu menu = mapper.toEntity(menuDto);
@@ -53,7 +54,7 @@ public class MenuServiceImpl implements MenuService {
      */
     @Override
     @Transactional
-    public MenuDto update(int id, NewMenuDto menuDto) {
+    public MenuDto update(int id, NewMenuDto menuDto) {//FIXME check constraints for dishes
         Menu menu = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(MENU_NOT_FOUND.formatted(id)));
         mapper.toEntityUpdate(menu, menuDto);
@@ -101,6 +102,7 @@ public class MenuServiceImpl implements MenuService {
     }
 
     @Override
+    @NonNull
     public Menu findMenuById(int id) {
         return repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(MENU_NOT_FOUND.formatted(id)));

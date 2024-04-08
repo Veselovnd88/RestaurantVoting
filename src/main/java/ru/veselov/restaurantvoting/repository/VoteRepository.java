@@ -10,8 +10,9 @@ import java.util.Optional;
 
 public interface VoteRepository extends JpaRepository<Vote, Integer> {
 
-    @Query("SELECT v FROM Vote v WHERE v.user.id= :userId " +
-            "AND v.votedAt= :date")
-    Optional<Vote> findByUserIdForToday(@Param("userId") int userId,
-                                        @Param("date") LocalDate date);
+    @Query("SELECT v FROM Vote v WHERE v.user.id= :userId AND v.votedAt= :date")
+    Optional<Vote> findByUserIdForDate(@Param("userId") int userId, @Param("date") LocalDate date);
+
+    @Query("DELETE FROM Vote v WHERE v.user.id= :userId AND v.votedAt= :date")
+    void deleteByUserIdForDate(@Param("userId") int userId, @Param("date") LocalDate date);
 }
