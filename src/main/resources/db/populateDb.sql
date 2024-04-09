@@ -54,4 +54,11 @@ VALUES ('Unagi', 40000, 100006),         --9
 INSERT INTO vote (user_id, menu_id)
 VALUES (100000, 100006), --18
        (100001, 100006), --19
-       (100002, 100006)
+       (100002, 100006); --20
+
+INSERT INTO users (name, email, password)
+VALUES
+    ('User3', 'user3@gmail.com', '$2a$10$Y9AkgdJzKBoDBNDDRA/fqe1UqWBADSdjdh7xTWx9f5Fc/qLW8Mf9y'); --another id 21
+
+INSERT INTO user_role (role, user_id)
+VALUES ('USER', 100000);

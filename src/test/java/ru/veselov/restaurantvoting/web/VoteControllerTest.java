@@ -79,4 +79,24 @@ class VoteControllerTest extends AbstractRestControllerTest {
         ResultActionErrorsUtil.checkVoteLimitExceedError(resultActions,
                 VoteServiceImpl.VOTE_AFTER_LIMIT.formatted(UserTestData.USER2_ID, limitTime, voteTime));
     }
+
+    @Test
+    @SneakyThrows
+    void vote_NewVoteForMenu_AddVote() {
+        configureClockMockForTimeNotExceeds();
+
+        mockMvc.perform(MockMvcUtils.vote(MenuTestData.BURGER_MENU_ID)
+                        .with(SecurityUtils.userHttpBasic(UserTestData.user2)))
+                .andExpect(MockMvcResultMatchers.status().isNoContent());
+
+        MenuDto burgerMenu = menuService.getMenuByIdWithDishesAndVotes(MenuTestData.BURGER_MENU_ID);
+        Assertions.assertThat(burgerMenu.votes()).flatExtracting(VoteDto::getUser).contains(UserTestData.user2Dto);
+        MenuDto sushiMenu = menuService.getMenuByIdWithDishesAndVotes(MenuTestData.SUSHI_MENU_ID);
+        Assertions.assertThat(sushiMenu.votes()).flatExtracting(VoteDto::getUser).doesNotContain(UserTestData.user2Dto);
+    }
+
+    private void configureClockMockForTimeNotExceeds() {
+        Mockito.when(clock.instant())
+                .thenReturn(LocalDateTime.of(VoteTestData.VOTED_AT_DATE, LocalTime.of(22, 0, 0)).toInstant(ZoneOffset.UTC));
+    }
 }
