@@ -73,12 +73,10 @@ class VoteControllerTest extends AbstractRestControllerTest {
                 .thenReturn(LocalDateTime.of(VoteTestData.VOTED_AT_DATE, voteTime).toInstant(ZoneOffset.UTC));
 
         ResultActions resultActions = mockMvc.perform(MockMvcUtils.vote(MenuTestData.BURGER_MENU_ID)
-                .with(SecurityUtils.userHttpBasic(UserTestData.user2)))
+                        .with(SecurityUtils.userHttpBasic(UserTestData.user2)))
                 .andDo(MockMvcResultHandlers.print());
 
         ResultActionErrorsUtil.checkVoteLimitExceedError(resultActions,
                 VoteServiceImpl.VOTE_AFTER_LIMIT.formatted(UserTestData.USER2_ID, limitTime, voteTime));
-
-
     }
 }

@@ -10,9 +10,9 @@ import ru.veselov.restaurantvoting.web.GlobalExceptionHandler;
 
 @UtilityClass
 public class ResultActionErrorsUtil {
-    private static final String JSON_ERROR_CODE = "$.properties." + GlobalExceptionHandler.ERROR_CODE;
+    private static final String JSON_ERROR_CODE = "$." + GlobalExceptionHandler.ERROR_CODE;
 
-    private static final String JSON_TIMESTAMP = "$.properties." + GlobalExceptionHandler.TIMESTAMP;
+    private static final String JSON_TIMESTAMP = "$." + GlobalExceptionHandler.TIMESTAMP;
 
     private static final String JSON_VIOLATIONS_FIELD = "$.violations[%s].name";
 
