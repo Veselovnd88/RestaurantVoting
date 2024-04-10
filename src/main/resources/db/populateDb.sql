@@ -61,4 +61,4 @@ VALUES
     ('User3', 'user3@gmail.com', '$2a$10$Y9AkgdJzKBoDBNDDRA/fqe1UqWBADSdjdh7xTWx9f5Fc/qLW8Mf9y'); --another id 21
 
 INSERT INTO user_role (role, user_id)
-VALUES ('USER', 100000);
+VALUES ('USER', 100021);

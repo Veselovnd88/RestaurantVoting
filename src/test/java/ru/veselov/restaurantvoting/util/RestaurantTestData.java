@@ -37,7 +37,7 @@ public class RestaurantTestData {
 
     public static NewRestaurantDto restaurantDtoToUpdate = new NewRestaurantDto("Updated tasty restaurant");
 
-    public static RestaurantDto savedRestaurantDto = new RestaurantDto(100021, "New tasty restaurant");
+    public static RestaurantDto savedRestaurantDto = new RestaurantDto(100022, "New tasty restaurant");
 
     public static RestaurantDto sushiRestaurantDto = new RestaurantDto(100003, "SushiWok");
 

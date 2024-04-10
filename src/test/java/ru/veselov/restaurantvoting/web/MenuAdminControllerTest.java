@@ -49,7 +49,7 @@ class MenuAdminControllerTest extends AbstractRestControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isOk());
         MenuDto foundMenu = menuService.getMenuByIdWithDishesAndVotes(MenuTestData.SUSHI_MENU_ID);
         Assertions.assertThat(foundMenu.dishes()).hasSize(1).flatExtracting(DishDto::id, DishDto::name, DishDto::price)
-                .contains(100021, "veryTasty", 10000);
+                .contains(100022, "veryTasty", 10000);
     }
 
     @Test

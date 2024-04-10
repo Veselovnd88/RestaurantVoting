@@ -63,9 +63,9 @@ public class DishTestData {
 
     public static Dish tastyDishEntity = new Dish(null, "veryTasty", 10000);
 
-    public static DishDto savedNewTastyDish = new DishDto(100021, "veryTasty", 10000);
+    public static DishDto savedNewTastyDish = new DishDto(100022, "veryTasty", 10000);
 
-    public static DishDto savedWithMenuNewTastyDish = new DishDto(100022, "veryTasty", 10000);
+    public static DishDto savedWithMenuNewTastyDish = new DishDto(100023, "veryTasty", 10000);
 
     public static DishDto dishToUpdate = new DishDto(TASTY_ROLL_ID, "TastyRoll", 10000);
 

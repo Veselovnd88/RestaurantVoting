@@ -24,6 +24,8 @@ public class MenuTestData {
 
     public static final int SUSHI_MENU_ID = 100006;
 
+    public static final int NOT_FOUND_MENU = 200006;
+
     public static final int BURGER_MENU_ID = 100008;
 
     public static Menu sushiRestaurantMenu = new Menu(100006, ADDED_DATE, RestaurantTestData.sushiRestaurant,
@@ -44,7 +46,7 @@ public class MenuTestData {
 
     public static Menu menuToCreateWithoutId = new Menu(null, ADDED_DATE.plusDays(1), null, null, null);
 
-    public static MenuDto createdMenuDto = new MenuDto(100021, ADDED_DATE.plusDays(1),
+    public static MenuDto createdMenuDto = new MenuDto(100022, ADDED_DATE.plusDays(1),
             List.of(DishTestData.savedWithMenuNewTastyDish), null);
 
     public static NewMenuDto menuDtoToCreate = new NewMenuDto(null, ADDED_DATE.plusDays(1),

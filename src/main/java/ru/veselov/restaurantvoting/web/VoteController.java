@@ -3,6 +3,7 @@ package ru.veselov.restaurantvoting.web;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -22,6 +23,7 @@ import java.time.LocalDate;
 @RestController
 @RequestMapping(value = VoteController.REST_URL)
 @RequiredArgsConstructor
+@SecurityRequirement(name = "basicAuth")
 @Tag(name = "Voting management", description = "Accept votes")
 public class VoteController {
 

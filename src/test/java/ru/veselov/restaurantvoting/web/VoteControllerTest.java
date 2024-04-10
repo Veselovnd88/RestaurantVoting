@@ -10,11 +10,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import ru.veselov.restaurantvoting.dto.MenuDto;
 import ru.veselov.restaurantvoting.dto.VoteDto;
 import ru.veselov.restaurantvoting.service.MenuService;
+import ru.veselov.restaurantvoting.service.MenuServiceImpl;
 import ru.veselov.restaurantvoting.service.VoteService;
 import ru.veselov.restaurantvoting.service.VoteServiceImpl;
 import ru.veselov.restaurantvoting.util.MenuTestData;
@@ -52,8 +52,7 @@ class VoteControllerTest extends AbstractRestControllerTest {
     @Test
     @SneakyThrows
     void vote_AllOk_VoteToTheMenu() {
-        Mockito.when(clock.instant())
-                .thenReturn(LocalDateTime.of(VoteTestData.VOTED_AT_DATE, LocalTime.of(22, 0, 0)).toInstant(ZoneOffset.UTC));
+        configureClockMockForTimeNotExceeds();
 
         mockMvc.perform(MockMvcUtils.vote(MenuTestData.BURGER_MENU_ID)
                         .with(SecurityUtils.userHttpBasic(UserTestData.user2)))
@@ -73,8 +72,7 @@ class VoteControllerTest extends AbstractRestControllerTest {
                 .thenReturn(LocalDateTime.of(VoteTestData.VOTED_AT_DATE, voteTime).toInstant(ZoneOffset.UTC));
 
         ResultActions resultActions = mockMvc.perform(MockMvcUtils.vote(MenuTestData.BURGER_MENU_ID)
-                        .with(SecurityUtils.userHttpBasic(UserTestData.user2)))
-                .andDo(MockMvcResultHandlers.print());
+                .with(SecurityUtils.userHttpBasic(UserTestData.user2)));
 
         ResultActionErrorsUtil.checkVoteLimitExceedError(resultActions,
                 VoteServiceImpl.VOTE_AFTER_LIMIT.formatted(UserTestData.USER2_ID, limitTime, voteTime));
@@ -86,13 +84,37 @@ class VoteControllerTest extends AbstractRestControllerTest {
         configureClockMockForTimeNotExceeds();
 
         mockMvc.perform(MockMvcUtils.vote(MenuTestData.BURGER_MENU_ID)
-                        .with(SecurityUtils.userHttpBasic(UserTestData.user2)))
+                        .with(SecurityUtils.userHttpBasic(UserTestData.user3)))
                 .andExpect(MockMvcResultMatchers.status().isNoContent());
 
         MenuDto burgerMenu = menuService.getMenuByIdWithDishesAndVotes(MenuTestData.BURGER_MENU_ID);
-        Assertions.assertThat(burgerMenu.votes()).flatExtracting(VoteDto::getUser).contains(UserTestData.user2Dto);
-        MenuDto sushiMenu = menuService.getMenuByIdWithDishesAndVotes(MenuTestData.SUSHI_MENU_ID);
-        Assertions.assertThat(sushiMenu.votes()).flatExtracting(VoteDto::getUser).doesNotContain(UserTestData.user2Dto);
+        Assertions.assertThat(burgerMenu.votes()).flatExtracting(VoteDto::getUser).contains(UserTestData.user3Dto);
+    }
+
+    @Test
+    @SneakyThrows
+    void vote_MenuNotFoundForFirstVote_ReturnError() {
+        configureClockMockForTimeNotExceeds();
+
+        ResultActions resultActions = mockMvc.perform(MockMvcUtils.vote(MenuTestData.NOT_FOUND_MENU)
+                        .with(SecurityUtils.userHttpBasic(UserTestData.user3)))
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
+
+        ResultActionErrorsUtil.checkNotFoundFields(resultActions,
+                MenuServiceImpl.MENU_NOT_FOUND.formatted(MenuTestData.NOT_FOUND_MENU));
+    }
+
+    @Test
+    @SneakyThrows
+    void vote_MenuNotFoundReVote_ReturnError() {
+        configureClockMockForTimeNotExceeds();
+
+        ResultActions resultActions = mockMvc.perform(MockMvcUtils.vote(MenuTestData.NOT_FOUND_MENU)
+                        .with(SecurityUtils.userHttpBasic(UserTestData.user1)))
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
+
+        ResultActionErrorsUtil.checkNotFoundFields(resultActions,
+                MenuServiceImpl.MENU_NOT_FOUND.formatted(MenuTestData.NOT_FOUND_MENU));
     }
 
     private void configureClockMockForTimeNotExceeds() {
