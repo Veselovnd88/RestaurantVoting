@@ -67,9 +67,7 @@ class VoteControllerTest extends AbstractRestControllerTest {
     @Test
     @SneakyThrows
     void vote_VoteTimeExceeds_VoteToTheMenu() {
-        LocalTime voteTime = LocalTime.of(23, 3, 0);
-        Mockito.when(clock.instant())
-                .thenReturn(LocalDateTime.of(VoteTestData.VOTED_AT_DATE, voteTime).toInstant(ZoneOffset.UTC));
+        LocalTime voteTime = configureClockMockForTimeExceeds();
 
         ResultActions resultActions = mockMvc.perform(MockMvcUtils.vote(MenuTestData.BURGER_MENU_ID)
                 .with(SecurityUtils.userHttpBasic(UserTestData.user2)));
@@ -117,8 +115,39 @@ class VoteControllerTest extends AbstractRestControllerTest {
                 MenuServiceImpl.MENU_NOT_FOUND.formatted(MenuTestData.NOT_FOUND_MENU));
     }
 
+    @Test
+    @SneakyThrows
+    void removeVote_AllOk_RemoveVote() {
+        configureClockMockForTimeNotExceeds();
+
+        mockMvc.perform(MockMvcUtils.removeVote().with(SecurityUtils.userHttpBasic(UserTestData.user1)))
+                .andExpect(MockMvcResultMatchers.status().isNoContent());
+
+        MenuDto sushiMenu = menuService.getMenuByIdWithDishesAndVotes(MenuTestData.SUSHI_MENU_ID);
+        Assertions.assertThat(sushiMenu.votes()).flatExtracting(VoteDto::getUser).doesNotContain(UserTestData.user1Dto);
+    }
+
+    @Test
+    @SneakyThrows
+    void removeVote_TimeExceeds_ReturnError() {
+        LocalTime voteTime = configureClockMockForTimeExceeds();
+
+        ResultActions resultActions = mockMvc.perform(MockMvcUtils.removeVote().with(SecurityUtils.userHttpBasic(UserTestData.user1)))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+
+        ResultActionErrorsUtil.checkVoteLimitExceedError(resultActions,
+                VoteServiceImpl.VOTE_AFTER_LIMIT.formatted(UserTestData.USER1_ID, limitTime, voteTime));
+    }
+
     private void configureClockMockForTimeNotExceeds() {
         Mockito.when(clock.instant())
                 .thenReturn(LocalDateTime.of(VoteTestData.VOTED_AT_DATE, LocalTime.of(22, 0, 0)).toInstant(ZoneOffset.UTC));
+    }
+
+    private LocalTime configureClockMockForTimeExceeds() {
+        LocalTime voteTime = LocalTime.of(23, 3, 0);
+        Mockito.when(clock.instant())
+                .thenReturn(LocalDateTime.of(VoteTestData.VOTED_AT_DATE, voteTime).toInstant(ZoneOffset.UTC));
+        return voteTime;
     }
 }
