@@ -1,7 +1,9 @@
 package ru.veselov.restaurantvoting.service;
 
+import org.springframework.lang.NonNull;
 import ru.veselov.restaurantvoting.dto.MenuDto;
 import ru.veselov.restaurantvoting.dto.NewMenuDto;
+import ru.veselov.restaurantvoting.model.Menu;
 
 import java.util.List;
 
@@ -11,9 +13,12 @@ public interface MenuService {
 
     MenuDto update(int id, NewMenuDto menuDto);
 
-    MenuDto getMenuById(int id);
+    MenuDto getMenuByIdWithDishesAndVotes(int id);
 
     List<MenuDto> getMenusByRestaurant(int restaurantId);
 
     void deleteMenu(int id);
+
+    @NonNull
+    Menu findMenuById(int id);
 }

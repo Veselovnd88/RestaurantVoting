@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -27,6 +28,7 @@ import java.net.URI;
 @RestController
 @RequestMapping(value = DishAdminController.REST_URL)
 @RequiredArgsConstructor
+@SecurityRequirement(name = "basicAuth")
 @Tag(name = "Dish management", description = "Manage dishes for admin")
 public class DishAdminController {
 

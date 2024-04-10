@@ -19,9 +19,9 @@ FROM restaurant;
 ALTER SEQUENCE global_seq RESTART WITH 100000;
 
 INSERT INTO users (name, email, password, registered)
-VALUES ('User1', 'user@yandex.ru', 'password', '2024-03-06 00:00:01'),
-       ('Admin', 'admin@gmail.com', 'admin', '2024-03-06 00:00:01'),
-       ('User2', 'user2@gmail.com', 'another', '2024-03-06 00:00:01');
+VALUES ('User1', 'user@yandex.ru', '$2a$10$9uj7bHjBG/mJ612n7WIw8eFTLZPb6AplrSLk3SNlXwM0Gx3fXv6HW', '2024-03-06 00:00:01'),
+       ('Admin', 'admin@gmail.com', '$2a$10$hJ715fui1n.CAgq81eAH.u5wz2WHGoAO3iudAiPpzeW61YsOjSA7m', '2024-03-06 00:00:01'),
+       ('User2', 'user2@gmail.com', '$2a$10$Y9AkgdJzKBoDBNDDRA/fqe1UqWBADSdjdh7xTWx9f5Fc/qLW8Mf9y', '2024-03-06 00:00:01');
 
 INSERT INTO user_role (role, user_id)
 VALUES ('USER', 100000),
@@ -53,5 +53,11 @@ VALUES ('Unagi', 40000, 100006),         --9
 INSERT INTO vote (user_id, voted_at, menu_id)
 VALUES (100000, '2024-03-06', 100006), --18
        (100001, '2024-03-06', 100006), --19
-       (100002, '2024-03-06', 100006), --20
-       (100000, '2024-03-06', 100007) --21
+       (100002, '2024-03-06', 100006); --20
+
+INSERT INTO users (name, email, password)
+VALUES
+    ('User3', 'user3@gmail.com', '$2a$10$Y9AkgdJzKBoDBNDDRA/fqe1UqWBADSdjdh7xTWx9f5Fc/qLW8Mf9y'); --another id 21
+
+INSERT INTO user_role (role, user_id)
+VALUES ('USER', 100021);

@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -21,6 +22,7 @@ import java.util.List;
 @RestController
 @RequestMapping(value = DishController.REST_URL)
 @RequiredArgsConstructor
+@SecurityRequirement(name = "basicAuth")
 @Tag(name = "Dish information", description = "Retrieving data about dishes")
 public class DishController {
 

@@ -46,4 +46,17 @@ public class Vote extends AbstractBaseEntity {
         this.votedAt = votedAt;
         this.user = user;
     }
+
+    public Vote(Integer id, LocalDate votedAt, User user, Menu menu) {
+        super(id);
+        this.votedAt = votedAt;
+        this.user = user;
+        this.menu = menu;
+    }
+
+    public Vote(User user, Menu menu, LocalDate localDate) {
+        this.user = user;
+        this.menu = menu;
+        this.votedAt = localDate;
+    }
 }

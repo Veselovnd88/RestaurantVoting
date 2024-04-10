@@ -4,6 +4,7 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.veselov.restaurantvoting.dto.MenuDto;
@@ -22,6 +23,7 @@ import java.util.List;
 @Slf4j
 public class MenuServiceImpl implements MenuService {
 
+    public static final String MENU_NOT_FOUND = "Menu with id: %s not found";
     private static final Sort SORT_BY_DATE = Sort.by(Sort.Direction.DESC, "addedAt");
 
     private final MenuRepository repository;
@@ -33,7 +35,7 @@ public class MenuServiceImpl implements MenuService {
      */
     @Override
     @Transactional
-    public MenuDto create(int restaurantId, NewMenuDto menuDto) {
+    public MenuDto create(int restaurantId, NewMenuDto menuDto) {//FIXME check constraints for dishes
         Restaurant restaurant = restaurantRepository.findById(restaurantId)
                 .orElseThrow(() -> new EntityNotFoundException("Restaurant not found"));
         Menu menu = mapper.toEntity(menuDto);
@@ -52,9 +54,9 @@ public class MenuServiceImpl implements MenuService {
      */
     @Override
     @Transactional
-    public MenuDto update(int id, NewMenuDto menuDto) {
+    public MenuDto update(int id, NewMenuDto menuDto) {//FIXME check constraints for dishes
         Menu menu = repository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("No menu found with id: %s".formatted(id)));
+                .orElseThrow(() -> new EntityNotFoundException(MENU_NOT_FOUND.formatted(id)));
         mapper.toEntityUpdate(menu, menuDto);
         Menu updated = repository.save(menu);
         log.info("Menu id: {} updated", id);
@@ -68,10 +70,10 @@ public class MenuServiceImpl implements MenuService {
      * @return menu Dto with dishes but without votes
      */
     @Override
-    public MenuDto getMenuById(int id) {
+    public MenuDto getMenuByIdWithDishesAndVotes(int id) {
         log.info("Retrieving menu by id: {}", id);
         Menu menu = repository.findByIdWithDishesAndVotes(id)
-                .orElseThrow(() -> new EntityNotFoundException("No menu found with id"));
+                .orElseThrow(() -> new EntityNotFoundException(MENU_NOT_FOUND.formatted(id)));
         return mapper.toDto(menu);
     }
 
@@ -97,5 +99,12 @@ public class MenuServiceImpl implements MenuService {
     public void deleteMenu(int id) {
         repository.deleteById(id);
         log.info("Menu with id: {} deleted", id);
+    }
+
+    @Override
+    @NonNull
+    public Menu findMenuById(int id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(MENU_NOT_FOUND.formatted(id)));
     }
 }
