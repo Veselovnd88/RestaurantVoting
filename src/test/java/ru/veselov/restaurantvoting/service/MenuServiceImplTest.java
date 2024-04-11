@@ -13,6 +13,9 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import ru.veselov.restaurantvoting.dto.MenuDto;
+import ru.veselov.restaurantvoting.exception.MenuConflictException;
+import ru.veselov.restaurantvoting.exception.ObjectAlreadyExistsException;
+import ru.veselov.restaurantvoting.exception.RestaurantNotFoundException;
 import ru.veselov.restaurantvoting.mapper.DishMapper;
 import ru.veselov.restaurantvoting.mapper.DishMapperImpl;
 import ru.veselov.restaurantvoting.mapper.MenuMapper;
@@ -54,6 +57,7 @@ class MenuServiceImplTest {
     void create_AllOk_ShouldSaveNewMenuWithDishes() {
         Mockito.when(restaurantRepository.findById(Mockito.anyInt()))
                 .thenReturn(Optional.of(RestaurantTestData.sushiRestaurant));
+        Mockito.when(menuRepository.existsByRestaurantIdAndDate(Mockito.anyInt(), Mockito.any())).thenReturn(false);
 
         menuService.create(RestaurantTestData.SUSHI_ID, MenuTestData.menuDtoToCreate);
 
@@ -65,11 +69,27 @@ class MenuServiceImplTest {
     }
 
     @Test
+    void create_MenuForThisDateAlreadyExists_ThrowException() {
+        Mockito.when(restaurantRepository.findById(Mockito.anyInt()))
+                .thenReturn(Optional.of(RestaurantTestData.sushiRestaurant));
+        Mockito.when(menuRepository.existsByRestaurantIdAndDate(Mockito.anyInt(), Mockito.any())).thenReturn(true);
+
+        Assertions.assertThatExceptionOfType(MenuConflictException.class).isThrownBy(
+                        () -> menuService.create(RestaurantTestData.SUSHI_ID, MenuTestData.menuDtoToCreateForConflict))
+                .isInstanceOf(ObjectAlreadyExistsException.class)
+                .withMessage(MenuConflictException.MESSAGE_CONFLICT
+                        .formatted(RestaurantTestData.SUSHI_ID, MenuTestData.ADDED_DATE));
+        Mockito.verify(menuRepository, Mockito.never()).save(Mockito.any());
+    }
+
+    @Test
     void create_NoRestaurant_ThrowException() {
         Mockito.when(restaurantRepository.findById(Mockito.anyInt())).thenReturn(Optional.empty());
 
-        Assertions.assertThatThrownBy(() -> menuService.create(RestaurantTestData.SUSHI_ID, MenuTestData.menuDtoToCreate))
-                .isInstanceOf(EntityNotFoundException.class);
+        Assertions.assertThatExceptionOfType(RestaurantNotFoundException.class)
+                .isThrownBy(() -> menuService.create(RestaurantTestData.SUSHI_ID, MenuTestData.menuDtoToCreate))
+                .isInstanceOf(EntityNotFoundException.class)
+                .withMessage(RestaurantNotFoundException.MESSAGE_WITH_ID.formatted(RestaurantTestData.SUSHI_ID));
         Mockito.verifyNoInteractions(menuRepository);
     }
 

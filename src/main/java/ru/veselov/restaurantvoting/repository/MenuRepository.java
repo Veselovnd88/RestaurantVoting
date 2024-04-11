@@ -26,4 +26,11 @@ public interface MenuRepository extends JpaRepository<Menu, Integer> {
     @EntityGraph(attributePaths = {"dishes"})
     @Query("SELECT m FROM Menu m WHERE m.restaurant.id=:restaurantId")
     List<Menu> findByRestaurantId(@Param("restaurantId") int restaurantId, Sort sort);
+
+    @Query("SELECT CASE WHEN COUNT(m)> 0 THEN TRUE ELSE FALSE END FROM Menu m " +
+            "WHERE m.addedAt= :date AND m.restaurant.id= :restaurantId")
+    boolean existsByRestaurantIdAndDate(int restaurantId, @NonNull LocalDate date);
+
+    @EntityGraph(attributePaths = {"restaurant"})
+    Optional<Menu> findById(int id);
 }
