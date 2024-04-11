@@ -28,6 +28,7 @@ public class GlobalExceptionHandler {
         ProblemDetail problemDetail = createProblemDetail(HttpStatus.NOT_FOUND, e);
         problemDetail.setTitle(OBJECT_NOT_FOUND);
         problemDetail.setProperty(ERROR_CODE, ErrorCode.NOT_FOUND.toString());
+        log.warn(createLogMessageWithCauseAndLine(e));
         return problemDetail;
     }
 
@@ -36,6 +37,7 @@ public class GlobalExceptionHandler {
         ProblemDetail problemDetail = createProblemDetail(HttpStatus.BAD_REQUEST, e);
         problemDetail.setTitle(LIMIT_FOR_VOTING_EXCEEDED);
         problemDetail.setProperty(ERROR_CODE, ErrorCode.BAD_REQUEST.toString());
+        createLogMessageWithCauseAndLine(e);
         return problemDetail;
     }
 
@@ -44,7 +46,12 @@ public class GlobalExceptionHandler {
         ProblemDetail problemDetail = createProblemDetail(HttpStatus.CONFLICT, e);
         problemDetail.setTitle(OBJECT_ALREADY_EXISTS);
         problemDetail.setProperty(ERROR_CODE, ErrorCode.CONFLICT.toString());
+        createLogMessageWithCauseAndLine(e);
         return problemDetail;
+    }
+
+    private static String createLogMessageWithCauseAndLine(Exception e) {
+        return e.getMessage().concat("; caused here: ").concat(e.getStackTrace()[0].toString());
     }
 
     private ProblemDetail createProblemDetail(HttpStatus status, Exception e) {

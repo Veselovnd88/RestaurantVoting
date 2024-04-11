@@ -1,6 +1,5 @@
 package ru.veselov.restaurantvoting.service;
 
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
@@ -10,6 +9,8 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.veselov.restaurantvoting.dto.MenuDto;
 import ru.veselov.restaurantvoting.dto.NewMenuDto;
 import ru.veselov.restaurantvoting.exception.MenuConflictException;
+import ru.veselov.restaurantvoting.exception.MenuNotFoundException;
+import ru.veselov.restaurantvoting.exception.RestaurantNotFoundException;
 import ru.veselov.restaurantvoting.mapper.MenuMapper;
 import ru.veselov.restaurantvoting.model.Menu;
 import ru.veselov.restaurantvoting.model.Restaurant;
@@ -24,9 +25,7 @@ import java.util.List;
 @Slf4j
 public class MenuServiceImpl implements MenuService {
 
-    public static final String MENU_NOT_FOUND = "Menu with id: %s not found";
     private static final Sort SORT_BY_DATE = Sort.by(Sort.Direction.DESC, "addedAt");
-    public static final String MENU_CONFLICT = "Menu of [restaurant: %s] for [date: %s] already exists";
 
     private final MenuRepository repository;
     private final RestaurantRepository restaurantRepository;
@@ -35,18 +34,15 @@ public class MenuServiceImpl implements MenuService {
     /**
      * Create new menu for restaurant for date
      *
-     * @throws MenuConflictException   if menu for this date already exists
-     * @throws EntityNotFoundException if restaurant not exists
+     * @throws MenuConflictException if menu for this date already exists
+     * @throws MenuNotFoundException if restaurant doesn't exist
      */
     @Override
     @Transactional
     public MenuDto create(int restaurantId, NewMenuDto menuDto) {
         Restaurant restaurant = restaurantRepository.findById(restaurantId)
-                .orElseThrow(() -> new EntityNotFoundException("Restaurant not found"));
-        if (repository.existsByRestaurantIdAndDate(restaurantId, menuDto.addedAt())) {
-            log.warn(MENU_CONFLICT.formatted(restaurantId, menuDto.addedAt()));
-            throw new MenuConflictException(MENU_CONFLICT.formatted(restaurantId, menuDto.addedAt()));
-        }
+                .orElseThrow(() -> new RestaurantNotFoundException(restaurantId));
+        checkIfMenuForDateExists(restaurantId, menuDto);
         Menu menu = mapper.toEntity(menuDto);
         menu.setRestaurant(restaurant);
 
@@ -60,12 +56,16 @@ public class MenuServiceImpl implements MenuService {
      *
      * @param id      menu id
      * @param menuDto menu data to update
+     * @throws MenuNotFoundException if menu with such id not found
+     * @throws MenuConflictException if menu for date that we want to change already exists
      */
     @Override
     @Transactional
     public MenuDto update(int id, NewMenuDto menuDto) {//FIXME check constraints for dishes
-        Menu menu = repository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(MENU_NOT_FOUND.formatted(id)));
+        Menu menu = repository.findById(id).orElseThrow(() -> new MenuNotFoundException(id));
+        if (!menuDto.addedAt().isEqual(menu.getAddedAt())) {
+            checkIfMenuForDateExists(menu.getRestaurant().id(), menuDto);
+        }
         mapper.toEntityUpdate(menu, menuDto);
         Menu updated = repository.save(menu);
         log.info("Menu id: {} updated", id);
@@ -73,16 +73,16 @@ public class MenuServiceImpl implements MenuService {
     }
 
     /**
-     * Get menu by id
+     * Get menu by id, and map to dto
      *
      * @param id menu id
      * @return menu Dto with dishes but without votes
+     * @throws MenuNotFoundException if menu for this id doesn't exist
      */
     @Override
     public MenuDto getMenuByIdWithDishesAndVotes(int id) {
         log.info("Retrieving menu by id: {}", id);
-        Menu menu = repository.findByIdWithDishesAndVotes(id)
-                .orElseThrow(() -> new EntityNotFoundException(MENU_NOT_FOUND.formatted(id)));
+        Menu menu = repository.findByIdWithDishesAndVotes(id).orElseThrow(() -> new MenuNotFoundException(id));
         return mapper.toDto(menu);
     }
 
@@ -110,10 +110,28 @@ public class MenuServiceImpl implements MenuService {
         log.info("Menu with id: {} deleted", id);
     }
 
+    /**
+     * Find menu by id without mapping to dto
+     *
+     * @param id menu id
+     * @throws MenuNotFoundException if menu doesn't exist
+     */
     @Override
     @NonNull
     public Menu findMenuById(int id) {
-        return repository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(MENU_NOT_FOUND.formatted(id)));
+        return repository.findById(id).orElseThrow(() -> new MenuNotFoundException(id));
+    }
+
+    /**
+     * Check if menu for restaurant and date already exists
+     *
+     * @param restaurantId restaurant id
+     * @param menuDto      dto for menu
+     * @throws MenuConflictException if menu for such date already exists
+     */
+    private void checkIfMenuForDateExists(int restaurantId, NewMenuDto menuDto) {
+        if (repository.existsByRestaurantIdAndDate(restaurantId, menuDto.addedAt())) {
+            throw new MenuConflictException(restaurantId, menuDto.addedAt());
+        }
     }
 }

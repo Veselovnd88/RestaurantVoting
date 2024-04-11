@@ -13,8 +13,8 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import ru.veselov.restaurantvoting.dto.MenuDto;
 import ru.veselov.restaurantvoting.dto.VoteDto;
+import ru.veselov.restaurantvoting.exception.MenuNotFoundException;
 import ru.veselov.restaurantvoting.service.MenuService;
-import ru.veselov.restaurantvoting.service.MenuServiceImpl;
 import ru.veselov.restaurantvoting.service.VoteService;
 import ru.veselov.restaurantvoting.service.VoteServiceImpl;
 import ru.veselov.restaurantvoting.util.MenuTestData;
@@ -99,7 +99,7 @@ class VoteControllerTest extends AbstractRestControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isNotFound());
 
         ResultActionErrorsUtil.checkNotFoundFields(resultActions,
-                MenuServiceImpl.MENU_NOT_FOUND.formatted(MenuTestData.NOT_FOUND_MENU));
+                MenuNotFoundException.MESSAGE_WITH_ID.formatted(MenuTestData.NOT_FOUND_MENU));
     }
 
     @Test
@@ -112,7 +112,7 @@ class VoteControllerTest extends AbstractRestControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isNotFound());
 
         ResultActionErrorsUtil.checkNotFoundFields(resultActions,
-                MenuServiceImpl.MENU_NOT_FOUND.formatted(MenuTestData.NOT_FOUND_MENU));
+                MenuNotFoundException.MESSAGE_WITH_ID.formatted(MenuTestData.NOT_FOUND_MENU));
     }
 
     @Test
