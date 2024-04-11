@@ -7,16 +7,19 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import ru.veselov.restaurantvoting.dto.DishDto;
 import ru.veselov.restaurantvoting.dto.MenuDto;
 import ru.veselov.restaurantvoting.service.DishService;
 import ru.veselov.restaurantvoting.service.MenuService;
+import ru.veselov.restaurantvoting.service.MenuServiceImpl;
 import ru.veselov.restaurantvoting.util.DishTestData;
 import ru.veselov.restaurantvoting.util.MenuTestData;
 import ru.veselov.restaurantvoting.util.MockMvcUtils;
 import ru.veselov.restaurantvoting.util.RestaurantTestData;
+import ru.veselov.restaurantvoting.util.ResultActionErrorsUtil;
 import ru.veselov.restaurantvoting.util.SecurityUtils;
 import ru.veselov.restaurantvoting.util.UserTestData;
 
@@ -33,19 +36,28 @@ class MenuAdminControllerTest extends AbstractRestControllerTest {
     @SneakyThrows
     void create_AllOk_CreateMenu() {
         mockMvc.perform(MockMvcUtils.createMenu(RestaurantTestData.SUSHI_ID, MenuTestData.menuDtoToCreate)
-                .with(SecurityUtils.userHttpBasic(UserTestData.admin)))
+                        .with(SecurityUtils.userHttpBasic(UserTestData.admin)))
                 .andExpect(MockMvcResultMatchers.status().isCreated())
                 .andExpect(MockMvcResultMatchers.header().exists("Location"))
-                .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(MenuTestData.MENU_DTO_MATCHER.contentJson(MenuTestData.createdMenuDto));
     }
 
     @Test
     @SneakyThrows
+    void create_MenuAlreadyExists_ReturnError() {
+        ResultActions resultActions = mockMvc.perform(MockMvcUtils.createMenu(RestaurantTestData.SUSHI_ID, MenuTestData.menuDtoToCreateForConflict)
+                .with(SecurityUtils.userHttpBasic(UserTestData.admin)));
+
+        ResultActionErrorsUtil.checkObjectAlreadyExistsError(resultActions,
+                MenuServiceImpl.MENU_CONFLICT.formatted(RestaurantTestData.SUSHI_ID, MenuTestData.ADDED_DATE));
+    }
+
+    @Test
+    @SneakyThrows
     void update_AllOk_UpdateMenuWithNewDish() {
         mockMvc.perform(MockMvcUtils.updateMenu(MenuTestData.SUSHI_MENU_ID, MenuTestData.menuDtoToUpdate)
-                .with(SecurityUtils.userHttpBasic(UserTestData.admin)))
+                        .with(SecurityUtils.userHttpBasic(UserTestData.admin)))
                 .andExpect(MockMvcResultMatchers.status().isOk());
         MenuDto foundMenu = menuService.getMenuByIdWithDishesAndVotes(MenuTestData.SUSHI_MENU_ID);
         Assertions.assertThat(foundMenu.dishes()).hasSize(1).flatExtracting(DishDto::id, DishDto::name, DishDto::price)
@@ -56,7 +68,7 @@ class MenuAdminControllerTest extends AbstractRestControllerTest {
     @SneakyThrows
     void update_AllOk_UpdateMenuWithRenamingDish() {
         mockMvc.perform(MockMvcUtils.updateMenu(MenuTestData.SUSHI_MENU_ID, MenuTestData.menuDtoToUpdateWithChangedDish)
-                .with(SecurityUtils.userHttpBasic(UserTestData.admin)))
+                        .with(SecurityUtils.userHttpBasic(UserTestData.admin)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -71,7 +83,7 @@ class MenuAdminControllerTest extends AbstractRestControllerTest {
     @SneakyThrows
     void delete_AllOk_ReturnNoContent() {
         mockMvc.perform(MockMvcUtils.deleteMenu(MenuTestData.SUSHI_MENU_ID)
-                .with(SecurityUtils.userHttpBasic(UserTestData.admin)))
+                        .with(SecurityUtils.userHttpBasic(UserTestData.admin)))
                 .andExpect(MockMvcResultMatchers.status().isNoContent());
 
         Assertions.assertThatThrownBy(() -> menuService.getMenuByIdWithDishesAndVotes(MenuTestData.SUSHI_MENU_ID))

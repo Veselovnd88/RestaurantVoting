@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.veselov.restaurantvoting.dto.MenuDto;
 import ru.veselov.restaurantvoting.dto.NewMenuDto;
+import ru.veselov.restaurantvoting.exception.MenuConflictException;
 import ru.veselov.restaurantvoting.mapper.MenuMapper;
 import ru.veselov.restaurantvoting.model.Menu;
 import ru.veselov.restaurantvoting.model.Restaurant;
@@ -25,6 +26,7 @@ public class MenuServiceImpl implements MenuService {
 
     public static final String MENU_NOT_FOUND = "Menu with id: %s not found";
     private static final Sort SORT_BY_DATE = Sort.by(Sort.Direction.DESC, "addedAt");
+    public static final String MENU_CONFLICT = "Menu of [restaurant: %s] for [date: %s] already exists";
 
     private final MenuRepository repository;
     private final RestaurantRepository restaurantRepository;
@@ -32,12 +34,19 @@ public class MenuServiceImpl implements MenuService {
 
     /**
      * Create new menu for restaurant for date
+     *
+     * @throws MenuConflictException   if menu for this date already exists
+     * @throws EntityNotFoundException if restaurant not exists
      */
     @Override
     @Transactional
-    public MenuDto create(int restaurantId, NewMenuDto menuDto) {//FIXME check constraints for dishes
+    public MenuDto create(int restaurantId, NewMenuDto menuDto) {
         Restaurant restaurant = restaurantRepository.findById(restaurantId)
                 .orElseThrow(() -> new EntityNotFoundException("Restaurant not found"));
+        if (repository.existsByRestaurantIdAndDate(restaurantId, menuDto.addedAt())) {
+            log.warn(MENU_CONFLICT.formatted(restaurantId, menuDto.addedAt()));
+            throw new MenuConflictException(MENU_CONFLICT.formatted(restaurantId, menuDto.addedAt()));
+        }
         Menu menu = mapper.toEntity(menuDto);
         menu.setRestaurant(restaurant);
 
