@@ -5,18 +5,18 @@ import org.mapstruct.IterableMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
-import org.mapstruct.ReportingPolicy;
 import ru.veselov.restaurantvoting.dto.MenuDto;
 import ru.veselov.restaurantvoting.dto.NewMenuDto;
 import ru.veselov.restaurantvoting.mapper.annotation.WithVotesAndDishes;
 import ru.veselov.restaurantvoting.mapper.annotation.WithoutVotes;
+import ru.veselov.restaurantvoting.mapper.config.MapStructConfig;
 import ru.veselov.restaurantvoting.model.Dish;
 import ru.veselov.restaurantvoting.model.Menu;
 
 import java.util.List;
 import java.util.Set;
 
-@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE,
+@Mapper(config = MapStructConfig.class,
         uses = {DishMapper.class, VoteMapper.class})
 public interface MenuMapper {
 
