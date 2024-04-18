@@ -20,6 +20,8 @@ public class ResultActionErrorsUtil {
 
     private static final String JSON_DETAIL = "$.detail";
 
+    public static final String JSON_INSTANCE = "$.instance";
+
     public static void checkNotFoundFields(ResultActions resultActions, String detail) throws Exception {
         checkProblemJsonCompatibility(resultActions);
         checkTimeStampIsNotEmpty(resultActions);
@@ -46,10 +48,21 @@ public class ResultActionErrorsUtil {
         checkTimeStampIsNotEmpty(resultActions);
         resultActions.andExpect(MockMvcResultMatchers.status().isConflict())
                 .andExpect(MockMvcResultMatchers.jsonPath(JSON_ERROR_CODE)
-                        .value(ErrorCode.CONFLICT.toString()))
+                        .value(ErrorCode.CONFLICT.name()))
                 .andExpect(MockMvcResultMatchers.jsonPath(JSON_TITLE)
                         .value(GlobalExceptionHandler.OBJECT_ALREADY_EXISTS))
                 .andExpect(MockMvcResultMatchers.jsonPath(JSON_DETAIL, Matchers.startsWith(detail)));
+    }
+
+    public static void checkConflictError(ResultActions resultActions, String detail, String url) throws Exception {
+        checkProblemJsonCompatibility(resultActions);
+        checkTimeStampIsNotEmpty(resultActions);
+        resultActions.andExpect(MockMvcResultMatchers.status().isConflict())
+                .andExpect(MockMvcResultMatchers.jsonPath(JSON_ERROR_CODE).value(ErrorCode.CONFLICT.name()))
+                .andExpect(MockMvcResultMatchers.jsonPath(JSON_TITLE)
+                        .value(GlobalExceptionHandler.OBJECT_ALREADY_EXISTS))
+                .andExpect(MockMvcResultMatchers.jsonPath(JSON_DETAIL).value(detail))
+                .andExpect(MockMvcResultMatchers.jsonPath(JSON_INSTANCE, Matchers.endsWith(url)));
     }
 
     private static void checkProblemJsonCompatibility(ResultActions resultActions) throws Exception {

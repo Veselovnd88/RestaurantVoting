@@ -50,6 +50,7 @@ CREATE TABLE dish
     name    VARCHAR(255) NOT NULL,
     price   INTEGER      NOT NULL,
     menu_id INTEGER      NOT NULL,
+    CONSTRAINT name_menu_idx UNIQUE (menu_id, name),
     FOREIGN KEY (menu_id) REFERENCES menu (id) ON DELETE CASCADE
 );
 

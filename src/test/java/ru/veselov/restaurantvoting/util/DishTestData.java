@@ -53,6 +53,8 @@ public class DishTestData {
 
     public static DishDto philadelphiaDto = new DishDto(100010, "Philadelphia", 30000);
 
+    public static DishDto philadelphiaDtoForConflict = new DishDto(null, "Philadelphia", 30000);
+
     public static DishDto tastyRollDto = new DishDto(TASTY_ROLL_ID, "TastyRoll", 55000);
 
     public static DishDto unagiDto = new DishDto(UNAGI_ID, "Unagi", 40000);
