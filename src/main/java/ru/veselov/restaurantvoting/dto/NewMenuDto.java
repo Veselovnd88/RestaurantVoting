@@ -7,6 +7,7 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import org.springframework.lang.Nullable;
+import ru.veselov.restaurantvoting.web.validaton.DifferentDishes;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -18,8 +19,10 @@ public record NewMenuDto(
 
         @NotNull
         LocalDate addedAt,
+
         @NotEmpty
         @Size(max = 5)
+        @DifferentDishes
         List<@Valid DishDto> dishes) {
 
     @JsonCreator //constructor need int for Jackson mapping

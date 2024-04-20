@@ -9,9 +9,11 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.lang.Nullable;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import ru.veselov.restaurantvoting.dto.ViolationError;
 import ru.veselov.restaurantvoting.exception.ErrorCode;
 import ru.veselov.restaurantvoting.exception.ObjectAlreadyExistsException;
 import ru.veselov.restaurantvoting.exception.VotingTimeLimitExceedsException;
@@ -19,6 +21,8 @@ import ru.veselov.restaurantvoting.util.ValidationUtil;
 
 import java.net.URI;
 import java.time.Instant;
+import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 @RestControllerAdvice
@@ -37,17 +41,31 @@ public class GlobalExceptionHandler {
     public static final Map<String, String> CONSTRAINTS_MAP = Map.of(
             UNIQUE_DISH_MENU_CONSTRAINT, DISH_MENU_EXISTS
     );
+    public static final String VALIDATION_ERROR = "Validation error";
+    public static final String VIOLATIONS = "violations";
 
     @ExceptionHandler(EntityNotFoundException.class)
     public ProblemDetail handleEntityNotFoundException(HttpServletRequest req, EntityNotFoundException e) {
         return createProblemDetail(req, HttpStatus.NOT_FOUND, e,
-                OBJECT_NOT_FOUND, Map.of(ERROR_CODE, ErrorCode.NOT_FOUND.name()), null);
+                OBJECT_NOT_FOUND, Map.of(ERROR_CODE, ErrorCode.NOT_FOUND.name()), null, true);
     }
 
     @ExceptionHandler(VotingTimeLimitExceedsException.class)
     public ProblemDetail handleVotingTimeLimitExceeds(HttpServletRequest req, VotingTimeLimitExceedsException e) {
         return createProblemDetail(req, HttpStatus.BAD_REQUEST, e,
-                LIMIT_FOR_VOTING_EXCEEDED, Map.of(ERROR_CODE, ErrorCode.BAD_REQUEST.name()), null);
+                LIMIT_FOR_VOTING_EXCEEDED, Map.of(ERROR_CODE, ErrorCode.BAD_REQUEST.name()), null, true);
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
+    public ProblemDetail handleMethodArgumentNotValidException(HttpServletRequest req, MethodArgumentNotValidException e) {
+        final List<ViolationError> violationErrors = e.getBindingResult().getFieldErrors().stream()
+                .map(error -> new ViolationError(
+                        error.getField(), error.getDefaultMessage(),
+                        formatValidationCurrentValue(error.getRejectedValue())))
+                .toList();
+        return createProblemDetail(req, HttpStatus.UNPROCESSABLE_ENTITY, e, VALIDATION_ERROR,
+                Map.of(VIOLATIONS, violationErrors), "Fields validation failed", false);
     }
 
     @ResponseStatus(HttpStatus.CONFLICT)  // 409
@@ -58,30 +76,46 @@ public class GlobalExceptionHandler {
         for (Map.Entry<String, String> entry : CONSTRAINTS_MAP.entrySet()) {
             if (lowerCaseMsg.contains(entry.getKey())) {
                 return createProblemDetail(req, HttpStatus.CONFLICT, e,
-                        OBJECT_ALREADY_EXISTS, Map.of(ERROR_CODE, ErrorCode.CONFLICT.name()), entry.getValue());
+                        OBJECT_ALREADY_EXISTS, Map.of(ERROR_CODE, ErrorCode.CONFLICT.name()), entry.getValue(), true);
             }
         }
         return createProblemDetail(req, HttpStatus.CONFLICT, e, OBJECT_NOT_FOUND,
-                Map.of(ERROR_CODE, ErrorCode.CONFLICT.name()), rootMsg);
+                Map.of(ERROR_CODE, ErrorCode.CONFLICT.name()), rootMsg, true);
     }
 
     @ExceptionHandler(ObjectAlreadyExistsException.class)
     public ProblemDetail handleObjectAlreadyExists(HttpServletRequest req, ObjectAlreadyExistsException e) {
-        return createProblemDetail(req, HttpStatus.CONFLICT, e, OBJECT_ALREADY_EXISTS, Map.of(ERROR_CODE, ErrorCode.CONFLICT.name()), null);
+        return createProblemDetail(req, HttpStatus.CONFLICT, e, OBJECT_ALREADY_EXISTS, Map.of(ERROR_CODE, ErrorCode.CONFLICT.name()), null, true);
     }
 
     private ProblemDetail createProblemDetail(HttpServletRequest req, HttpStatus status, Exception e,
-                                              String title, Map<String, String> props, @Nullable String detail) {
+                                              String title, Map<String, Object> props, @Nullable String detail,
+                                              boolean isLogging) {
         Throwable rootCause = ValidationUtil.getRootCause(e);
         String detailMsg = detail == null ? rootCause.getMessage() : detail;
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(status, detailMsg);
         problemDetail.setInstance(URI.create(req.getRequestURL().toString()));
-        for (Map.Entry<String, String> entry : props.entrySet()) {
+        for (Map.Entry<String, Object> entry : props.entrySet()) {
             problemDetail.setProperty(entry.getKey(), entry.getValue());
         }
         problemDetail.setProperty(TIMESTAMP, Instant.now());
         problemDetail.setTitle(title);
-        log.warn(detailMsg.concat("; caused here: ").concat(rootCause.getStackTrace()[0].toString()));
+        if (isLogging) {
+            log.warn(detailMsg.concat("; caused here: ").concat(rootCause.getStackTrace()[0].toString()));
+        }
         return problemDetail;
+    }
+
+    private String formatValidationCurrentValue(Object object) {
+        if (object == null) {
+            return "null";
+        }
+        if (object.toString().contains(object.getClass().getName())) {
+            return object.getClass().getSimpleName();
+        }
+        if (object instanceof Collection<?>) {
+            return "Collection elements validation failed";
+        }
+        return object.toString();
     }
 }

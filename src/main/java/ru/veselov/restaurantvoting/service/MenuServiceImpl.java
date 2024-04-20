@@ -56,12 +56,13 @@ public class MenuServiceImpl implements MenuService {
      *
      * @param id      menu id
      * @param menuDto menu data to update
-     * @throws MenuNotFoundException if menu with such id not found
-     * @throws MenuConflictException if menu for date that we want to change already exists
+     * @throws MenuNotFoundException                                   if menu with such id not found
+     * @throws MenuConflictException                                   if menu for date that we want to change already exists
+     * @throws org.springframework.dao.DataIntegrityViolationException if dish exists for this menu
      */
     @Override
     @Transactional
-    public MenuDto update(int id, NewMenuDto menuDto) {//FIXME check constraints for dishes
+    public MenuDto update(int id, NewMenuDto menuDto) {
         Menu menu = repository.findById(id).orElseThrow(() -> new MenuNotFoundException(id));
         if (!menuDto.addedAt().isEqual(menu.getAddedAt())) {
             checkIfMenuForDateExists(menu.getRestaurant().id(), menuDto);
