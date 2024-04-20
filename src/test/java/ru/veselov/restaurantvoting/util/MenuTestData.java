@@ -52,10 +52,16 @@ public class MenuTestData {
     public static NewMenuDto menuDtoToCreate = new NewMenuDto(null, ADDED_DATE.plusDays(1),
             List.of(DishTestData.newTastyDish));
 
+    public static NewMenuDto menuDtoToCreateSimilarDishes = new NewMenuDto(null, ADDED_DATE.plusDays(1),
+            List.of(DishTestData.newTastyDish, DishTestData.newTastyDish));
+
     public static NewMenuDto menuDtoToCreateForConflict = new NewMenuDto(null, ADDED_DATE,
             List.of(DishTestData.newTastyDish));
 
     public static NewMenuDto menuDtoToUpdate = new NewMenuDto(SUSHI_MENU_ID, ADDED_DATE, List.of(DishTestData.newTastyDish));
+
+    public static NewMenuDto menuDtoToUpdateWithSimilarDishes = new NewMenuDto(SUSHI_MENU_ID, ADDED_DATE,
+            List.of(DishTestData.newTastyDish, DishTestData.newTastyDish));
 
     public static NewMenuDto menuDtoToUpdateWithChangedDish = new NewMenuDto(SUSHI_MENU_ID, ADDED_DATE,
             List.of(DishTestData.philadelphiaDto, DishTestData.tastyRollDto, DishTestData.changedUnagiDto));

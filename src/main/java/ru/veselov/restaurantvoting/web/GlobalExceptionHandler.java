@@ -43,6 +43,7 @@ public class GlobalExceptionHandler {
     );
     public static final String VALIDATION_ERROR = "Validation error";
     public static final String VIOLATIONS = "violations";
+    public static final String FIELDS_VALIDATION_FAILED = "Fields validation failed";
 
     @ExceptionHandler(EntityNotFoundException.class)
     public ProblemDetail handleEntityNotFoundException(HttpServletRequest req, EntityNotFoundException e) {
@@ -65,7 +66,9 @@ public class GlobalExceptionHandler {
                         formatValidationCurrentValue(error.getRejectedValue())))
                 .toList();
         return createProblemDetail(req, HttpStatus.UNPROCESSABLE_ENTITY, e, VALIDATION_ERROR,
-                Map.of(VIOLATIONS, violationErrors), "Fields validation failed", false);
+                Map.of(ERROR_CODE, ErrorCode.VALIDATION.name(),
+                        VIOLATIONS, violationErrors),
+                FIELDS_VALIDATION_FAILED, false);
     }
 
     @ResponseStatus(HttpStatus.CONFLICT)  // 409

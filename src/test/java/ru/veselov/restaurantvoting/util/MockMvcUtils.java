@@ -19,6 +19,10 @@ import ru.veselov.restaurantvoting.web.VoteController;
 @UtilityClass
 public class MockMvcUtils {
 
+    public static final String MENU_RESTAURANTS_ID_URL = MenuAdminController.REST_URL + "/restaurants/%s";
+
+    public static final String MENU_ID_URL = MenuAdminController.REST_URL + "/%s";
+
     public static MockHttpServletRequestBuilder createRestaurant(NewRestaurantDto restaurantDto) {
         return MockMvcRequestBuilders.post(RestaurantAdminController.REST_URL)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -76,13 +80,13 @@ public class MockMvcUtils {
     }
 
     public static MockHttpServletRequestBuilder createMenu(int restaurantId, NewMenuDto menuDto) {
-        return MockMvcRequestBuilders.post(MenuAdminController.REST_URL + "/restaurants/" + restaurantId)
+        return MockMvcRequestBuilders.post(MENU_RESTAURANTS_ID_URL.formatted(restaurantId))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(menuDto));
     }
 
     public static MockHttpServletRequestBuilder updateMenu(int id, NewMenuDto menuDto) {
-        return MockMvcRequestBuilders.put(MenuAdminController.REST_URL + "/" + id)
+        return MockMvcRequestBuilders.put(MENU_ID_URL.formatted(id))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(menuDto));
     }

@@ -16,6 +16,8 @@ public class ResultActionErrorsUtil {
 
     private static final String JSON_VIOLATIONS_FIELD = "$.violations[%s].name";
 
+    private static final String JSON_VIOLATIONS_MESSAGE = "$.violations[%s].message";
+
     private static final String JSON_TITLE = "$.title";
 
     private static final String JSON_DETAIL = "$.detail";
@@ -47,10 +49,8 @@ public class ResultActionErrorsUtil {
         checkProblemJsonCompatibility(resultActions);
         checkTimeStampIsNotEmpty(resultActions);
         resultActions.andExpect(MockMvcResultMatchers.status().isConflict())
-                .andExpect(MockMvcResultMatchers.jsonPath(JSON_ERROR_CODE)
-                        .value(ErrorCode.CONFLICT.name()))
-                .andExpect(MockMvcResultMatchers.jsonPath(JSON_TITLE)
-                        .value(GlobalExceptionHandler.OBJECT_ALREADY_EXISTS))
+                .andExpect(MockMvcResultMatchers.jsonPath(JSON_ERROR_CODE).value(ErrorCode.CONFLICT.name()))
+                .andExpect(MockMvcResultMatchers.jsonPath(JSON_TITLE).value(GlobalExceptionHandler.OBJECT_ALREADY_EXISTS))
                 .andExpect(MockMvcResultMatchers.jsonPath(JSON_DETAIL, Matchers.startsWith(detail)));
     }
 
@@ -63,6 +63,20 @@ public class ResultActionErrorsUtil {
                         .value(GlobalExceptionHandler.OBJECT_ALREADY_EXISTS))
                 .andExpect(MockMvcResultMatchers.jsonPath(JSON_DETAIL).value(detail))
                 .andExpect(MockMvcResultMatchers.jsonPath(JSON_INSTANCE, Matchers.endsWith(url)));
+    }
+
+    public static void checkValidationError(ResultActions resultActions, String detail, String url, String field,
+                                            int fieldIndex) throws Exception {
+        checkProblemJsonCompatibility(resultActions);
+        checkTimeStampIsNotEmpty(resultActions);
+        resultActions.andExpect(MockMvcResultMatchers.status().isUnprocessableEntity())
+                .andExpect(MockMvcResultMatchers.jsonPath(JSON_ERROR_CODE).value(ErrorCode.VALIDATION.name()))
+                .andExpect(MockMvcResultMatchers.jsonPath(JSON_TITLE)
+                        .value(GlobalExceptionHandler.VALIDATION_ERROR))
+                .andExpect(MockMvcResultMatchers.jsonPath(JSON_DETAIL, Matchers.startsWith(detail)))
+                .andExpect(MockMvcResultMatchers.jsonPath(JSON_INSTANCE, Matchers.endsWith(url)))
+                .andExpect(MockMvcResultMatchers.jsonPath(JSON_VIOLATIONS_FIELD.formatted(fieldIndex)).value(field))
+                .andExpect(MockMvcResultMatchers.jsonPath(JSON_VIOLATIONS_MESSAGE.formatted(fieldIndex)).isNotEmpty());
     }
 
     private static void checkProblemJsonCompatibility(ResultActions resultActions) throws Exception {
