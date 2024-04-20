@@ -23,8 +23,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import ru.veselov.restaurantvoting.dto.InputMenuDto;
 import ru.veselov.restaurantvoting.dto.MenuDto;
-import ru.veselov.restaurantvoting.dto.NewMenuDto;
 import ru.veselov.restaurantvoting.service.MenuService;
 
 import java.net.URI;
@@ -47,7 +47,7 @@ public class MenuAdminController {
                     content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                             schema = @Schema(implementation = MenuDto.class))})})
     @PostMapping("/restaurants/{restaurantId}")
-    public ResponseEntity<MenuDto> add(@PathVariable int restaurantId, @Valid @RequestBody NewMenuDto menuDto) {
+    public ResponseEntity<MenuDto> add(@PathVariable int restaurantId, @Valid @RequestBody InputMenuDto menuDto) {
         MenuDto created = service.create(restaurantId, menuDto);
         URI uriOfResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(MenuController.REST_URL + "/{id}")
@@ -62,7 +62,7 @@ public class MenuAdminController {
                             schema = @Schema(implementation = MenuDto.class))})})
 
     @PutMapping("/{id}")
-    public MenuDto update(@PathVariable int id, @Valid @RequestBody NewMenuDto menuDto) {
+    public MenuDto update(@PathVariable int id, @Valid @RequestBody InputMenuDto menuDto) {
         return service.update(id, menuDto);
     }
 

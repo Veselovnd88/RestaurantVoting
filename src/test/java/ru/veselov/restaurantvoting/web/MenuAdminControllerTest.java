@@ -10,8 +10,8 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import ru.veselov.restaurantvoting.dto.DishDto;
+import ru.veselov.restaurantvoting.dto.InputMenuDto;
 import ru.veselov.restaurantvoting.dto.MenuDto;
-import ru.veselov.restaurantvoting.dto.NewMenuDto;
 import ru.veselov.restaurantvoting.exception.RestaurantNotFoundException;
 import ru.veselov.restaurantvoting.service.DishService;
 import ru.veselov.restaurantvoting.service.MenuService;
@@ -42,7 +42,7 @@ class MenuAdminControllerTest extends AbstractRestControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isCreated())
                 .andExpect(MockMvcResultMatchers.header().exists("Location"))
                 .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(MenuTestData.MENU_DTO_MATCHER.contentJson(MenuTestData.createdMenuDto));
+                .andExpect(MenuTestData.MENU_DTO_MATCHER.contentJson(MenuTestData.createdMenuDto)); //FIXME
     }
 
     @Test
@@ -73,8 +73,8 @@ class MenuAdminControllerTest extends AbstractRestControllerTest {
                         .with(SecurityUtils.userHttpBasic(UserTestData.admin)))
                 .andExpect(MockMvcResultMatchers.status().isOk());
         MenuDto foundMenu = menuService.getMenuByIdWithDishesAndVotes(MenuTestData.SUSHI_MENU_ID);
-        Assertions.assertThat(foundMenu.dishes()).hasSize(1).flatExtracting(DishDto::id, DishDto::name, DishDto::price)
-                .contains(100022, "veryTasty", 10000);
+        Assertions.assertThat(foundMenu.dishes()).hasSize(2).flatExtracting(DishDto::id, DishDto::name, DishDto::price)
+                .containsExactly(100022, "veryTasty", 10000, 100023, "veryTasty2", 10000);
     }
 
     @Test
@@ -95,8 +95,8 @@ class MenuAdminControllerTest extends AbstractRestControllerTest {
     @SneakyThrows
     void update_ChangeToDateOfExistingMenu_ReturnError() {
         MenuDto menuDto = menuService.create(RestaurantTestData.SUSHI_ID, MenuTestData.menuDtoToCreate);
-        NewMenuDto menuDtoToUpdateForConflict =
-                new NewMenuDto(menuDto.id(), MenuTestData.ADDED_DATE, List.of(DishTestData.savedWithMenuNewTastyDish));
+        InputMenuDto menuDtoToUpdateForConflict =
+                new InputMenuDto(menuDto.id(), MenuTestData.ADDED_DATE, List.of(DishTestData.savedWithMenuNewTastyDish));
         ResultActions resultActions = mockMvc
                 .perform(MockMvcUtils.updateMenu(menuDto.id(), menuDtoToUpdateForConflict)
                         .with(SecurityUtils.userHttpBasic(UserTestData.admin)));

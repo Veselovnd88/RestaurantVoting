@@ -6,8 +6,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.veselov.restaurantvoting.dto.InputMenuDto;
 import ru.veselov.restaurantvoting.dto.MenuDto;
-import ru.veselov.restaurantvoting.dto.NewMenuDto;
 import ru.veselov.restaurantvoting.exception.MenuNotFoundException;
 import ru.veselov.restaurantvoting.exception.RestaurantNotFoundException;
 import ru.veselov.restaurantvoting.mapper.MenuMapper;
@@ -39,7 +39,7 @@ public class MenuServiceImpl implements MenuService {
      */
     @Override
     @Transactional
-    public MenuDto create(int restaurantId, NewMenuDto menuDto) {
+    public MenuDto create(int restaurantId, InputMenuDto menuDto) {
         Restaurant restaurant = restaurantRepository.findById(restaurantId)
                 .orElseThrow(() -> new RestaurantNotFoundException(restaurantId));
         Menu menu = mapper.toEntity(menuDto);
@@ -61,7 +61,7 @@ public class MenuServiceImpl implements MenuService {
      */
     @Override
     @Transactional
-    public MenuDto update(int id, NewMenuDto menuDto) {
+    public MenuDto update(int id, InputMenuDto menuDto) {
         Menu menu = repository.findById(id).orElseThrow(() -> new MenuNotFoundException(id));
         mapper.toEntityUpdate(menu, menuDto);
         Menu updated = repository.save(menu);

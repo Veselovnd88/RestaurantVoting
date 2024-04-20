@@ -6,7 +6,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import ru.veselov.restaurantvoting.dto.MenuDto;
-import ru.veselov.restaurantvoting.dto.NewMenuDto;
+import ru.veselov.restaurantvoting.dto.InputMenuDto;
 import ru.veselov.restaurantvoting.mapper.annotation.WithVotesAndDishes;
 import ru.veselov.restaurantvoting.mapper.annotation.WithoutVotes;
 import ru.veselov.restaurantvoting.mapper.config.MapStructConfig;
@@ -43,14 +43,14 @@ public interface MenuMapper {
 
     @Mapping(target = "addedAt", source = "addedAt")
     @Mapping(target = "dishes", source = "dishes")
-    Menu toEntity(NewMenuDto menuDto);
+    Menu toEntity(InputMenuDto menuDto);
 
     @Mapping(target = "addedAt", source = "addedAt")
     @Mapping(target = "dishes", source = "dishes")
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "votes", ignore = true)
     @Mapping(target = "restaurant", ignore = true)
-    Menu toEntityUpdate(@MappingTarget Menu menu, NewMenuDto menuDto);
+    Menu toEntityUpdate(@MappingTarget Menu menu, InputMenuDto menuDto);
 
     @AfterMapping
     default void bindMenuToDishes(@MappingTarget Menu menu) {
