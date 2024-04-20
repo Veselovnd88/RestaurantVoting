@@ -14,12 +14,12 @@ import java.util.stream.Collectors;
 @Slf4j
 public class DifferentDishesValidator implements ConstraintValidator<DifferentDishes, List<DishDto>> {
 
-    private String constraintMessage;
+    public static final String CONSTRAINT_MESSAGE = "Dishes names should be different in one menu, duplicates: %s";
+
 
     @Override
     public void initialize(DifferentDishes constraintAnnotation) {
         ConstraintValidator.super.initialize(constraintAnnotation);
-        constraintMessage = constraintAnnotation.message();
     }
 
     @Override
@@ -33,7 +33,7 @@ public class DifferentDishesValidator implements ConstraintValidator<DifferentDi
                 .filter(name -> !uniques.add(name))
                 .collect(Collectors.toSet());
         context.disableDefaultConstraintViolation();
-        context.buildConstraintViolationWithTemplate(constraintMessage.formatted(StringUtils.join(duplicates, ",")))
+        context.buildConstraintViolationWithTemplate(CONSTRAINT_MESSAGE.formatted(StringUtils.join(duplicates, ",")))
                 .addConstraintViolation();
         return duplicates.isEmpty();
     }
