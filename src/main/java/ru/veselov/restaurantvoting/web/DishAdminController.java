@@ -7,10 +7,12 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,6 +30,7 @@ import java.net.URI;
 @RestController
 @RequestMapping(value = DishAdminController.REST_URL)
 @RequiredArgsConstructor
+@Validated
 @SecurityRequirement(name = "basicAuth")
 @Tag(name = "Dish management", description = "Manage dishes for admin")
 public class DishAdminController {
@@ -43,8 +46,8 @@ public class DishAdminController {
                             schema = @Schema(implementation = DishDto.class))})})
     @PostMapping("/menus/{menuId}")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<DishDto> create(@PathVariable int menuId, @RequestBody DishDto dishDto) {
-        DishDto created = service.save(menuId,dishDto);
+    public ResponseEntity<DishDto> create(@PathVariable int menuId, @Valid @RequestBody DishDto dishDto) {
+        DishDto created = service.save(menuId, dishDto);
         URI uriOfResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(DishController.REST_URL + "/{id}")
                 .buildAndExpand(created.id()).toUri();
@@ -57,7 +60,7 @@ public class DishAdminController {
                     content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                             schema = @Schema(implementation = DishDto.class))})})
     @PutMapping("/{id}")
-    public DishDto update(@PathVariable int id, @RequestBody DishDto dishDto) {
+    public DishDto update(@PathVariable int id, @Valid @RequestBody DishDto dishDto) {
         return service.update(id, dishDto);
     }
 

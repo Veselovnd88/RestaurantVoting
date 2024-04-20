@@ -23,6 +23,11 @@ public class MockMvcUtils {
 
     public static final String MENU_ID_URL = MenuAdminController.REST_URL + "/%s";
 
+    public static final String DISH_MENUS_ID_URL = DishAdminController.REST_URL + "/menus/%s";
+
+    public static final String DISH_ID_URL = DishAdminController.REST_URL + "/%s";
+
+
     public static MockHttpServletRequestBuilder createRestaurant(NewRestaurantDto restaurantDto) {
         return MockMvcRequestBuilders.post(RestaurantAdminController.REST_URL)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -52,13 +57,13 @@ public class MockMvcUtils {
     }
 
     public static MockHttpServletRequestBuilder createDish(int menuId, DishDto dishDto) {
-        return MockMvcRequestBuilders.post(DishAdminController.REST_URL + "/menus/" + menuId)
+        return MockMvcRequestBuilders.post(DISH_MENUS_ID_URL.formatted(menuId))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(dishDto));
     }
 
     public static MockHttpServletRequestBuilder updateDish(int id, DishDto dishDto) {
-        return MockMvcRequestBuilders.put(DishAdminController.REST_URL + "/" + id)
+        return MockMvcRequestBuilders.put(DISH_ID_URL.formatted(id))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(dishDto));
     }

@@ -28,8 +28,8 @@ class MenuAdminControllerValidationTest {
     @MockBean
     MenuService menuService;
 
-    @Test
     @SneakyThrows
+    @Test
     void create_SimilarDishes_ReturnValidationError() {
         ResultActions resultActions = mockMvc.perform(MockMvcUtils.createMenu(RestaurantTestData.SUSHI_ID,
                         MenuTestData.menuDtoToCreateSimilarDishes))
@@ -40,8 +40,8 @@ class MenuAdminControllerValidationTest {
                 MockMvcUtils.MENU_RESTAURANTS_ID_URL.formatted(RestaurantTestData.SUSHI_ID), "dishes", 0);
     }
 
-    @Test
     @SneakyThrows
+    @Test
     void update_SimilarDishes_ReturnValidationError() {
         ResultActions resultActions = mockMvc.perform(MockMvcUtils.updateMenu(MenuTestData.SUSHI_MENU_ID,
                         MenuTestData.menuDtoToUpdateWithSimilarDishes))

@@ -9,7 +9,7 @@ import jakarta.validation.constraints.Size;
 import org.hibernate.validator.constraints.Range;
 import org.springframework.lang.Nullable;
 
-@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY) //FIXME can this work w/o this?
 public record DishDto(
 
         @Schema(description = "Dish id", defaultValue = "1000000")
@@ -22,7 +22,7 @@ public record DishDto(
         String name,
 
         @Schema(description = "Dish price", defaultValue = "100000")
-        @Range(min = 100, max = 100000)
+        @Range(min = 1000, max = 1000000)
         int price) {
 
     @JsonCreator //constructor need int for Jackson mapping
