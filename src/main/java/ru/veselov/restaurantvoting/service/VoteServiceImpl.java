@@ -1,12 +1,12 @@
 package ru.veselov.restaurantvoting.service;
 
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.veselov.restaurantvoting.exception.UserNotFoundException;
 import ru.veselov.restaurantvoting.exception.VotingTimeLimitExceedsException;
 import ru.veselov.restaurantvoting.model.Menu;
 import ru.veselov.restaurantvoting.model.User;
@@ -36,22 +36,21 @@ public class VoteServiceImpl implements VoteService {
 
     @Override
     @Transactional
-    public void vote(int userId, int menuId, LocalDate localDate) {
+    public void vote(int userId, int restaurantId, LocalDate localDate) {
         Optional<Vote> voteOptional = repository.findByUserIdForDate(userId, localDate);
         if (voteOptional.isPresent()) {
             checkVoteTimeExceedsLimit(userId);
-            Menu menu = menuService.findMenuById(menuId);
+            Menu menu = menuService.findMenuByRestaurantIdAndLocalDate(restaurantId, localDate);
             Vote vote = voteOptional.get();
             vote.setMenu(menu);
             repository.save(vote);
-            log.info("User [id: {}] changes his mind and re-voted for menu id: {}", userId, menuId);
+            log.info("User [id: {}] changes his mind and re-voted for menu id: {}", userId, restaurantId);
         } else {
-            User user = userRepository.findById(userId)
-                    .orElseThrow(() -> new EntityNotFoundException("User with id: %s not found".formatted(userId)));
-            Menu menu = menuService.findMenuById(menuId);
+            User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
+            Menu menu = menuService.findMenuByRestaurantIdAndLocalDate(restaurantId, localDate);
             Vote vote = new Vote(user, menu, LocalDate.now(clock));
             repository.save(vote);
-            log.info("User [id: {}] voted for menu [id: {}]", userId, menuId);
+            log.info("User [id: {}] voted for menu [id: {}]", userId, restaurantId);
         }
     }
 
@@ -66,7 +65,7 @@ public class VoteServiceImpl implements VoteService {
     private void checkVoteTimeExceedsLimit(int userId) {
         LocalTime now = LocalTime.now(clock);
         if (now.isAfter(limitTime)) {
-            log.warn(VOTE_AFTER_LIMIT.formatted(userId, limitTime,now ));
+            log.warn(VOTE_AFTER_LIMIT.formatted(userId, limitTime, now));
             throw new VotingTimeLimitExceedsException(VOTE_AFTER_LIMIT.formatted(userId, limitTime, now));
         }
     }

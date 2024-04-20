@@ -32,13 +32,13 @@ public class VoteController {
     private final VoteService service;
     private final Clock clock;
 
-    @Operation(summary = "Here user can vote for chosen menu")
+    @Operation(summary = "Here user can vote for chosen restaurant")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Vote accepted")})
-    @PostMapping("/menus/{menuId}")
+    @PostMapping("/menus/{restaurantId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void vote(@PathVariable("menuId") int menuId, @AuthenticationPrincipal AuthorizedUser user) {
-        service.vote(user.getId(), menuId, LocalDate.now(clock));
+    public void vote(@PathVariable("restaurantId") int restaurantId, @AuthenticationPrincipal AuthorizedUser user) {
+        service.vote(user.getId(), restaurantId, LocalDate.now(clock));
     }
 
     @Operation(summary = "Remove user's vote for today")

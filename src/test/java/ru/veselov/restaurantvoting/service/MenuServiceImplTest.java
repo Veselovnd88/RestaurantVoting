@@ -14,6 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import ru.veselov.restaurantvoting.dto.MenuDto;
 import ru.veselov.restaurantvoting.exception.MenuConflictException;
+import ru.veselov.restaurantvoting.exception.MenuNotFoundException;
 import ru.veselov.restaurantvoting.exception.ObjectAlreadyExistsException;
 import ru.veselov.restaurantvoting.exception.RestaurantNotFoundException;
 import ru.veselov.restaurantvoting.mapper.DishMapper;
@@ -27,6 +28,7 @@ import ru.veselov.restaurantvoting.util.DishTestData;
 import ru.veselov.restaurantvoting.util.MenuTestData;
 import ru.veselov.restaurantvoting.util.RestaurantTestData;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -140,5 +142,30 @@ class MenuServiceImplTest {
         List<MenuDto> menusByRestaurant = menuService.getMenusByRestaurant(RestaurantTestData.SUSHI_ID);
 
         Assertions.assertThat(menusByRestaurant).hasSameElementsAs(List.of(MenuTestData.sushiRestaurantMenuDto));
+    }
+
+    @Test
+    void findMenuByRestaurantIdAndLocalDate_MenuFound_ReturnMenu() {
+        Mockito.when(menuRepository.findByRestaurantIdByDate(Mockito.anyInt(), Mockito.any()))
+                .thenReturn(Optional.of(MenuTestData.sushiRestaurantMenu));
+
+        menuService.findMenuByRestaurantIdAndLocalDate(RestaurantTestData.SUSHI_ID, LocalDate.of(2024, 4, 20));
+
+        Mockito.verify(menuRepository).findByRestaurantIdByDate(RestaurantTestData.SUSHI_ID, LocalDate.of(2024, 4, 20));
+    }
+
+    @Test
+    void findMenuByRestaurantIdAndLocalDate_MenuNotFound_ThrowException() {
+        Mockito.when(menuRepository.findByRestaurantIdByDate(Mockito.anyInt(), Mockito.any()))
+                .thenReturn(Optional.empty());
+
+        LocalDate localDate = LocalDate.of(2024, 4, 20);
+        Assertions.assertThatExceptionOfType(MenuNotFoundException.class).isThrownBy(() ->
+                        menuService.findMenuByRestaurantIdAndLocalDate(RestaurantTestData.SUSHI_ID, localDate))
+                .withMessage(MenuNotFoundException.MESSAGE_WITH_REST_ID_FOR_DATE
+                        .formatted(RestaurantTestData.SUSHI_ID, localDate))
+                .isInstanceOf(EntityNotFoundException.class);
+
+        Mockito.verify(menuRepository).findByRestaurantIdByDate(RestaurantTestData.SUSHI_ID, localDate);
     }
 }

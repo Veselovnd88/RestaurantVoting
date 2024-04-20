@@ -5,6 +5,7 @@ import ru.veselov.restaurantvoting.dto.MenuDto;
 import ru.veselov.restaurantvoting.dto.NewMenuDto;
 import ru.veselov.restaurantvoting.model.Menu;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public interface MenuService {
@@ -21,4 +22,6 @@ public interface MenuService {
 
     @NonNull
     Menu findMenuById(int id);
+
+    Menu findMenuByRestaurantIdAndLocalDate(int restaurantId, LocalDate localDate);
 }

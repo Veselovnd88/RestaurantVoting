@@ -10,6 +10,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import ru.veselov.restaurantvoting.exception.UserNotFoundException;
 import ru.veselov.restaurantvoting.exception.VotingTimeLimitExceedsException;
 import ru.veselov.restaurantvoting.extension.AdjustClockMockForVoting;
 import ru.veselov.restaurantvoting.model.Vote;
@@ -44,7 +45,8 @@ class VoteServiceImplTest {
     void vote_NewVoteForMenu_AddVote() {
         Mockito.when(voteRepository.findByUserIdForDate(Mockito.anyInt(), Mockito.any())).thenReturn(Optional.empty());
         Mockito.when(userRepository.findById(UserTestData.USER1_ID)).thenReturn(Optional.of(UserTestData.user1));
-        Mockito.when(menuService.findMenuById(Mockito.anyInt())).thenReturn(MenuTestData.sushiRestaurantMenu);
+        Mockito.when(menuService.findMenuByRestaurantIdAndLocalDate(Mockito.anyInt(), Mockito.any()))
+                .thenReturn(MenuTestData.sushiRestaurantMenu);
 
         voteService.vote(UserTestData.USER1_ID, MenuTestData.SUSHI_MENU_ID, VoteTestData.VOTED_AT_DATE);
 
@@ -58,8 +60,9 @@ class VoteServiceImplTest {
         Mockito.when(voteRepository.findByUserIdForDate(Mockito.anyInt(), Mockito.any())).thenReturn(Optional.empty());
         Mockito.when(userRepository.findById(UserTestData.USER1_ID)).thenReturn(Optional.empty());
 
-        Assertions.assertThatThrownBy(
+        Assertions.assertThatExceptionOfType(UserNotFoundException.class).isThrownBy(
                         () -> voteService.vote(UserTestData.USER1_ID, MenuTestData.SUSHI_MENU_ID, VoteTestData.VOTED_AT_DATE))
+                .withMessage(UserNotFoundException.MESSAGE_WITH_ID.formatted(UserTestData.USER1_ID))
                 .isInstanceOf(EntityNotFoundException.class);
 
         Mockito.verify(voteRepository, Mockito.never()).save(Mockito.any());
@@ -70,7 +73,8 @@ class VoteServiceImplTest {
     void vote_AlreadyVotedForAnotherMenuTimeDoesntExceedsLimit_MakeAnotherVote() {
         Mockito.when(voteRepository.findByUserIdForDate(Mockito.anyInt(), Mockito.any()))
                 .thenReturn(Optional.of(VoteTestData.getNewUser1VoteSushi()));
-        Mockito.when(menuService.findMenuById(Mockito.anyInt())).thenReturn(MenuTestData.burgerRestaurantMenu);
+        Mockito.when(menuService.findMenuByRestaurantIdAndLocalDate(Mockito.anyInt(), Mockito.any()))
+                .thenReturn(MenuTestData.burgerRestaurantMenu);
 
         voteService.vote(UserTestData.USER1_ID, MenuTestData.BURGER_MENU_ID, VoteTestData.VOTED_AT_DATE);
 

@@ -17,6 +17,7 @@ import ru.veselov.restaurantvoting.model.Restaurant;
 import ru.veselov.restaurantvoting.repository.MenuRepository;
 import ru.veselov.restaurantvoting.repository.RestaurantRepository;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -121,6 +122,20 @@ public class MenuServiceImpl implements MenuService {
     @NonNull
     public Menu findMenuById(int id) {
         return repository.findById(id).orElseThrow(() -> new MenuNotFoundException(id));
+    }
+
+    /**
+     * Find menu by restaurant id for specified date
+     *
+     * @param restaurantId id of restaurant
+     * @param localDate    date
+     * @return Menu object
+     * @throws MenuNotFoundException if no menu found for such conditions
+     */
+    @Override
+    public Menu findMenuByRestaurantIdAndLocalDate(int restaurantId, LocalDate localDate) {
+        return repository.findByRestaurantIdByDate(restaurantId, localDate)
+                .orElseThrow(() -> new MenuNotFoundException(restaurantId, localDate));
     }
 
     /**

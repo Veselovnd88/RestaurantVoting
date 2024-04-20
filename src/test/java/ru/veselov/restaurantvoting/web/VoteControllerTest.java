@@ -19,6 +19,7 @@ import ru.veselov.restaurantvoting.service.VoteService;
 import ru.veselov.restaurantvoting.service.VoteServiceImpl;
 import ru.veselov.restaurantvoting.util.MenuTestData;
 import ru.veselov.restaurantvoting.util.MockMvcUtils;
+import ru.veselov.restaurantvoting.util.RestaurantTestData;
 import ru.veselov.restaurantvoting.util.ResultActionErrorsUtil;
 import ru.veselov.restaurantvoting.util.SecurityUtils;
 import ru.veselov.restaurantvoting.util.UserTestData;
@@ -54,7 +55,7 @@ class VoteControllerTest extends AbstractRestControllerTest {
     void vote_AllOk_VoteToTheMenu() {
         configureClockMockForTimeNotExceeds();
 
-        mockMvc.perform(MockMvcUtils.vote(MenuTestData.BURGER_MENU_ID)
+        mockMvc.perform(MockMvcUtils.vote(RestaurantTestData.BURGER_ID)
                         .with(SecurityUtils.userHttpBasic(UserTestData.user2)))
                 .andExpect(MockMvcResultMatchers.status().isNoContent());
 
@@ -69,7 +70,7 @@ class VoteControllerTest extends AbstractRestControllerTest {
     void vote_VoteTimeExceeds_VoteToTheMenu() {
         LocalTime voteTime = configureClockMockForTimeExceeds();
 
-        ResultActions resultActions = mockMvc.perform(MockMvcUtils.vote(MenuTestData.BURGER_MENU_ID)
+        ResultActions resultActions = mockMvc.perform(MockMvcUtils.vote(RestaurantTestData.BURGER_ID)
                 .with(SecurityUtils.userHttpBasic(UserTestData.user2)));
 
         ResultActionErrorsUtil.checkVoteLimitExceedError(resultActions,
@@ -81,7 +82,7 @@ class VoteControllerTest extends AbstractRestControllerTest {
     void vote_NewVoteForMenu_AddVote() {
         configureClockMockForTimeNotExceeds();
 
-        mockMvc.perform(MockMvcUtils.vote(MenuTestData.BURGER_MENU_ID)
+        mockMvc.perform(MockMvcUtils.vote(RestaurantTestData.BURGER_ID)
                         .with(SecurityUtils.userHttpBasic(UserTestData.user3)))
                 .andExpect(MockMvcResultMatchers.status().isNoContent());
 
@@ -94,12 +95,13 @@ class VoteControllerTest extends AbstractRestControllerTest {
     void vote_MenuNotFoundForFirstVote_ReturnError() {
         configureClockMockForTimeNotExceeds();
 
-        ResultActions resultActions = mockMvc.perform(MockMvcUtils.vote(MenuTestData.NOT_FOUND_MENU)
+        ResultActions resultActions = mockMvc.perform(MockMvcUtils.vote(RestaurantTestData.NOT_FOUND)
                         .with(SecurityUtils.userHttpBasic(UserTestData.user3)))
                 .andExpect(MockMvcResultMatchers.status().isNotFound());
 
         ResultActionErrorsUtil.checkNotFoundFields(resultActions,
-                MenuNotFoundException.MESSAGE_WITH_ID.formatted(MenuTestData.NOT_FOUND_MENU));
+                MenuNotFoundException.MESSAGE_WITH_REST_ID_FOR_DATE
+                        .formatted(RestaurantTestData.NOT_FOUND, VoteTestData.VOTED_AT_DATE));
     }
 
     @Test
@@ -107,12 +109,13 @@ class VoteControllerTest extends AbstractRestControllerTest {
     void vote_MenuNotFoundReVote_ReturnError() {
         configureClockMockForTimeNotExceeds();
 
-        ResultActions resultActions = mockMvc.perform(MockMvcUtils.vote(MenuTestData.NOT_FOUND_MENU)
+        ResultActions resultActions = mockMvc.perform(MockMvcUtils.vote(RestaurantTestData.NOT_FOUND)
                         .with(SecurityUtils.userHttpBasic(UserTestData.user1)))
                 .andExpect(MockMvcResultMatchers.status().isNotFound());
 
         ResultActionErrorsUtil.checkNotFoundFields(resultActions,
-                MenuNotFoundException.MESSAGE_WITH_ID.formatted(MenuTestData.NOT_FOUND_MENU));
+                MenuNotFoundException.MESSAGE_WITH_REST_ID_FOR_DATE
+                        .formatted(RestaurantTestData.NOT_FOUND, VoteTestData.VOTED_AT_DATE));
     }
 
     @Test
