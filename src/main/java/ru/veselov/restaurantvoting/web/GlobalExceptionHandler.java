@@ -12,6 +12,7 @@ import org.springframework.lang.Nullable;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.veselov.restaurantvoting.dto.ViolationError;
 import ru.veselov.restaurantvoting.exception.ErrorCode;
@@ -24,7 +25,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-@RestControllerAdvice
+@RestControllerAdvice(annotations = RestController.class)
 @Order(Ordered.HIGHEST_PRECEDENCE + 5)
 @Slf4j
 public class GlobalExceptionHandler {
