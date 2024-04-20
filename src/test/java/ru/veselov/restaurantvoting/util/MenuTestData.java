@@ -60,6 +60,9 @@ public class MenuTestData {
 
     public static NewMenuDto menuDtoToUpdate = new NewMenuDto(SUSHI_MENU_ID, ADDED_DATE, List.of(DishTestData.newTastyDish));
 
+    public static NewMenuDto menuDtoToUpdateForConflict =
+            new NewMenuDto(null, ADDED_DATE, List.of(DishTestData.savedNewTastyDish));
+
     public static NewMenuDto menuDtoToUpdateWithSimilarDishes = new NewMenuDto(SUSHI_MENU_ID, ADDED_DATE,
             List.of(DishTestData.newTastyDish, DishTestData.newTastyDish));
 

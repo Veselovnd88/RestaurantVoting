@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.veselov.restaurantvoting.dto.ViolationError;
 import ru.veselov.restaurantvoting.exception.ErrorCode;
-import ru.veselov.restaurantvoting.exception.ObjectAlreadyExistsException;
 import ru.veselov.restaurantvoting.exception.VotingTimeLimitExceedsException;
 import ru.veselov.restaurantvoting.util.ValidationUtil;
 
@@ -32,14 +31,19 @@ public class GlobalExceptionHandler {
     public static final String OBJECT_NOT_FOUND = "Object not found";
     public static final String LIMIT_FOR_VOTING_EXCEEDED = "Time limit for voting exceeded";
     public static final String OBJECT_ALREADY_EXISTS = "Object already exists";
-    public static final String DISH_MENU_EXISTS = "Dish with such name already exists in menu";
+
     public static final String ERROR_CODE = "errorCode";
     public static final String TIMESTAMP = "timestamp";
 
     public static final String UNIQUE_DISH_MENU_CONSTRAINT = "name_menu_idx";
+    public static final String UNIQUE_MENU_RESTAURANT_DATE_CONSTRAINT = "restaurant_day_idx";
+    public static final String DISH_MENU_EXISTS = "Dish with such name already exists in menu";
+    public static final String MENU_FOR_RESTAURANT_FOR_DATE_EXISTS = "Menu for this restaurant for date already exists";
+
 
     public static final Map<String, String> CONSTRAINTS_MAP = Map.of(
-            UNIQUE_DISH_MENU_CONSTRAINT, DISH_MENU_EXISTS
+            UNIQUE_DISH_MENU_CONSTRAINT, DISH_MENU_EXISTS,
+            UNIQUE_MENU_RESTAURANT_DATE_CONSTRAINT, MENU_FOR_RESTAURANT_FOR_DATE_EXISTS
     );
     public static final String VALIDATION_ERROR = "Validation error";
     public static final String VIOLATIONS = "violations";
@@ -84,11 +88,6 @@ public class GlobalExceptionHandler {
         }
         return createProblemDetail(req, HttpStatus.CONFLICT, e, OBJECT_NOT_FOUND,
                 Map.of(ERROR_CODE, ErrorCode.CONFLICT.name()), rootMsg, true);
-    }
-
-    @ExceptionHandler(ObjectAlreadyExistsException.class)
-    public ProblemDetail handleObjectAlreadyExists(HttpServletRequest req, ObjectAlreadyExistsException e) {
-        return createProblemDetail(req, HttpStatus.CONFLICT, e, OBJECT_ALREADY_EXISTS, Map.of(ERROR_CODE, ErrorCode.CONFLICT.name()), null, true);
     }
 
     private ProblemDetail createProblemDetail(HttpServletRequest req, HttpStatus status, Exception e,

@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.veselov.restaurantvoting.dto.MenuDto;
 import ru.veselov.restaurantvoting.dto.NewMenuDto;
-import ru.veselov.restaurantvoting.exception.MenuConflictException;
 import ru.veselov.restaurantvoting.exception.MenuNotFoundException;
 import ru.veselov.restaurantvoting.exception.RestaurantNotFoundException;
 import ru.veselov.restaurantvoting.mapper.MenuMapper;
@@ -35,15 +34,14 @@ public class MenuServiceImpl implements MenuService {
     /**
      * Create new menu for restaurant for date
      *
-     * @throws MenuConflictException if menu for this date already exists
-     * @throws MenuNotFoundException if restaurant doesn't exist
+     * @throws MenuNotFoundException                                   if restaurant doesn't exist
+     * @throws org.springframework.dao.DataIntegrityViolationException if menu/local date conflict occurred
      */
     @Override
     @Transactional
     public MenuDto create(int restaurantId, NewMenuDto menuDto) {
         Restaurant restaurant = restaurantRepository.findById(restaurantId)
                 .orElseThrow(() -> new RestaurantNotFoundException(restaurantId));
-        checkIfMenuForDateExists(restaurantId, menuDto);
         Menu menu = mapper.toEntity(menuDto);
         menu.setRestaurant(restaurant);
 
@@ -58,16 +56,13 @@ public class MenuServiceImpl implements MenuService {
      * @param id      menu id
      * @param menuDto menu data to update
      * @throws MenuNotFoundException                                   if menu with such id not found
-     * @throws MenuConflictException                                   if menu for date that we want to change already exists
      * @throws org.springframework.dao.DataIntegrityViolationException if dish exists for this menu
+     * @throws org.springframework.dao.DataIntegrityViolationException if menu/local date conflict occurred
      */
     @Override
     @Transactional
     public MenuDto update(int id, NewMenuDto menuDto) {
         Menu menu = repository.findById(id).orElseThrow(() -> new MenuNotFoundException(id));
-        if (!menuDto.addedAt().isEqual(menu.getAddedAt())) {
-            checkIfMenuForDateExists(menu.getRestaurant().id(), menuDto);
-        }
         mapper.toEntityUpdate(menu, menuDto);
         Menu updated = repository.save(menu);
         log.info("Menu id: {} updated", id);
@@ -136,18 +131,5 @@ public class MenuServiceImpl implements MenuService {
     public Menu findMenuByRestaurantIdAndLocalDate(int restaurantId, LocalDate localDate) {
         return repository.findByRestaurantIdByDate(restaurantId, localDate)
                 .orElseThrow(() -> new MenuNotFoundException(restaurantId, localDate));
-    }
-
-    /**
-     * Check if menu for restaurant and date already exists
-     *
-     * @param restaurantId restaurant id
-     * @param menuDto      dto for menu
-     * @throws MenuConflictException if menu for such date already exists
-     */
-    private void checkIfMenuForDateExists(int restaurantId, NewMenuDto menuDto) {
-        if (repository.existsByRestaurantIdAndDate(restaurantId, menuDto.addedAt())) {
-            throw new MenuConflictException(restaurantId, menuDto.addedAt());
-        }
     }
 }

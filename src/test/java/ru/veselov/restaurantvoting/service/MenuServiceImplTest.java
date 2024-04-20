@@ -13,9 +13,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import ru.veselov.restaurantvoting.dto.MenuDto;
-import ru.veselov.restaurantvoting.exception.MenuConflictException;
 import ru.veselov.restaurantvoting.exception.MenuNotFoundException;
-import ru.veselov.restaurantvoting.exception.ObjectAlreadyExistsException;
 import ru.veselov.restaurantvoting.exception.RestaurantNotFoundException;
 import ru.veselov.restaurantvoting.mapper.DishMapper;
 import ru.veselov.restaurantvoting.mapper.DishMapperImpl;
@@ -59,7 +57,6 @@ class MenuServiceImplTest {
     void create_AllOk_ShouldSaveNewMenuWithDishes() {
         Mockito.when(restaurantRepository.findById(Mockito.anyInt()))
                 .thenReturn(Optional.of(RestaurantTestData.sushiRestaurant));
-        Mockito.when(menuRepository.existsByRestaurantIdAndDate(Mockito.anyInt(), Mockito.any())).thenReturn(false);
 
         menuService.create(RestaurantTestData.SUSHI_ID, MenuTestData.menuDtoToCreate);
 
@@ -68,20 +65,6 @@ class MenuServiceImplTest {
         Assertions.assertThat(captured).extracting(Menu::getAddedAt, Menu::getRestaurant)
                 .contains(MenuTestData.menuDtoToCreate.addedAt(), RestaurantTestData.sushiRestaurant);
         DishTestData.DISH_MATCHER.assertMatch(captured.getDishes(), DishTestData.tastyDishEntity);
-    }
-
-    @Test
-    void create_MenuForThisDateAlreadyExists_ThrowException() {
-        Mockito.when(restaurantRepository.findById(Mockito.anyInt()))
-                .thenReturn(Optional.of(RestaurantTestData.sushiRestaurant));
-        Mockito.when(menuRepository.existsByRestaurantIdAndDate(Mockito.anyInt(), Mockito.any())).thenReturn(true);
-
-        Assertions.assertThatExceptionOfType(MenuConflictException.class).isThrownBy(
-                        () -> menuService.create(RestaurantTestData.SUSHI_ID, MenuTestData.menuDtoToCreateForConflict))
-                .isInstanceOf(ObjectAlreadyExistsException.class)
-                .withMessage(MenuConflictException.MESSAGE_CONFLICT
-                        .formatted(RestaurantTestData.SUSHI_ID, MenuTestData.ADDED_DATE));
-        Mockito.verify(menuRepository, Mockito.never()).save(Mockito.any());
     }
 
     @Test

@@ -45,15 +45,6 @@ public class ResultActionErrorsUtil {
                 .andExpect(MockMvcResultMatchers.jsonPath(JSON_DETAIL, Matchers.startsWith(detail)));
     }
 
-    public static void checkObjectAlreadyExistsError(ResultActions resultActions, String detail) throws Exception {
-        checkProblemJsonCompatibility(resultActions);
-        checkTimeStampIsNotEmpty(resultActions);
-        resultActions.andExpect(MockMvcResultMatchers.status().isConflict())
-                .andExpect(MockMvcResultMatchers.jsonPath(JSON_ERROR_CODE).value(ErrorCode.CONFLICT.name()))
-                .andExpect(MockMvcResultMatchers.jsonPath(JSON_TITLE).value(GlobalExceptionHandler.OBJECT_ALREADY_EXISTS))
-                .andExpect(MockMvcResultMatchers.jsonPath(JSON_DETAIL, Matchers.startsWith(detail)));
-    }
-
     public static void checkConflictError(ResultActions resultActions, String detail, String url) throws Exception {
         checkProblemJsonCompatibility(resultActions);
         checkTimeStampIsNotEmpty(resultActions);
