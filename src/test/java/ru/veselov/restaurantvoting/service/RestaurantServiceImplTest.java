@@ -78,7 +78,7 @@ class RestaurantServiceImplTest {
 
     @Test
     void create_AllOk_CreateAndReturnSavedRestaurantDto() {
-        RestaurantDto restaurantDto = restaurantService.create(RestaurantTestData.newRestaurantDto);
+        RestaurantDto restaurantDto = restaurantService.create(RestaurantTestData.inputRestaurantDto);
 
         Assertions.assertThat(restaurantDto).isEqualTo(RestaurantTestData.savedRestaurantDto);
     }

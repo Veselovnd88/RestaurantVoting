@@ -1,7 +1,7 @@
 package ru.veselov.restaurantvoting.util;
 
 import lombok.experimental.UtilityClass;
-import ru.veselov.restaurantvoting.dto.NewRestaurantDto;
+import ru.veselov.restaurantvoting.dto.InputRestaurantDto;
 import ru.veselov.restaurantvoting.dto.RestaurantDto;
 import ru.veselov.restaurantvoting.model.Restaurant;
 
@@ -33,9 +33,9 @@ public class RestaurantTestData {
 
     public static Restaurant burgerRestaurant = new Restaurant(BURGER_ID, "BurgerPizza");
 
-    public static NewRestaurantDto newRestaurantDto = new NewRestaurantDto("New tasty restaurant");
+    public static InputRestaurantDto inputRestaurantDto = new InputRestaurantDto("New tasty restaurant");
 
-    public static NewRestaurantDto restaurantDtoToUpdate = new NewRestaurantDto("Updated tasty restaurant");
+    public static InputRestaurantDto restaurantDtoToUpdate = new InputRestaurantDto("Updated tasty restaurant");
 
     public static RestaurantDto savedRestaurantDto = new RestaurantDto(100022, "New tasty restaurant");
 

@@ -6,7 +6,7 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import ru.veselov.restaurantvoting.dto.DishDto;
 import ru.veselov.restaurantvoting.dto.InputMenuDto;
-import ru.veselov.restaurantvoting.dto.NewRestaurantDto;
+import ru.veselov.restaurantvoting.dto.InputRestaurantDto;
 import ru.veselov.restaurantvoting.util.json.JsonUtil;
 import ru.veselov.restaurantvoting.web.DishAdminController;
 import ru.veselov.restaurantvoting.web.DishController;
@@ -27,21 +27,25 @@ public class MockMvcUtils {
 
     public static final String DISH_ID_URL = DishAdminController.REST_URL + "/%s";
 
+    public static final String RESTAURANT_URL = RestaurantAdminController.REST_URL;
 
-    public static MockHttpServletRequestBuilder createRestaurant(NewRestaurantDto restaurantDto) {
-        return MockMvcRequestBuilders.post(RestaurantAdminController.REST_URL)
+    public static final String RESTAURANT_ID_URL = RestaurantAdminController.REST_URL + "/%s";
+
+
+    public static MockHttpServletRequestBuilder createRestaurant(InputRestaurantDto restaurantDto) {
+        return MockMvcRequestBuilders.post(RESTAURANT_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(restaurantDto));
     }
 
-    public static MockHttpServletRequestBuilder updateRestaurant(NewRestaurantDto restaurantDto, int id) {
-        return MockMvcRequestBuilders.put(RestaurantAdminController.REST_URL + "/" + id)
+    public static MockHttpServletRequestBuilder updateRestaurant(InputRestaurantDto restaurantDto, int id) {
+        return MockMvcRequestBuilders.put(RESTAURANT_ID_URL.formatted(id))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(restaurantDto));
     }
 
     public static MockHttpServletRequestBuilder deleteRestaurant(int id) {
-        return MockMvcRequestBuilders.delete(RestaurantAdminController.REST_URL + "/" + id);
+        return MockMvcRequestBuilders.delete(RESTAURANT_ID_URL.formatted(id));
     }
 
     public static MockHttpServletRequestBuilder getAllRestaurants() {

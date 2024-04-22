@@ -14,7 +14,7 @@ class RestaurantAdminControllerTest extends AbstractRestControllerTest {
     @Test
     @SneakyThrows
     void create_AllOk_CreateRestaurantReturnDtoAndResourceUri() {
-        mockMvc.perform(MockMvcUtils.createRestaurant(RestaurantTestData.newRestaurantDto)
+        mockMvc.perform(MockMvcUtils.createRestaurant(RestaurantTestData.inputRestaurantDto)
                 .with(SecurityUtils.userHttpBasic(UserTestData.admin)))
                 .andExpect(MockMvcResultMatchers.status().isCreated())
                 .andExpect(MockMvcResultMatchers.header().exists("Location"))

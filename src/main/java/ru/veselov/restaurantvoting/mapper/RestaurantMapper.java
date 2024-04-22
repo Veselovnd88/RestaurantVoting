@@ -4,7 +4,7 @@ import org.mapstruct.IterableMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.NullValuePropertyMappingStrategy;
-import ru.veselov.restaurantvoting.dto.NewRestaurantDto;
+import ru.veselov.restaurantvoting.dto.InputRestaurantDto;
 import ru.veselov.restaurantvoting.dto.RestaurantDto;
 import ru.veselov.restaurantvoting.mapper.annotation.WithVotesAndDishes;
 import ru.veselov.restaurantvoting.mapper.annotation.WithoutMenu;
@@ -28,5 +28,5 @@ public interface RestaurantMapper {
     @IterableMapping(qualifiedBy = WithoutMenu.class)
     List<RestaurantDto> entitiesToDto(List<Restaurant> restaurants);
 
-    Restaurant toEntity(NewRestaurantDto restaurantDto);
+    Restaurant toEntity(InputRestaurantDto restaurantDto);
 }

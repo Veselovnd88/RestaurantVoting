@@ -7,10 +7,12 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,7 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import ru.veselov.restaurantvoting.dto.NewRestaurantDto;
+import ru.veselov.restaurantvoting.dto.InputRestaurantDto;
 import ru.veselov.restaurantvoting.dto.RestaurantDto;
 import ru.veselov.restaurantvoting.service.RestaurantService;
 
@@ -29,6 +31,7 @@ import java.net.URI;
 @RestController
 @RequestMapping(value = RestaurantAdminController.REST_URL)
 @RequiredArgsConstructor
+@Validated
 @SecurityRequirement(name = "basicAuth")
 @Tag(name = "Restaurant management", description = "Manage restaurants for admin")
 public class RestaurantAdminController {
@@ -44,7 +47,7 @@ public class RestaurantAdminController {
                             schema = @Schema(implementation = RestaurantDto.class))})})
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<RestaurantDto> create(@RequestBody NewRestaurantDto restaurantDto) {
+    public ResponseEntity<RestaurantDto> create(@Valid @RequestBody InputRestaurantDto restaurantDto) {
         RestaurantDto created = service.create(restaurantDto);
         URI uriOfResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(RestaurantController.REST_URL + "/{id}")
@@ -59,7 +62,7 @@ public class RestaurantAdminController {
                             schema = @Schema(implementation = RestaurantDto.class))})
     })
     @PutMapping("/{id}")
-    public RestaurantDto update(@PathVariable int id, @RequestBody NewRestaurantDto restaurantDto) {
+    public RestaurantDto update(@PathVariable int id, @Valid @RequestBody InputRestaurantDto restaurantDto) {
         return service.update(id, restaurantDto);
     }
 

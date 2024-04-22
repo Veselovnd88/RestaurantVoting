@@ -11,7 +11,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import ru.veselov.restaurantvoting.dto.DishDto;
-import ru.veselov.restaurantvoting.extension.BadDishDtoArgumentsProvider;
+import ru.veselov.restaurantvoting.extension.argproviders.BadDishDtoArgumentsProvider;
 import ru.veselov.restaurantvoting.service.DishService;
 import ru.veselov.restaurantvoting.util.DishTestData;
 import ru.veselov.restaurantvoting.util.MenuTestData;
