@@ -29,7 +29,6 @@ import ru.veselov.restaurantvoting.util.RestaurantTestData;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @ExtendWith(MockitoExtension.class)
 class MenuServiceImplTest {
@@ -64,7 +63,8 @@ class MenuServiceImplTest {
         Menu captured = menuArgumentCaptor.getValue();
         Assertions.assertThat(captured).extracting(Menu::getAddedAt, Menu::getRestaurant)
                 .contains(MenuTestData.menuDtoToCreate.addedAt(), RestaurantTestData.sushiRestaurant);
-        DishTestData.DISH_MATCHER.assertMatch(captured.getDishes(), DishTestData.tastyDishEntity);
+        DishTestData.DISH_MATCHER.assertMatch(captured.getDishes(),
+                DishTestData.tastyDishEntity, DishTestData.tastyDishEntity2);
     }
 
     @Test
@@ -88,7 +88,7 @@ class MenuServiceImplTest {
         Mockito.verify(menuRepository, Mockito.times(1)).save(menuArgumentCaptor.capture());
         Menu captured = menuArgumentCaptor.getValue();
         Assertions.assertThat(captured).extracting(Menu::getAddedAt).isEqualTo(MenuTestData.ADDED_DATE.plusDays(1));
-        DishTestData.DISH_MATCHER.assertMatch(captured.getDishes(), Set.of(DishTestData.tastyDishEntity));
+        DishTestData.DISH_MATCHER.assertMatch(captured.getDishes(), DishTestData.getUpdatedDishesInSortedSet());
     }
 
     @Test

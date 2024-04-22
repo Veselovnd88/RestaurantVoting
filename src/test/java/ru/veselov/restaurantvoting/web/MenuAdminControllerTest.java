@@ -42,7 +42,7 @@ class MenuAdminControllerTest extends AbstractRestControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isCreated())
                 .andExpect(MockMvcResultMatchers.header().exists("Location"))
                 .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(MenuTestData.MENU_DTO_MATCHER.contentJson(MenuTestData.createdMenuDto)); //FIXME
+                .andExpect(MenuTestData.MENU_DTO_MATCHER.contentJson(MenuTestData.createdMenuDto));
     }
 
     @Test
@@ -59,7 +59,8 @@ class MenuAdminControllerTest extends AbstractRestControllerTest {
     @Test
     @SneakyThrows
     void create_RestaurantNotFound_ReturnError() {
-        ResultActions resultActions = mockMvc.perform(MockMvcUtils.createMenu(RestaurantTestData.NOT_FOUND, MenuTestData.menuDtoToCreateForConflict)
+        ResultActions resultActions = mockMvc.perform(MockMvcUtils.createMenu(RestaurantTestData.NOT_FOUND,
+                        MenuTestData.menuDtoToCreateForConflict)
                 .with(SecurityUtils.userHttpBasic(UserTestData.admin)));
 
         ResultActionErrorsUtil.checkNotFoundFields(resultActions,
@@ -96,7 +97,8 @@ class MenuAdminControllerTest extends AbstractRestControllerTest {
     void update_ChangeToDateOfExistingMenu_ReturnError() {
         MenuDto menuDto = menuService.create(RestaurantTestData.SUSHI_ID, MenuTestData.menuDtoToCreate);
         InputMenuDto menuDtoToUpdateForConflict =
-                new InputMenuDto(menuDto.id(), MenuTestData.ADDED_DATE, List.of(DishTestData.savedWithMenuNewTastyDish));
+                new InputMenuDto(menuDto.id(), MenuTestData.ADDED_DATE,
+                        List.of(DishTestData.savedWithMenuNewTastyDish, DishTestData.savedWithMenuNewTastyDish2));
         ResultActions resultActions = mockMvc
                 .perform(MockMvcUtils.updateMenu(menuDto.id(), menuDtoToUpdateForConflict)
                         .with(SecurityUtils.userHttpBasic(UserTestData.admin)));

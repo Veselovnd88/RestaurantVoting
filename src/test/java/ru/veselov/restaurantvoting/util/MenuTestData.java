@@ -56,7 +56,7 @@ public class MenuTestData {
             List.of(DishTestData.newTastyDish, DishTestData.newTastyDish));
 
     public static InputMenuDto menuDtoToCreateForConflict = new InputMenuDto(null, ADDED_DATE,
-            List.of(DishTestData.newTastyDish));
+            List.of(DishTestData.newTastyDish, DishTestData.newTastyDish2));
 
     public static InputMenuDto menuDtoToUpdate = new InputMenuDto(SUSHI_MENU_ID, ADDED_DATE,
             List.of(DishTestData.newTastyDish, DishTestData.newTastyDish2));

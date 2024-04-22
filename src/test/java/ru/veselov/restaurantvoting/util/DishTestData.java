@@ -4,7 +4,9 @@ import lombok.experimental.UtilityClass;
 import ru.veselov.restaurantvoting.dto.DishDto;
 import ru.veselov.restaurantvoting.model.Dish;
 
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 @UtilityClass
 public class DishTestData {
@@ -67,11 +69,13 @@ public class DishTestData {
 
     public static Dish tastyDishEntity = new Dish(null, "veryTasty", 10000);
 
+    public static Dish tastyDishEntity2 = new Dish(null, "veryTasty2", 10000);
+
     public static DishDto savedNewTastyDish = new DishDto(100022, "veryTasty", 10000);
 
     public static DishDto savedWithMenuNewTastyDish = new DishDto(100023, "veryTasty", 10000);
 
-    public static DishDto savedWithMenuNewTastyDish2 = new DishDto(100024, "veryTasty", 10000);
+    public static DishDto savedWithMenuNewTastyDish2 = new DishDto(100024, "veryTasty2", 10000);
 
     public static DishDto dishToUpdate = new DishDto(TASTY_ROLL_ID, "TastyRoll", 10000);
 
@@ -79,4 +83,11 @@ public class DishTestData {
             philadelphiaDto, pizzaArrivaDto, tastyRollDto, tripleBurgerDto, unagiDto);
 
     public static DishDto changedUnagiDto = new DishDto(UNAGI_ID, "UnagiUpd", 45000);
+
+    public static Set<Dish> getUpdatedDishesInSortedSet() {
+        LinkedHashSet<Dish> linkedHashSet = new LinkedHashSet<>();
+        linkedHashSet.add(DishTestData.tastyDishEntity);
+        linkedHashSet.add(DishTestData.tastyDishEntity2);
+        return linkedHashSet;
+    }
 }
