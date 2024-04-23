@@ -12,7 +12,7 @@ import ru.veselov.restaurantvoting.web.validaton.DifferentDishes;
 import java.time.LocalDate;
 import java.util.List;
 
-public record NewMenuDto(
+public record InputMenuDto(
 
         @Nullable
         Integer id,
@@ -21,13 +21,13 @@ public record NewMenuDto(
         LocalDate addedAt,
 
         @NotEmpty
-        @Size(max = 5)
+        @Size(min = 2, max = 5)
         @DifferentDishes
         List<@Valid DishDto> dishes) {
 
     @JsonCreator //constructor need int for Jackson mapping
-    public NewMenuDto(@JsonProperty("id") Integer id, @JsonProperty("addedAt") LocalDate addedAt,
-                      @JsonProperty("dishes") List<DishDto> dishes) {
+    public InputMenuDto(@JsonProperty("id") Integer id, @JsonProperty("addedAt") LocalDate addedAt,
+                        @JsonProperty("dishes") List<DishDto> dishes) {
         this.id = id;
         this.addedAt = addedAt;
         this.dishes = dishes;

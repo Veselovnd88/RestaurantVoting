@@ -10,7 +10,6 @@ import ru.veselov.restaurantvoting.util.MenuTestData;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Set;
 
 class MenuMapperTest {
 
@@ -47,7 +46,7 @@ class MenuMapperTest {
         Menu menu = menuMapper.toEntity(MenuTestData.menuDtoToCreate);
 
         MenuTestData.MENU_MATCHER.assertMatch(menu, MenuTestData.menuToCreateWithoutId);
-        DishTestData.DISH_MATCHER.assertMatch(menu.getDishes(), Set.of(DishTestData.tastyDishEntity));
+        DishTestData.DISH_MATCHER.assertMatch(menu.getDishes(), DishTestData.getUpdatedDishesInSortedSet());
     }
 
     @Test
@@ -56,6 +55,6 @@ class MenuMapperTest {
         Menu menu = menuMapper.toEntityUpdate(menuToUpdate, MenuTestData.menuDtoToCreate);
 
         Assertions.assertThat(menu).extracting(Menu::getAddedAt).isEqualTo(MenuTestData.ADDED_DATE.plusDays(1));
-        DishTestData.DISH_MATCHER.assertMatch(menu.getDishes(), Set.of(DishTestData.tastyDishEntity));
+        DishTestData.DISH_MATCHER.assertMatch(menu.getDishes(), DishTestData.getUpdatedDishesInSortedSet());
     }
 }

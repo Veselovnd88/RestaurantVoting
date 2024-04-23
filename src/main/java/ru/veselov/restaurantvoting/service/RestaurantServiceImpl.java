@@ -6,7 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.veselov.restaurantvoting.dto.NewRestaurantDto;
+import ru.veselov.restaurantvoting.dto.InputRestaurantDto;
 import ru.veselov.restaurantvoting.dto.RestaurantDto;
 import ru.veselov.restaurantvoting.mapper.RestaurantMapper;
 import ru.veselov.restaurantvoting.model.Menu;
@@ -39,7 +39,7 @@ public class RestaurantServiceImpl implements RestaurantService {
      */
     @Override
     @Transactional
-    public RestaurantDto create(NewRestaurantDto restaurantDto) {
+    public RestaurantDto create(InputRestaurantDto restaurantDto) {
         Restaurant savedRestaurant = repository.save(mapper.toEntity(restaurantDto));
         log.info("New restaurant: {} successfully saved", savedRestaurant.getName());
         return mapper.entityToDtoWithMenus(savedRestaurant);
@@ -94,10 +94,10 @@ public class RestaurantServiceImpl implements RestaurantService {
      */
     @Override
     @Transactional
-    public RestaurantDto update(int id, NewRestaurantDto restaurantDto) {
+    public RestaurantDto update(int id, InputRestaurantDto restaurantDto) {
         Restaurant restaurant = repository.findById(id).orElseThrow(() ->
                 new EntityNotFoundException("Restaurant with id: %s not found".formatted(id)));
-        restaurant.setName(restaurantDto.getName());
+        restaurant.setName(restaurantDto.name());
         Restaurant updatedRestaurant = repository.save(restaurant);
         log.info("Restaurant with id: {} updated", id);
         return mapper.entityToDto(updatedRestaurant);

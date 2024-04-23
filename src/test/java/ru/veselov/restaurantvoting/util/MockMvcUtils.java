@@ -5,8 +5,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import ru.veselov.restaurantvoting.dto.DishDto;
-import ru.veselov.restaurantvoting.dto.NewMenuDto;
-import ru.veselov.restaurantvoting.dto.NewRestaurantDto;
+import ru.veselov.restaurantvoting.dto.InputMenuDto;
+import ru.veselov.restaurantvoting.dto.InputRestaurantDto;
 import ru.veselov.restaurantvoting.util.json.JsonUtil;
 import ru.veselov.restaurantvoting.web.DishAdminController;
 import ru.veselov.restaurantvoting.web.DishController;
@@ -23,20 +23,29 @@ public class MockMvcUtils {
 
     public static final String MENU_ID_URL = MenuAdminController.REST_URL + "/%s";
 
-    public static MockHttpServletRequestBuilder createRestaurant(NewRestaurantDto restaurantDto) {
-        return MockMvcRequestBuilders.post(RestaurantAdminController.REST_URL)
+    public static final String DISH_MENUS_ID_URL = DishAdminController.REST_URL + "/menus/%s";
+
+    public static final String DISH_ID_URL = DishAdminController.REST_URL + "/%s";
+
+    public static final String RESTAURANT_URL = RestaurantAdminController.REST_URL;
+
+    public static final String RESTAURANT_ID_URL = RestaurantAdminController.REST_URL + "/%s";
+
+
+    public static MockHttpServletRequestBuilder createRestaurant(InputRestaurantDto restaurantDto) {
+        return MockMvcRequestBuilders.post(RESTAURANT_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(restaurantDto));
     }
 
-    public static MockHttpServletRequestBuilder updateRestaurant(NewRestaurantDto restaurantDto, int id) {
-        return MockMvcRequestBuilders.put(RestaurantAdminController.REST_URL + "/" + id)
+    public static MockHttpServletRequestBuilder updateRestaurant(InputRestaurantDto restaurantDto, int id) {
+        return MockMvcRequestBuilders.put(RESTAURANT_ID_URL.formatted(id))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(restaurantDto));
     }
 
     public static MockHttpServletRequestBuilder deleteRestaurant(int id) {
-        return MockMvcRequestBuilders.delete(RestaurantAdminController.REST_URL + "/" + id);
+        return MockMvcRequestBuilders.delete(RESTAURANT_ID_URL.formatted(id));
     }
 
     public static MockHttpServletRequestBuilder getAllRestaurants() {
@@ -52,13 +61,13 @@ public class MockMvcUtils {
     }
 
     public static MockHttpServletRequestBuilder createDish(int menuId, DishDto dishDto) {
-        return MockMvcRequestBuilders.post(DishAdminController.REST_URL + "/menus/" + menuId)
+        return MockMvcRequestBuilders.post(DISH_MENUS_ID_URL.formatted(menuId))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(dishDto));
     }
 
     public static MockHttpServletRequestBuilder updateDish(int id, DishDto dishDto) {
-        return MockMvcRequestBuilders.put(DishAdminController.REST_URL + "/" + id)
+        return MockMvcRequestBuilders.put(DISH_ID_URL.formatted(id))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(dishDto));
     }
@@ -79,13 +88,13 @@ public class MockMvcUtils {
         return MockMvcRequestBuilders.get(DishController.REST_URL + "/restaurants/" + id);
     }
 
-    public static MockHttpServletRequestBuilder createMenu(int restaurantId, NewMenuDto menuDto) {
+    public static MockHttpServletRequestBuilder createMenu(int restaurantId, InputMenuDto menuDto) {
         return MockMvcRequestBuilders.post(MENU_RESTAURANTS_ID_URL.formatted(restaurantId))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(menuDto));
     }
 
-    public static MockHttpServletRequestBuilder updateMenu(int id, NewMenuDto menuDto) {
+    public static MockHttpServletRequestBuilder updateMenu(int id, InputMenuDto menuDto) {
         return MockMvcRequestBuilders.put(MENU_ID_URL.formatted(id))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(menuDto));

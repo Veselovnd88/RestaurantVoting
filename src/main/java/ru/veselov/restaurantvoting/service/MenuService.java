@@ -2,7 +2,7 @@ package ru.veselov.restaurantvoting.service;
 
 import org.springframework.lang.NonNull;
 import ru.veselov.restaurantvoting.dto.MenuDto;
-import ru.veselov.restaurantvoting.dto.NewMenuDto;
+import ru.veselov.restaurantvoting.dto.InputMenuDto;
 import ru.veselov.restaurantvoting.model.Menu;
 
 import java.time.LocalDate;
@@ -10,9 +10,9 @@ import java.util.List;
 
 public interface MenuService {
 
-    MenuDto create(int restaurantId, NewMenuDto newMenuDto);
+    MenuDto create(int restaurantId, InputMenuDto inputMenuDto);
 
-    MenuDto update(int id, NewMenuDto menuDto);
+    MenuDto update(int id, InputMenuDto menuDto);
 
     MenuDto getMenuByIdWithDishesAndVotes(int id);
 
