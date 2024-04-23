@@ -33,27 +33,26 @@ public class RestaurantTestData {
 
     public static Restaurant burgerRestaurant = new Restaurant(BURGER_ID, "BurgerPizza");
 
-    public static InputRestaurantDto inputRestaurantDto = new InputRestaurantDto("New tasty restaurant");
+    public static InputRestaurantDto inputRestaurantDto = new InputRestaurantDto(null, "New tasty restaurant");
 
-    public static InputRestaurantDto restaurantDtoToUpdate = new InputRestaurantDto("Updated tasty restaurant");
+    public static InputRestaurantDto restaurantDtoToUpdate = new InputRestaurantDto(SUSHI_ID, "Updated tasty restaurant");
 
-    public static RestaurantDto savedRestaurantDto = new RestaurantDto(100022, "New tasty restaurant");
+    public static RestaurantDto savedRestaurantDto = new RestaurantDto(100022, "New tasty restaurant", null);
 
-    public static RestaurantDto sushiRestaurantDto = new RestaurantDto(100003, "SushiWok");
+    public static RestaurantDto sushiRestaurantDto = new RestaurantDto(100003, "SushiWok", null);
 
     public static RestaurantDto sushiRestaurantDtoWithEmptyMenus = new RestaurantDto(100003, "SushiWok", Collections.emptyList());
 
-    public static RestaurantDto pizzaRestaurantDto = new RestaurantDto(100004, "DoDoPizza");
+    public static RestaurantDto pizzaRestaurantDto = new RestaurantDto(100004, "DoDoPizza", null);
 
-    public static RestaurantDto burgerRestaurantDto = new RestaurantDto(100005, "BurgerPizza");
+    public static RestaurantDto burgerRestaurantDto = new RestaurantDto(100005, "BurgerPizza", null);
 
-    public static RestaurantDto sushiRestaurantUpdated = new RestaurantDto(100003, "Updated tasty restaurant");
+    public static RestaurantDto sushiRestaurantUpdated = new RestaurantDto(100003, "Updated tasty restaurant", null);
 
     public static List<RestaurantDto> restaurantDtos = List.of(burgerRestaurantDto, pizzaRestaurantDto, sushiRestaurantDto);
 
     public static RestaurantDto getSushiRestaurantDtoWithMenuByDate() {
-        RestaurantDto restaurantDto = new RestaurantDto(100003, "SushiWok");
-        restaurantDto.setMenus(List.of(MenuTestData.sushiRestaurantMenuDtoWithVotes));
-        return restaurantDto;
+        return new RestaurantDto(100003, "SushiWok",
+                List.of(MenuTestData.sushiRestaurantMenuDtoWithVotes));
     }
 }

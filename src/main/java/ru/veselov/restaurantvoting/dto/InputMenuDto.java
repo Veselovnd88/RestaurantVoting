@@ -7,6 +7,7 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import org.springframework.lang.Nullable;
+import ru.veselov.restaurantvoting.util.HasId;
 import ru.veselov.restaurantvoting.web.validaton.DifferentDishes;
 
 import java.time.LocalDate;
@@ -23,7 +24,7 @@ public record InputMenuDto(
         @NotEmpty
         @Size(min = 2, max = 5)
         @DifferentDishes
-        List<@Valid DishDto> dishes) {
+        List<@Valid DishDto> dishes) implements HasId {
 
     @JsonCreator //constructor need int for Jackson mapping
     public InputMenuDto(@JsonProperty("id") Integer id, @JsonProperty("addedAt") LocalDate addedAt,
@@ -31,5 +32,10 @@ public record InputMenuDto(
         this.id = id;
         this.addedAt = addedAt;
         this.dishes = dishes;
+    }
+
+    @Override
+    public Integer getId() {
+        return this.id;
     }
 }

@@ -25,6 +25,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.veselov.restaurantvoting.dto.InputRestaurantDto;
 import ru.veselov.restaurantvoting.dto.RestaurantDto;
 import ru.veselov.restaurantvoting.service.RestaurantService;
+import ru.veselov.restaurantvoting.util.ValidationUtil;
 
 import java.net.URI;
 
@@ -48,27 +49,29 @@ public class RestaurantAdminController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<RestaurantDto> create(@Valid @RequestBody InputRestaurantDto restaurantDto) {
+        ValidationUtil.checkNew(restaurantDto);
         RestaurantDto created = service.create(restaurantDto);
         URI uriOfResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(RestaurantController.REST_URL + "/{id}")
-                .buildAndExpand(created.getId()).toUri();
+                .buildAndExpand(created.id()).toUri();
         return ResponseEntity.created(uriOfResource).body(created);
     }
 
-    @Operation(summary = "Обновить данные ресторана")
+    @Operation(summary = "Update restaurant data")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Обновлено",
+            @ApiResponse(responseCode = "200", description = "Updated",
                     content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                             schema = @Schema(implementation = RestaurantDto.class))})
     })
     @PutMapping("/{id}")
     public RestaurantDto update(@PathVariable int id, @Valid @RequestBody InputRestaurantDto restaurantDto) {
+        ValidationUtil.assureIdConsistent(restaurantDto, id);
         return service.update(id, restaurantDto);
     }
 
-    @Operation(summary = "Удалить ресторан")
+    @Operation(summary = "Remove restaurant")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "Ресторан удален")
+            @ApiResponse(responseCode = "204", description = "Restaurant removed")
     })
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
