@@ -60,9 +60,9 @@ class VoteControllerTest extends AbstractRestControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isNoContent());
 
         MenuDto burgerMenu = menuService.getMenuByIdWithDishesAndVotes(MenuTestData.BURGER_MENU_ID);
-        Assertions.assertThat(burgerMenu.votes()).flatExtracting(VoteDto::getUser).contains(UserTestData.user2Dto);
+        Assertions.assertThat(burgerMenu.votes()).flatExtracting(VoteDto::user).contains(UserTestData.user2Dto);
         MenuDto sushiMenu = menuService.getMenuByIdWithDishesAndVotes(MenuTestData.SUSHI_MENU_ID);
-        Assertions.assertThat(sushiMenu.votes()).flatExtracting(VoteDto::getUser).doesNotContain(UserTestData.user2Dto);
+        Assertions.assertThat(sushiMenu.votes()).flatExtracting(VoteDto::user).doesNotContain(UserTestData.user2Dto);
     }
 
     @Test
@@ -87,7 +87,7 @@ class VoteControllerTest extends AbstractRestControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isNoContent());
 
         MenuDto burgerMenu = menuService.getMenuByIdWithDishesAndVotes(MenuTestData.BURGER_MENU_ID);
-        Assertions.assertThat(burgerMenu.votes()).flatExtracting(VoteDto::getUser).contains(UserTestData.user3Dto);
+        Assertions.assertThat(burgerMenu.votes()).flatExtracting(VoteDto::user).contains(UserTestData.user3Dto);
     }
 
     @Test
@@ -127,7 +127,7 @@ class VoteControllerTest extends AbstractRestControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isNoContent());
 
         MenuDto sushiMenu = menuService.getMenuByIdWithDishesAndVotes(MenuTestData.SUSHI_MENU_ID);
-        Assertions.assertThat(sushiMenu.votes()).flatExtracting(VoteDto::getUser).doesNotContain(UserTestData.user1Dto);
+        Assertions.assertThat(sushiMenu.votes()).flatExtracting(VoteDto::user).doesNotContain(UserTestData.user1Dto);
     }
 
     @Test

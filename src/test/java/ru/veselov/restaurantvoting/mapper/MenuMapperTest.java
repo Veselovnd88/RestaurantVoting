@@ -22,21 +22,21 @@ class MenuMapperTest {
 
     @Test
     void toDto_AllOk_ReturnCorrectMappedMenuDto() {
-        MenuDto menuDto = menuMapper.toDto(MenuTestData.sushiRestaurantMenuWithVotes);
+        MenuDto menuDto = menuMapper.toDto(MenuTestData.getSushiRestaurantMenuWithVotes());
 
         Assertions.assertThat(menuDto).isEqualTo(MenuTestData.sushiRestaurantMenuDtoWithVotes);
     }
 
     @Test
     void toDtoWithoutVotes_AllOk_ReturnDtoWithoutVotes() {
-        MenuDto menuDto = menuMapper.toDtoWithoutVotes(MenuTestData.sushiRestaurantMenuWithVotes);
+        MenuDto menuDto = menuMapper.toDtoWithoutVotes(MenuTestData.getSushiRestaurantMenuWithVotes());
 
         Assertions.assertThat(menuDto).isEqualTo(MenuTestData.sushiRestaurantMenuDto);
     }
 
     @Test
     void toDtosWithoutVotesWithoutVotes_AllOk_ReturnEntityWIthDishesAndDate() {
-        List<MenuDto> dtos = menuMapper.toDtosWithoutVotes(List.of(MenuTestData.sushiRestaurantMenuWithVotes));
+        List<MenuDto> dtos = menuMapper.toDtosWithoutVotes(List.of(MenuTestData.getSushiRestaurantMenuWithVotes()));
 
         Assertions.assertThat(dtos).hasSameElementsAs(List.of(MenuTestData.sushiRestaurantMenuDto));
     }

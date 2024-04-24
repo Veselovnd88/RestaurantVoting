@@ -19,6 +19,8 @@ import ru.veselov.restaurantvoting.mapper.DishMapper;
 import ru.veselov.restaurantvoting.mapper.DishMapperImpl;
 import ru.veselov.restaurantvoting.mapper.MenuMapper;
 import ru.veselov.restaurantvoting.mapper.MenuMapperImpl;
+import ru.veselov.restaurantvoting.mapper.VoteMapper;
+import ru.veselov.restaurantvoting.mapper.VoteMapperImpl;
 import ru.veselov.restaurantvoting.model.Menu;
 import ru.veselov.restaurantvoting.repository.MenuRepository;
 import ru.veselov.restaurantvoting.repository.RestaurantRepository;
@@ -49,6 +51,7 @@ class MenuServiceImplTest {
     void setUp() {
         MenuMapperImpl menuMapper = new MenuMapperImpl();
         ReflectionTestUtils.setField(menuMapper, "dishMapper", new DishMapperImpl(), DishMapper.class);
+        ReflectionTestUtils.setField(menuMapper, "voteMapper", new VoteMapperImpl(), VoteMapper.class);
         ReflectionTestUtils.setField(menuService, "mapper", menuMapper, MenuMapper.class);
     }
 
@@ -81,7 +84,7 @@ class MenuServiceImplTest {
     @Test
     void update_AllOk_UpdateMenuAndReturnUpdated() {
         Mockito.when(menuRepository.findById(Mockito.anyInt()))
-                .thenReturn(Optional.of(MenuTestData.getSushiRestaurantMenu()));
+                .thenReturn(Optional.of(MenuTestData.getGetSushiRestaurantMenu()));
 
         menuService.update(MenuTestData.SUSHI_MENU_ID, MenuTestData.menuDtoToCreate);
 
@@ -102,15 +105,15 @@ class MenuServiceImplTest {
 
     @Test
     void getMenuById_AllOk_ReturnMenuDtoWithDishesAndVotes() {
-        Mockito.when(menuRepository.findByIdWithDishesAndVotes(Mockito.anyInt())).thenReturn(Optional.of(MenuTestData.sushiRestaurantMenu));
+        Mockito.when(menuRepository.findByIdWithDishesAndVotes(Mockito.anyInt())).thenReturn(Optional.of(MenuTestData.getSushiRestaurantMenuWithVotes()));
 
         MenuDto menuById = menuService.getMenuByIdWithDishesAndVotes(MenuTestData.SUSHI_MENU_ID);
 
-        Assertions.assertThat(menuById).isEqualTo(MenuTestData.sushiRestaurantMenuDto);
+        Assertions.assertThat(menuById).isEqualTo(MenuTestData.sushiRestaurantMenuDtoWithVotes);
     }
 
     @Test
-    void getMenuById_MenuNotFound_ThrowExceptionWithDishesAndVotes() {
+    void getMenuById_MenuNotFound_ThrowException() {
         Mockito.when(menuRepository.findByIdWithDishesAndVotes(Mockito.anyInt())).thenReturn(Optional.empty());
 
         Assertions.assertThatThrownBy(() -> menuService.getMenuByIdWithDishesAndVotes(MenuTestData.SUSHI_MENU_ID))
@@ -120,7 +123,7 @@ class MenuServiceImplTest {
     @Test
     void getMenusByRestaurant_AllOk_ReturnListOfMenus() {
         Mockito.when(menuRepository.findByRestaurantId(Mockito.anyInt(), Mockito.any()))
-                .thenReturn(List.of(MenuTestData.sushiRestaurantMenu));
+                .thenReturn(List.of(MenuTestData.getSushiRestaurantMenuWithVotes()));
 
         List<MenuDto> menusByRestaurant = menuService.getMenusByRestaurant(RestaurantTestData.SUSHI_ID);
 
@@ -130,7 +133,7 @@ class MenuServiceImplTest {
     @Test
     void findMenuByRestaurantIdAndLocalDate_MenuFound_ReturnMenu() {
         Mockito.when(menuRepository.findByRestaurantIdByDate(Mockito.anyInt(), Mockito.any()))
-                .thenReturn(Optional.of(MenuTestData.sushiRestaurantMenu));
+                .thenReturn(Optional.of(MenuTestData.getSushiRestaurantMenuWithVotes()));
 
         menuService.findMenuByRestaurantIdAndLocalDate(RestaurantTestData.SUSHI_ID, LocalDate.of(2024, 4, 20));
 

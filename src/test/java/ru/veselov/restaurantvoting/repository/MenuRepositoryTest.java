@@ -26,7 +26,7 @@ class MenuRepositoryTest {
 
         Assertions.assertThat(foundById).isPresent();
         Menu menu = foundById.get();
-        MenuTestData.MENU_MATCHER.assertMatch(menu, MenuTestData.sushiRestaurantMenu);
+        MenuTestData.MENU_MATCHER.assertMatch(menu, MenuTestData.getSushiRestaurantMenuWithVotes());
         DishTestData.DISH_MATCHER.assertMatch(menu.getDishes(), DishTestData.sushiDishes);
         VoteTestData.VOTE_MATCHER.assertMatch(menu.getVotes(), VoteTestData.sushiVotes);
     }
