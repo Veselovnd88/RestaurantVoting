@@ -2,6 +2,7 @@ package ru.veselov.restaurantvoting.service.user;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,7 +42,8 @@ public class UserServiceImpl implements UserService {
     public void update(UserDto userDto) {
         User user = getUserById(userDto.id());
         mapper.toUserUpdate(user, userDto);
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setPassword(StringUtils.isBlank(userDto.password()) ? user.getPassword()
+                : passwordEncoder.encode(userDto.password()));
         User updated = repository.save(user);
         log.info("User with email: {} updated", updated.getEmail());
     }
