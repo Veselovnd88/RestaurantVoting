@@ -1,6 +1,7 @@
 package ru.veselov.restaurantvoting.web.validaton;
 
 import lombok.SneakyThrows;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ArgumentsSource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +43,17 @@ class DishAdminControllerValidationTest {
     }
 
     @SneakyThrows
+    @Test
+    void create_DishWithId_ReturnValidationError() {
+        ResultActions resultActions = mockMvc.perform(MockMvcUtils.createDish(MenuTestData.BURGER_MENU_ID,
+                DishTestData.dishToUpdate));
+
+        ResultActionErrorsUtil.checkRequestValidationError(resultActions,
+                GlobalExceptionHandler.REQUEST_VALIDATION_FAILED,
+                MockMvcUtils.DISH_MENUS_ID_URL.formatted(MenuTestData.BURGER_MENU_ID));
+    }
+
+    @SneakyThrows
     @ParameterizedTest
     @ArgumentsSource(BadDishDtoArgumentsProvider.class)
     void update_BadDishDtoPasses_ReturnError(DishDto dishDto, String fieldName) {
@@ -50,5 +62,16 @@ class DishAdminControllerValidationTest {
         ResultActionErrorsUtil.checkValidationError(resultActions,
                 GlobalExceptionHandler.FIELDS_VALIDATION_FAILED,
                 MockMvcUtils.DISH_ID_URL.formatted(DishTestData.TASTY_ROLL_ID), fieldName, 0);
+    }
+
+    @SneakyThrows
+    @Test
+    void update_DishWithoutId_ReturnValidationError() {
+        ResultActions resultActions = mockMvc.perform(MockMvcUtils.updateDish(DishTestData.TASTY_ROLL_ID,
+                DishTestData.newTastyDish));
+
+        ResultActionErrorsUtil.checkRequestValidationError(resultActions,
+                GlobalExceptionHandler.REQUEST_VALIDATION_FAILED,
+                MockMvcUtils.DISH_ID_URL.formatted(DishTestData.TASTY_ROLL_ID));
     }
 }

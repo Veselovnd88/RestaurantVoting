@@ -15,7 +15,7 @@ public class ValidationUtil {
     }
 
     public static void assureIdConsistent(HasId bean, int id) {
-        if (bean.nonNullId() != id || bean.isNew()) {
+        if (bean.isNew() || bean.nonNullId() != id) {
             throw new IllegalRequestDataException(bean + " must be with id=" + id);
         }
     }

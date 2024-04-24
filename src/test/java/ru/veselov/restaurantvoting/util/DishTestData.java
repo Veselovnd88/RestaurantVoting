@@ -57,6 +57,8 @@ public class DishTestData {
 
     public static DishDto philadelphiaDtoForConflict = new DishDto(null, "Philadelphia", 30000);
 
+    public static DishDto philadelphiaDtoForConflictWithId = new DishDto(DishTestData.UNAGI_ID, "Philadelphia", 30000);
+
     public static DishDto tastyRollDto = new DishDto(TASTY_ROLL_ID, "TastyRoll", 55000);
 
     public static DishDto unagiDto = new DishDto(UNAGI_ID, "Unagi", 40000);

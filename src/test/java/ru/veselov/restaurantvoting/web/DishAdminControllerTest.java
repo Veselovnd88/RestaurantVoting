@@ -69,7 +69,8 @@ class DishAdminControllerTest extends AbstractRestControllerTest {
     @Test
     @SneakyThrows
     void update_DishConflict_ReturnConflictError() {
-        ResultActions resultActions = mockMvc.perform(MockMvcUtils.updateDish(DishTestData.UNAGI_ID, DishTestData.philadelphiaDtoForConflict)
+        ResultActions resultActions = mockMvc.perform(MockMvcUtils.updateDish(DishTestData.UNAGI_ID,
+                        DishTestData.philadelphiaDtoForConflictWithId)
                 .with(SecurityUtils.userHttpBasic(UserTestData.admin)));
 
         ResultActionErrorsUtil.checkConflictError(resultActions, GlobalExceptionHandler.DISH_MENU_EXISTS,
