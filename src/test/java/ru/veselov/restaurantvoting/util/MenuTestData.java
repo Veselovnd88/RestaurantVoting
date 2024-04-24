@@ -6,6 +6,7 @@ import ru.veselov.restaurantvoting.dto.MenuDto;
 import ru.veselov.restaurantvoting.model.Dish;
 import ru.veselov.restaurantvoting.model.Menu;
 import ru.veselov.restaurantvoting.model.Restaurant;
+import ru.veselov.restaurantvoting.model.Vote;
 
 import java.time.LocalDate;
 import java.util.LinkedHashSet;
@@ -27,12 +28,6 @@ public class MenuTestData {
     public static final int NOT_FOUND_MENU = 200006;
 
     public static final int BURGER_MENU_ID = 100008;
-
-    public static Menu sushiRestaurantMenu = new Menu(100006, ADDED_DATE, RestaurantTestData.sushiRestaurant,
-            new LinkedHashSet<>(DishTestData.sushiDishes));
-
-    public static Menu sushiRestaurantMenuWithVotes = new Menu(100006, ADDED_DATE, RestaurantTestData.sushiRestaurant,
-            new LinkedHashSet<>(DishTestData.sushiDishes), new LinkedHashSet<>(VoteTestData.sushiVotes));
 
     public static MenuDto sushiRestaurantMenuDtoWithVotes = new MenuDto(100006, ADDED_DATE, DishTestData.sushiDishesDtos, VoteTestData.sushiVotesDto);
 
@@ -73,10 +68,20 @@ public class MenuTestData {
     public static MenuDto menuDtoToUpdateWithChangedDishAfterUpdate = new MenuDto(SUSHI_MENU_ID, ADDED_DATE,
             List.of(DishTestData.philadelphiaDto, DishTestData.tastyRollDto, DishTestData.changedUnagiDto), VoteTestData.sushiVotesDto);
 
-    public static Menu getSushiRestaurantMenu() {
+    public static Menu getGetSushiRestaurantMenu() {
         return new Menu(100006, MenuTestData.ADDED_DATE, new Restaurant(RestaurantTestData.SUSHI_ID, "SushiWok"),
                 new LinkedHashSet<>(List.of(new Dish(100010, "Philadelphia", 30000),
                         new Dish(100011, "TastyRoll", 55000),
                         new Dish(100009, "Unagi", 40000))));
+    }
+
+    public static Menu getSushiRestaurantMenuWithVotes() {
+        Menu menu = new Menu(100006, ADDED_DATE, RestaurantTestData.sushiRestaurant,
+                new LinkedHashSet<>(DishTestData.sushiDishes));
+        Vote user1VoteSushi = new Vote(100018, VoteTestData.VOTED_AT_DATE, UserTestData.user1, menu);
+        Vote adminVoteSushi = new Vote(100019, VoteTestData.VOTED_AT_DATE, UserTestData.admin, menu);
+        Vote user2VoteSushi = new Vote(100020, VoteTestData.VOTED_AT_DATE, UserTestData.user2, menu);
+        menu.setVotes(new LinkedHashSet<>(List.of(user1VoteSushi, adminVoteSushi, user2VoteSushi)));
+        return menu;
     }
 }

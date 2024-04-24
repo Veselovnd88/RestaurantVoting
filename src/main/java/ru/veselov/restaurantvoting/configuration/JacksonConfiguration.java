@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.converter.json.ProblemDetailJacksonMixin;
-
+//https://stackoverflow.com/questions/61140857/unable-to-deserialize-when-using-new-record-classes
 @Configuration
 @Slf4j
 public class JacksonConfiguration {

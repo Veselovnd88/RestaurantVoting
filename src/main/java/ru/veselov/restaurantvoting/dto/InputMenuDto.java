@@ -1,6 +1,5 @@
 package ru.veselov.restaurantvoting.dto;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
@@ -16,23 +15,19 @@ import java.util.List;
 public record InputMenuDto(
 
         @Nullable
+        @JsonProperty("id")
         Integer id,
 
         @NotNull
+        @JsonProperty("addedAt")
         LocalDate addedAt,
 
         @NotEmpty
         @Size(min = 2, max = 5)
         @DifferentDishes
-        List<@Valid DishDto> dishes) implements HasId {
-
-    @JsonCreator //constructor need int for Jackson mapping
-    public InputMenuDto(@JsonProperty("id") Integer id, @JsonProperty("addedAt") LocalDate addedAt,
-                        @JsonProperty("dishes") List<DishDto> dishes) {
-        this.id = id;
-        this.addedAt = addedAt;
-        this.dishes = dishes;
-    }
+        @JsonProperty("dishes")
+        List<@Valid DishDto> dishes
+) implements HasId {
 
     @Override
     public Integer getId() {

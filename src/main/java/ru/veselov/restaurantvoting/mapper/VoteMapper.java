@@ -13,5 +13,6 @@ public interface VoteMapper {
     @Mapping(target = "user.id", source = "user.id")
     @Mapping(target = "user.email", source = "user.email")
     @Mapping(target = "user.name", source = "user.name")
+    @Mapping(target = "restaurantId", source ="menu.restaurant.id" )
     VoteDto toDto(Vote vote);
 }

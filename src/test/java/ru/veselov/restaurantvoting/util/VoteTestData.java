@@ -24,16 +24,17 @@ public class VoteTestData {
 
     public static List<Vote> sushiVotes = List.of(user1VoteSushi, adminVoteSushi, user2VoteSushi);
 
-    public static VoteDto user1VoteSushiDto = new VoteDto(VOTED_AT_DATE, UserTestData.user1Dto);
+    public static VoteDto user1VoteSushiDto = new VoteDto(RestaurantTestData.SUSHI_ID, VOTED_AT_DATE,
+            UserTestData.user1Dto);
 
-    public static VoteDto user2VoteSushiDto = new VoteDto(VOTED_AT_DATE, UserTestData.user2Dto);
+    public static VoteDto user2VoteSushiDto = new VoteDto(RestaurantTestData.SUSHI_ID, VOTED_AT_DATE, UserTestData.user2Dto);
 
-    public static VoteDto adminVoteSushiDto = new VoteDto(VOTED_AT_DATE, UserTestData.adminDto);
+    public static VoteDto adminVoteSushiDto = new VoteDto(RestaurantTestData.SUSHI_ID, VOTED_AT_DATE, UserTestData.adminDto);
 
     public static List<VoteDto> sushiVotesDto = List.of(user1VoteSushiDto, adminVoteSushiDto, user2VoteSushiDto);
 
     public static Vote getNewUser1VoteSushi() {
-        return new Vote(100018, VOTED_AT_DATE, UserTestData.user1, MenuTestData.sushiRestaurantMenu);
+        return new Vote(100018, VOTED_AT_DATE, UserTestData.user1, MenuTestData.getSushiRestaurantMenuWithVotes());
     }
 
     public static Vote getUpdatedUser1VoteBurger() {

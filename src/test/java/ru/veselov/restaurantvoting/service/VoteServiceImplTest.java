@@ -41,12 +41,12 @@ class VoteServiceImplTest {
     ArgumentCaptor<Vote> voteCaptor;
 
     @Test
-    @AdjustClockMockForVoting(exceeds = false)
+    @AdjustClockMockForVoting
     void vote_NewVoteForMenu_AddVote() {
         Mockito.when(voteRepository.findByUserIdForDate(Mockito.anyInt(), Mockito.any())).thenReturn(Optional.empty());
         Mockito.when(userRepository.findById(UserTestData.USER1_ID)).thenReturn(Optional.of(UserTestData.user1));
         Mockito.when(menuService.findMenuByRestaurantIdAndLocalDate(Mockito.anyInt(), Mockito.any()))
-                .thenReturn(MenuTestData.sushiRestaurantMenu);
+                .thenReturn(MenuTestData.getSushiRestaurantMenuWithVotes());
 
         voteService.vote(UserTestData.USER1_ID, MenuTestData.SUSHI_MENU_ID, VoteTestData.VOTED_AT_DATE);
 
@@ -69,7 +69,7 @@ class VoteServiceImplTest {
     }
 
     @Test
-    @AdjustClockMockForVoting(exceeds = false)
+    @AdjustClockMockForVoting
     void vote_AlreadyVotedForAnotherMenuTimeDoesntExceedsLimit_MakeAnotherVote() {
         Mockito.when(voteRepository.findByUserIdForDate(Mockito.anyInt(), Mockito.any()))
                 .thenReturn(Optional.of(VoteTestData.getNewUser1VoteSushi()));
@@ -95,7 +95,7 @@ class VoteServiceImplTest {
     }
 
     @Test
-    @AdjustClockMockForVoting(exceeds = false)
+    @AdjustClockMockForVoting
     void removeVote_AllOk_RemoveVote() {
         voteService.removeVote(UserTestData.USER1_ID, VoteTestData.VOTED_AT_DATE);
         Mockito.verify(voteRepository).deleteByUserIdForDate(Mockito.anyInt(), Mockito.any());

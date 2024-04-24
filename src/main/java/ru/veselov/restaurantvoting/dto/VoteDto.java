@@ -1,17 +1,14 @@
 package ru.veselov.restaurantvoting.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.time.LocalDate;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-public class VoteDto {
-
-    private LocalDate votedAt;
-
-    private UserDto user;
+public record VoteDto(
+        @JsonProperty("restaurantId")
+        Integer restaurantId,
+        @JsonProperty("votedAt")
+        LocalDate votedAt,
+        @JsonProperty("user")
+        UserDto user) {
 }
