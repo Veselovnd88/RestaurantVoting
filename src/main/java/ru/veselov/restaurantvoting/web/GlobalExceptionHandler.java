@@ -2,6 +2,7 @@ package ru.veselov.restaurantvoting.web;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -66,13 +67,27 @@ public class GlobalExceptionHandler {
                 LIMIT_FOR_VOTING_EXCEEDED, Map.of(ERROR_CODE, ErrorCode.BAD_REQUEST.name()), null, true);
     }
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ExceptionHandler({MethodArgumentNotValidException.class})
     @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
     public ProblemDetail handleMethodArgumentNotValidException(HttpServletRequest req, MethodArgumentNotValidException e) {
         final List<ViolationError> violationErrors = e.getBindingResult().getFieldErrors().stream()
                 .map(error -> new ViolationError(
                         error.getField(), error.getDefaultMessage(),
                         formatValidationCurrentValue(error.getRejectedValue())))
+                .toList();
+        return createProblemDetail(req, HttpStatus.UNPROCESSABLE_ENTITY, e, VALIDATION_ERROR,
+                Map.of(ERROR_CODE, ErrorCode.VALIDATION.name(),
+                        VIOLATIONS, violationErrors),
+                FIELDS_VALIDATION_FAILED, false);
+    }
+
+    @ExceptionHandler({ConstraintViolationException.class})
+    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
+    public ProblemDetail handleConstraintViolationException(HttpServletRequest req, ConstraintViolationException e) {
+        final List<ViolationError> violationErrors = e.getConstraintViolations().stream()
+                .map(error -> new ViolationError(
+                        fieldNameFromPath(error.getPropertyPath().toString()), error.getMessage(),
+                        formatValidationCurrentValue(error.getInvalidValue())))
                 .toList();
         return createProblemDetail(req, HttpStatus.UNPROCESSABLE_ENTITY, e, VALIDATION_ERROR,
                 Map.of(ERROR_CODE, ErrorCode.VALIDATION.name(),
@@ -131,5 +146,13 @@ public class GlobalExceptionHandler {
             return "Collection elements validation failed";
         }
         return object.toString();
+    }
+
+    private String fieldNameFromPath(String path) {
+        String[] split = path.split("\\.");
+        if (split.length > 1) {
+            return split[split.length - 1];
+        }
+        return path;
     }
 }

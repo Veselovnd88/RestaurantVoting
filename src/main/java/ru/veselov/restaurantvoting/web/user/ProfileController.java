@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.groups.Default;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -27,13 +28,14 @@ import ru.veselov.restaurantvoting.dto.UserDto;
 import ru.veselov.restaurantvoting.security.AuthorizedUser;
 import ru.veselov.restaurantvoting.service.user.UserService;
 import ru.veselov.restaurantvoting.util.ValidationUtil;
+import ru.veselov.restaurantvoting.web.validaton.ValidationGroup;
 
 import java.net.URI;
 
 @RestController
 @RequestMapping(ProfileController.REST_URL)
-@Validated
 @RequiredArgsConstructor
+@Validated
 @SecurityRequirement(name = "basicAuth")
 @Tag(name = "User profile management", description = "User can manage his profile here")
 public class ProfileController {
@@ -49,6 +51,7 @@ public class ProfileController {
                             schema = @Schema(implementation = UserDto.class))})})
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @Validated({ValidationGroup.OnCreate.class, Default.class})
     public ResponseEntity<UserDto> register(@Valid @RequestBody UserDto userDto) {
         ValidationUtil.checkNew(userDto);
         UserDto created = service.create(userDto);
@@ -73,6 +76,7 @@ public class ProfileController {
                     content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE)})})
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Validated
     public void update(@Valid @RequestBody UserDto userDto,
                        @Schema(hidden = true) @AuthenticationPrincipal AuthorizedUser authUser) {
         ValidationUtil.assureIdConsistent(userDto, authUser.getId());
@@ -83,7 +87,6 @@ public class ProfileController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "User deleted",
                     content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE)})})
-    @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @DeleteMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@Schema(hidden = true) @AuthenticationPrincipal AuthorizedUser authUser) {

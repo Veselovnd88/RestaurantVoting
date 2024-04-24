@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.groups.Default;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -30,6 +31,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.veselov.restaurantvoting.dto.UserDto;
 import ru.veselov.restaurantvoting.service.user.UserService;
 import ru.veselov.restaurantvoting.util.ValidationUtil;
+import ru.veselov.restaurantvoting.web.validaton.ValidationGroup;
 
 import java.net.URI;
 import java.util.List;
@@ -53,6 +55,7 @@ public class UserAdminController {
                             schema = @Schema(implementation = UserDto.class))})})
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @Validated({ValidationGroup.OnCreate.class, Default.class})
     public ResponseEntity<UserDto> createWithLocation(@Valid @RequestBody UserDto userDto) {
         ValidationUtil.checkNew(userDto);
         UserDto created = service.create(userDto);
