@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.veselov.restaurantvoting.dto.DishDto;
 import ru.veselov.restaurantvoting.service.DishService;
+import ru.veselov.restaurantvoting.util.ValidationUtil;
 
 import java.net.URI;
 
@@ -47,6 +48,7 @@ public class DishAdminController {
     @PostMapping("/menus/{menuId}")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<DishDto> create(@PathVariable int menuId, @Valid @RequestBody DishDto dishDto) {
+        ValidationUtil.checkNew(dishDto);
         DishDto created = service.save(menuId, dishDto);
         URI uriOfResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(DishController.REST_URL + "/{id}")
@@ -61,6 +63,7 @@ public class DishAdminController {
                             schema = @Schema(implementation = DishDto.class))})})
     @PutMapping("/{id}")
     public DishDto update(@PathVariable int id, @Valid @RequestBody DishDto dishDto) {
+        ValidationUtil.assureIdConsistent(dishDto, id);
         return service.update(id, dishDto);
     }
 

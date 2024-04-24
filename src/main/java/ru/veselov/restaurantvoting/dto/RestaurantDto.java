@@ -1,24 +1,30 @@
 package ru.veselov.restaurantvoting.dto;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import ru.veselov.restaurantvoting.util.HasId;
 
 import java.util.List;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-public class RestaurantDto {
+public record RestaurantDto(
 
-    private Integer id;
-    private String name;
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private List<MenuDto> menus;
+        Integer id,
+        String name,
+        @JsonInclude(JsonInclude.Include.NON_NULL)
+        List<MenuDto> menus) implements HasId {
 
-    public RestaurantDto(Integer id, String name) {
+    @JsonCreator
+    public RestaurantDto(@JsonProperty("id") Integer id,
+                         @JsonProperty("name") String name,
+                         @JsonProperty("menus") List<MenuDto> menus) {
         this.id = id;
         this.name = name;
+        this.menus = menus;
+    }
+
+    @Override
+    public Integer getId() {
+        return id();
     }
 }

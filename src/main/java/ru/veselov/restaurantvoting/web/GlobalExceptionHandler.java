@@ -8,14 +8,17 @@ import org.springframework.core.annotation.Order;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.lang.Nullable;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import ru.veselov.restaurantvoting.dto.ViolationError;
 import ru.veselov.restaurantvoting.exception.ErrorCode;
+import ru.veselov.restaurantvoting.exception.IllegalRequestDataException;
 import ru.veselov.restaurantvoting.exception.VotingTimeLimitExceedsException;
 import ru.veselov.restaurantvoting.util.ValidationUtil;
 
@@ -49,6 +52,7 @@ public class GlobalExceptionHandler {
     public static final String VALIDATION_ERROR = "Validation error";
     public static final String VIOLATIONS = "violations";
     public static final String FIELDS_VALIDATION_FAILED = "Fields validation failed";
+    public static final String REQUEST_VALIDATION_FAILED = "Request validation failed";
 
     @ExceptionHandler(EntityNotFoundException.class)
     public ProblemDetail handleEntityNotFoundException(HttpServletRequest req, EntityNotFoundException e) {
@@ -74,6 +78,13 @@ public class GlobalExceptionHandler {
                 Map.of(ERROR_CODE, ErrorCode.VALIDATION.name(),
                         VIOLATIONS, violationErrors),
                 FIELDS_VALIDATION_FAILED, false);
+    }
+
+    @ExceptionHandler({IllegalRequestDataException.class, MethodArgumentTypeMismatchException.class,
+            HttpMessageNotReadableException.class})
+    public ProblemDetail validationError(HttpServletRequest req, Exception e) {
+        return createProblemDetail(req, HttpStatus.UNPROCESSABLE_ENTITY, e, VALIDATION_ERROR,
+                Map.of(ERROR_CODE, ErrorCode.VALIDATION.name()), REQUEST_VALIDATION_FAILED, true);
     }
 
     @ResponseStatus(HttpStatus.CONFLICT)  // 409

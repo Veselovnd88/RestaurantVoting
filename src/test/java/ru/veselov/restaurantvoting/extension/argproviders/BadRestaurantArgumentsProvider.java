@@ -11,11 +11,11 @@ public class BadRestaurantArgumentsProvider implements ArgumentsProvider {
     public static final String NAME = "name";
 
     @Override
-    public Stream<? extends Arguments> provideArguments(ExtensionContext context) throws Exception {
-        InputRestaurantDto blankName = new InputRestaurantDto("");
-        InputRestaurantDto nullName = new InputRestaurantDto(null);
-        InputRestaurantDto shortName = new InputRestaurantDto("f".repeat(4));
-        InputRestaurantDto longName = new InputRestaurantDto("f".repeat(126));
+    public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
+        InputRestaurantDto blankName = new InputRestaurantDto(1, "");
+        InputRestaurantDto nullName = new InputRestaurantDto(1, null);
+        InputRestaurantDto shortName = new InputRestaurantDto(1, "f".repeat(4));
+        InputRestaurantDto longName = new InputRestaurantDto(1, "f".repeat(126));
         return Stream.of(Arguments.of(blankName, NAME),
                 Arguments.of(nullName, NAME),
                 Arguments.of(shortName, NAME),

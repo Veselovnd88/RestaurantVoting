@@ -26,6 +26,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.veselov.restaurantvoting.dto.InputMenuDto;
 import ru.veselov.restaurantvoting.dto.MenuDto;
 import ru.veselov.restaurantvoting.service.MenuService;
+import ru.veselov.restaurantvoting.util.ValidationUtil;
 
 import java.net.URI;
 
@@ -48,6 +49,7 @@ public class MenuAdminController {
                             schema = @Schema(implementation = MenuDto.class))})})
     @PostMapping("/restaurants/{restaurantId}")
     public ResponseEntity<MenuDto> add(@PathVariable int restaurantId, @Valid @RequestBody InputMenuDto menuDto) {
+        ValidationUtil.checkNew(menuDto);
         MenuDto created = service.create(restaurantId, menuDto);
         URI uriOfResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(MenuController.REST_URL + "/{id}")
@@ -63,6 +65,7 @@ public class MenuAdminController {
 
     @PutMapping("/{id}")
     public MenuDto update(@PathVariable int id, @Valid @RequestBody InputMenuDto menuDto) {
+        ValidationUtil.assureIdConsistent(menuDto, id);
         return service.update(id, menuDto);
     }
 

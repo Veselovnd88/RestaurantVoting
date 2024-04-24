@@ -70,6 +70,17 @@ public class ResultActionErrorsUtil {
                 .andExpect(MockMvcResultMatchers.jsonPath(JSON_VIOLATIONS_MESSAGE.formatted(fieldIndex)).isNotEmpty());
     }
 
+    public static void checkRequestValidationError(ResultActions resultActions, String detail, String url) throws Exception {
+        checkProblemJsonCompatibility(resultActions);
+        checkTimeStampIsNotEmpty(resultActions);
+        resultActions.andExpect(MockMvcResultMatchers.status().isUnprocessableEntity())
+                .andExpect(MockMvcResultMatchers.jsonPath(JSON_ERROR_CODE).value(ErrorCode.VALIDATION.name()))
+                .andExpect(MockMvcResultMatchers.jsonPath(JSON_TITLE)
+                        .value(GlobalExceptionHandler.VALIDATION_ERROR))
+                .andExpect(MockMvcResultMatchers.jsonPath(JSON_DETAIL, Matchers.startsWith(detail)))
+                .andExpect(MockMvcResultMatchers.jsonPath(JSON_INSTANCE, Matchers.endsWith(url)));
+    }
+
     private static void checkProblemJsonCompatibility(ResultActions resultActions) throws Exception {
         resultActions.andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.APPLICATION_PROBLEM_JSON_VALUE));
     }
