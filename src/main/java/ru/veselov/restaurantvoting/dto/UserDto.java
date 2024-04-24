@@ -1,17 +1,15 @@
 package ru.veselov.restaurantvoting.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-public class UserDto {
+public record UserDto(
 
-    private Integer id;
+        @JsonProperty("id")
+        Integer id,
 
-    private String name;
+        @JsonProperty("name")
+        String name,
 
-    private String email;
+        @JsonProperty("email")
+        String email) {
 }
