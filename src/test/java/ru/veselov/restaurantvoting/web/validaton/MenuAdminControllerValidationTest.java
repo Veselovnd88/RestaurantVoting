@@ -1,6 +1,7 @@
 package ru.veselov.restaurantvoting.web.validaton;
 
 import lombok.SneakyThrows;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ArgumentsSource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +43,17 @@ class MenuAdminControllerValidationTest {
     }
 
     @SneakyThrows
+    @Test
+    void create_MenuWithId_ReturnValidationError() {
+        ResultActions resultActions = mockMvc.perform(MockMvcUtils.createMenu(
+                RestaurantTestData.SUSHI_ID, MenuTestData.menuDtoToUpdate));
+
+        ResultActionErrorsUtil.checkRequestValidationError(resultActions,
+                GlobalExceptionHandler.REQUEST_VALIDATION_FAILED,
+                MockMvcUtils.MENU_RESTAURANTS_ID_URL.formatted(RestaurantTestData.SUSHI_ID));
+    }
+
+    @SneakyThrows
     @ParameterizedTest
     @ArgumentsSource(BadInputMenuDtoArgumentsProvider.class)
     void update_SimilarDishes_ReturnValidationError(InputMenuDto menuDto, String fieldName) {
@@ -50,5 +62,16 @@ class MenuAdminControllerValidationTest {
         ResultActionErrorsUtil.checkValidationError(resultActions,
                 GlobalExceptionHandler.FIELDS_VALIDATION_FAILED,
                 MockMvcUtils.MENU_ID_URL.formatted(MenuTestData.SUSHI_MENU_ID), fieldName, 0);
+    }
+
+    @SneakyThrows
+    @Test
+    void update_MenuWithoutId_ReturnValidationError() {
+        ResultActions resultActions = mockMvc.perform(MockMvcUtils.updateMenu(MenuTestData.SUSHI_MENU_ID,
+                MenuTestData.menuDtoToCreate));
+
+        ResultActionErrorsUtil.checkRequestValidationError(resultActions,
+                GlobalExceptionHandler.REQUEST_VALIDATION_FAILED,
+                MockMvcUtils.MENU_ID_URL.formatted(MenuTestData.SUSHI_MENU_ID));
     }
 }
