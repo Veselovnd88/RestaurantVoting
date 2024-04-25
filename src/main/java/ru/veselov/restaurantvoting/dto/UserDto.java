@@ -26,7 +26,7 @@ public record UserDto(
         String email,
 
         @NotEmpty(groups = ValidationGroup.OnCreate.class)
-        @Size(min = 5, max = 32, groups = ValidationGroup.OnCreate.class)
+        @Size(min = 5, max = 32)
         @JsonProperty(value = "password")
         String password
 ) implements HasId {

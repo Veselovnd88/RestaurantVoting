@@ -100,6 +100,7 @@ public class UserAdminController {
             @ApiResponse(responseCode = "204", description = "User profile updated",
                     content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE)})})
     @PutMapping(value = "/{id}")
+    @Validated
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void update(@Valid @RequestBody UserDto userDto, @PathVariable int id) {
         ValidationUtil.assureIdConsistent(userDto, id);
