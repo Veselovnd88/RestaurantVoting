@@ -49,7 +49,7 @@ public class ProfileController {
             @ApiResponse(responseCode = "201", description = "User registered",
                     content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                             schema = @Schema(implementation = UserDto.class))})})
-    @PostMapping
+    @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
     @Validated({ValidationGroup.OnCreate.class, Default.class})
     public ResponseEntity<UserDto> register(@Valid @RequestBody UserDto userDto) {

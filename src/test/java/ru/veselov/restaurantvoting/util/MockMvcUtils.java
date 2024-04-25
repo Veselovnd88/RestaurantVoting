@@ -16,6 +16,7 @@ import ru.veselov.restaurantvoting.web.MenuController;
 import ru.veselov.restaurantvoting.web.RestaurantAdminController;
 import ru.veselov.restaurantvoting.web.RestaurantController;
 import ru.veselov.restaurantvoting.web.VoteController;
+import ru.veselov.restaurantvoting.web.user.ProfileController;
 import ru.veselov.restaurantvoting.web.user.UserAdminController;
 
 @UtilityClass
@@ -38,6 +39,8 @@ public class MockMvcUtils {
     public static final String USER_EMAIL_URL = UserAdminController.REST_URL + "/by-email";
 
     public static final String VOTE_RESTAURANT_ID_URL = VoteController.REST_URL + "/restaurants/%s";
+
+    public static final String REGISTER = ProfileController.REST_URL + "/register";
 
 
     public static MockHttpServletRequestBuilder createRestaurant(InputRestaurantDto restaurantDto) {
@@ -155,7 +158,29 @@ public class MockMvcUtils {
     public static MockHttpServletRequestBuilder deleteUserById(int id) {
         return MockMvcRequestBuilders.delete(USER_ID_URL.formatted(id));
     }
+
     public static MockHttpServletRequestBuilder changeUserStatus(int id, boolean enabled) {
         return MockMvcRequestBuilders.patch(USER_ID_URL.formatted(id)).param("enabled", String.valueOf(enabled));
+    }
+
+
+    public static MockHttpServletRequestBuilder register(UserDto userDto) {
+        return MockMvcRequestBuilders.post(REGISTER)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(userDto));
+    }
+
+    public static MockHttpServletRequestBuilder getUserProfile() {
+        return MockMvcRequestBuilders.get(ProfileController.REST_URL);
+    }
+
+    public static MockHttpServletRequestBuilder updateUserProfile(UserDto userDto) {
+        return MockMvcRequestBuilders.put(ProfileController.REST_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(userDto));
+    }
+
+    public static MockHttpServletRequestBuilder deleteUser() {
+        return MockMvcRequestBuilders.delete(ProfileController.REST_URL);
     }
 }
