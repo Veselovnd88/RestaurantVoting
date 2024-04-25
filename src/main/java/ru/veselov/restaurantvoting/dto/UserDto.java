@@ -1,5 +1,6 @@
 package ru.veselov.restaurantvoting.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -26,11 +27,17 @@ public record UserDto(
 
         @NotEmpty(groups = ValidationGroup.OnCreate.class)
         @Size(min = 5, max = 32, groups = ValidationGroup.OnCreate.class)
+        @JsonProperty(value = "password")
         String password
 ) implements HasId {
 
     @Override
     public Integer getId() {
         return id;
+    }
+
+    @JsonIgnore
+    public String password() {
+        return password;
     }
 }

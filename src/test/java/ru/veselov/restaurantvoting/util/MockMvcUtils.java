@@ -7,6 +7,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import ru.veselov.restaurantvoting.dto.DishDto;
 import ru.veselov.restaurantvoting.dto.InputMenuDto;
 import ru.veselov.restaurantvoting.dto.InputRestaurantDto;
+import ru.veselov.restaurantvoting.dto.UserDto;
 import ru.veselov.restaurantvoting.util.json.JsonUtil;
 import ru.veselov.restaurantvoting.web.DishAdminController;
 import ru.veselov.restaurantvoting.web.DishController;
@@ -15,6 +16,7 @@ import ru.veselov.restaurantvoting.web.MenuController;
 import ru.veselov.restaurantvoting.web.RestaurantAdminController;
 import ru.veselov.restaurantvoting.web.RestaurantController;
 import ru.veselov.restaurantvoting.web.VoteController;
+import ru.veselov.restaurantvoting.web.user.UserAdminController;
 
 @UtilityClass
 public class MockMvcUtils {
@@ -30,6 +32,12 @@ public class MockMvcUtils {
     public static final String RESTAURANT_URL = RestaurantAdminController.REST_URL;
 
     public static final String RESTAURANT_ID_URL = RestaurantAdminController.REST_URL + "/%s";
+
+    public static final String USER_ID_URL = UserAdminController.REST_URL + "/%s";
+
+    public static final String USER_EMAIL_URL = UserAdminController.REST_URL + "/by-email";
+
+    public static final String VOTE_RESTAURANT_ID_URL = VoteController.REST_URL + "/restaurants/%s";
 
 
     public static MockHttpServletRequestBuilder createRestaurant(InputRestaurantDto restaurantDto) {
@@ -112,11 +120,42 @@ public class MockMvcUtils {
         return MockMvcRequestBuilders.delete(MenuAdminController.REST_URL + "/" + id);
     }
 
-    public static MockHttpServletRequestBuilder vote(int menuId) {
-        return MockMvcRequestBuilders.post(VoteController.REST_URL + "/menus/" + menuId);
+    public static MockHttpServletRequestBuilder vote(int restaurantId) {
+        return MockMvcRequestBuilders.post(VOTE_RESTAURANT_ID_URL.formatted(restaurantId));
     }
 
     public static MockHttpServletRequestBuilder removeVote() {
         return MockMvcRequestBuilders.delete(VoteController.REST_URL);
+    }
+
+    public static MockHttpServletRequestBuilder createUser(UserDto userDto) {
+        return MockMvcRequestBuilders.post(UserAdminController.REST_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(userDto));
+    }
+
+    public static MockHttpServletRequestBuilder getUsers() {
+        return MockMvcRequestBuilders.get(UserAdminController.REST_URL);
+    }
+
+    public static MockHttpServletRequestBuilder getUserById(int id) {
+        return MockMvcRequestBuilders.get(USER_ID_URL.formatted(id));
+    }
+
+    public static MockHttpServletRequestBuilder getUserByEmail(String email) {
+        return MockMvcRequestBuilders.get(USER_EMAIL_URL).param("email", email);
+    }
+
+    public static MockHttpServletRequestBuilder updateUser(int id, UserDto userDto) {
+        return MockMvcRequestBuilders.put(USER_ID_URL.formatted(id))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(userDto));
+    }
+
+    public static MockHttpServletRequestBuilder deleteUserById(int id) {
+        return MockMvcRequestBuilders.delete(USER_ID_URL.formatted(id));
+    }
+    public static MockHttpServletRequestBuilder changeUserStatus(int id, boolean enabled) {
+        return MockMvcRequestBuilders.patch(USER_ID_URL.formatted(id)).param("enabled", String.valueOf(enabled));
     }
 }

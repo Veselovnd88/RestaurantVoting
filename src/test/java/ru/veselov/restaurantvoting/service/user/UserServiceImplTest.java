@@ -11,6 +11,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.util.ReflectionTestUtils;
 import ru.veselov.restaurantvoting.dto.UserDto;
@@ -28,6 +29,8 @@ import java.util.Optional;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceImplTest {
+
+    private static final Sort SORT_NAME_EMAIL = Sort.by(Sort.Direction.ASC, "name", "email");
 
     @Mock
     UserRepository repository;
@@ -69,7 +72,8 @@ class UserServiceImplTest {
 
     @Test
     void update_AllOkPassWasNotChanged_UpdateUser() {
-        Mockito.when(repository.findById(Mockito.anyInt())).thenReturn(Optional.of(UserTestData.user2));
+        User user2 = new User(UserTestData.USER2_ID, "User2", "user2@gmail.com", "another", true, List.of(Role.USER));
+        Mockito.when(repository.findById(Mockito.anyInt())).thenReturn(Optional.of(user2));
         Mockito.when(repository.save(userCaptor.capture())).thenReturn(UserTestData.user2Updated);
 
         userService.update(UserTestData.user2ToUpdate);
@@ -85,17 +89,18 @@ class UserServiceImplTest {
 
     @Test
     void update_AllOkPassAlsoChanged_UpdateUser() {
-        Mockito.when(repository.findById(Mockito.anyInt())).thenReturn(Optional.of(UserTestData.user2));
+        User user2 = new User(UserTestData.USER2_ID, "User2", "user2@gmail.com", "another", true, List.of(Role.USER));
+        Mockito.when(repository.findById(Mockito.anyInt())).thenReturn(Optional.of(user2));
         Mockito.when(repository.save(userCaptor.capture())).thenReturn(UserTestData.user2UpdatedWithPass);
 
-        userService.update(UserTestData.userToUpdateWithPass);
+        userService.update(UserTestData.user2ToUpdateWithPass);
 
         User captured = userCaptor.getValue();
         Assertions.assertThat(captured).extracting(User::getEmail, User::getName)
-                .containsExactly(UserTestData.user2ToUpdate.email().toLowerCase(), UserTestData.userToUpdateWithPass.name());
+                .containsExactly(UserTestData.user2ToUpdate.email().toLowerCase(), UserTestData.user2ToUpdateWithPass.name());
         Mockito.verify(passwordEncoder).encode(stringCaptor.capture());
         Mockito.verify(repository).save(captured);
-        Assertions.assertThat(stringCaptor.getValue()).isEqualTo(UserTestData.userToUpdateWithPass.password());
+        Assertions.assertThat(stringCaptor.getValue()).isEqualTo(UserTestData.user2ToUpdateWithPass.password());
     }
 
     @Test
@@ -164,7 +169,6 @@ class UserServiceImplTest {
 
     @Test
     void getByEmail_UserNotFound_ThrowException() {
-        Mockito.when(repository.findById(Mockito.anyInt())).thenReturn(Optional.empty());
         String email = UserTestData.user2.getEmail();
 
         Assertions.assertThatExceptionOfType(UserNotFoundException.class)
@@ -175,14 +179,14 @@ class UserServiceImplTest {
 
     @Test
     void getAll_AllOk_ReturnListUserDtos() {
-        Mockito.when(repository.findAll()).thenReturn(List.of(UserTestData.user2));
+        Mockito.when(repository.findAll(SORT_NAME_EMAIL)).thenReturn(List.of(UserTestData.user2));
 
         Assertions.assertThat(userService.getAll()).isEqualTo(List.of(UserTestData.user2Dto));
     }
 
     @Test
     void getAll_NoUser_ReturnEmptyList() {
-        Mockito.when(repository.findAll()).thenReturn(Collections.emptyList());
+        Mockito.when(repository.findAll(SORT_NAME_EMAIL)).thenReturn(Collections.emptyList());
 
         Assertions.assertThat(userService.getAll()).isEmpty();
     }

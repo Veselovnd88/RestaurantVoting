@@ -16,8 +16,10 @@ class MenuMapperTest {
     MenuMapper menuMapper = new MenuMapperImpl();
 
     public MenuMapperTest() {
+        VoteMapperImpl voteMapper = new VoteMapperImpl();
+        ReflectionTestUtils.setField(voteMapper, "userMapper", new UserMapperImpl(), UserMapper.class);
         ReflectionTestUtils.setField(menuMapper, "dishMapper", new DishMapperImpl(), DishMapper.class);
-        ReflectionTestUtils.setField(menuMapper, "voteMapper", new VoteMapperImpl(), VoteMapper.class);
+        ReflectionTestUtils.setField(menuMapper, "voteMapper", voteMapper, VoteMapper.class);
     }
 
     @Test

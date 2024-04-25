@@ -64,7 +64,8 @@ class MenuAdminControllerTest extends AbstractRestControllerTest {
                 .with(SecurityUtils.userHttpBasic(UserTestData.admin)));
 
         ResultActionErrorsUtil.checkNotFoundFields(resultActions,
-                RestaurantNotFoundException.MESSAGE_WITH_ID.formatted(RestaurantTestData.NOT_FOUND));
+                RestaurantNotFoundException.MESSAGE_WITH_ID.formatted(RestaurantTestData.NOT_FOUND),
+                MockMvcUtils.MENU_RESTAURANTS_ID_URL.formatted(RestaurantTestData.NOT_FOUND));
     }
 
     @Test

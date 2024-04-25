@@ -101,7 +101,8 @@ class VoteControllerTest extends AbstractRestControllerTest {
 
         ResultActionErrorsUtil.checkNotFoundFields(resultActions,
                 MenuNotFoundException.MESSAGE_WITH_REST_ID_FOR_DATE
-                        .formatted(RestaurantTestData.NOT_FOUND, VoteTestData.VOTED_AT_DATE));
+                        .formatted(RestaurantTestData.NOT_FOUND, VoteTestData.VOTED_AT_DATE),
+                MockMvcUtils.VOTE_RESTAURANT_ID_URL.formatted(RestaurantTestData.NOT_FOUND));
     }
 
     @Test
@@ -115,7 +116,8 @@ class VoteControllerTest extends AbstractRestControllerTest {
 
         ResultActionErrorsUtil.checkNotFoundFields(resultActions,
                 MenuNotFoundException.MESSAGE_WITH_REST_ID_FOR_DATE
-                        .formatted(RestaurantTestData.NOT_FOUND, VoteTestData.VOTED_AT_DATE));
+                        .formatted(RestaurantTestData.NOT_FOUND, VoteTestData.VOTED_AT_DATE),
+                MockMvcUtils.VOTE_RESTAURANT_ID_URL.formatted(RestaurantTestData.NOT_FOUND));
     }
 
     @Test

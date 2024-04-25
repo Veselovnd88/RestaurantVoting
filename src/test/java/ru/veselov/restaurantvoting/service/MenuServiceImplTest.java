@@ -19,6 +19,8 @@ import ru.veselov.restaurantvoting.mapper.DishMapper;
 import ru.veselov.restaurantvoting.mapper.DishMapperImpl;
 import ru.veselov.restaurantvoting.mapper.MenuMapper;
 import ru.veselov.restaurantvoting.mapper.MenuMapperImpl;
+import ru.veselov.restaurantvoting.mapper.UserMapper;
+import ru.veselov.restaurantvoting.mapper.UserMapperImpl;
 import ru.veselov.restaurantvoting.mapper.VoteMapper;
 import ru.veselov.restaurantvoting.mapper.VoteMapperImpl;
 import ru.veselov.restaurantvoting.model.Menu;
@@ -50,8 +52,10 @@ class MenuServiceImplTest {
     @BeforeEach
     void setUp() {
         MenuMapperImpl menuMapper = new MenuMapperImpl();
+        VoteMapperImpl voteMapper = new VoteMapperImpl();
+        ReflectionTestUtils.setField(voteMapper, "userMapper", new UserMapperImpl(), UserMapper.class);
         ReflectionTestUtils.setField(menuMapper, "dishMapper", new DishMapperImpl(), DishMapper.class);
-        ReflectionTestUtils.setField(menuMapper, "voteMapper", new VoteMapperImpl(), VoteMapper.class);
+        ReflectionTestUtils.setField(menuMapper, "voteMapper", voteMapper, VoteMapper.class);
         ReflectionTestUtils.setField(menuService, "mapper", menuMapper, MenuMapper.class);
     }
 

@@ -3,6 +3,7 @@ package ru.veselov.restaurantvoting.service.user;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +22,8 @@ import java.util.Set;
 @Transactional(readOnly = true)
 @Slf4j
 public class UserServiceImpl implements UserService {
+
+    private static final Sort SORT_NAME_EMAIL = Sort.by(Sort.Direction.ASC, "name", "email");
 
     private final UserRepository repository;
     private final UserMapper mapper;
@@ -120,7 +123,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public List<UserDto> getAll() {
-        List<User> users = repository.findAll();
+        List<User> users = repository.findAll(SORT_NAME_EMAIL);
         log.info("Users found");
         return mapper.toDtos(users);
     }
