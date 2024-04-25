@@ -66,7 +66,7 @@ public class RestaurantServiceImpl implements RestaurantService {
      * @param id restaurant id
      * @return {@link RestaurantDto} found restaurant
      */
-    @Cacheable(value = "restaurants", key = "#name")
+    @Cacheable(value = "restaurants")
     @Override
     public RestaurantDto findById(int id) {
         log.info("Retrieving restaurant by id");
@@ -100,7 +100,7 @@ public class RestaurantServiceImpl implements RestaurantService {
      * @return {@link RestaurantDto} updated restaurant
      * @throws EntityNotFoundException if restaurant with such id not found
      */
-    @CacheEvict(value = "restaurants",key = "#name")
+    @CacheEvict(value = "restaurants",allEntries = true)
     @Override
     @Transactional
     public RestaurantDto update(int id, InputRestaurantDto restaurantDto) {
