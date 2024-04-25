@@ -26,6 +26,13 @@ public class UserServiceImpl implements UserService {
     private final UserMapper mapper;
     private final PasswordEncoder passwordEncoder;
 
+    /**
+     * Create new user
+     *
+     * @param userDto new userDto
+     * @return {@link UserDto} saved userDto
+     * @throws org.springframework.dao.DataIntegrityViolationException if email duplicated
+     */
     @Transactional
     @Override
     public UserDto create(UserDto userDto) {
@@ -37,6 +44,12 @@ public class UserServiceImpl implements UserService {
         return mapper.toUserDto(saved);
     }
 
+    /**
+     * Update user
+     *
+     * @param userDto new userDto
+     * @throws org.springframework.dao.DataIntegrityViolationException if email duplicated
+     */
     @Transactional
     @Override
     public void update(UserDto userDto) {
@@ -48,6 +61,11 @@ public class UserServiceImpl implements UserService {
         log.info("User with email: {} updated", updated.getEmail());
     }
 
+    /**
+     * Delete user by id
+     *
+     * @param id id of user to delete
+     */
     @Transactional
     @Override
     public void deleteById(int id) {
@@ -55,6 +73,13 @@ public class UserServiceImpl implements UserService {
         log.info("User with id: {} deleted", id);
     }
 
+    /**
+     * Change user's status enable/disable
+     *
+     * @param id      id of user
+     * @param enabled flag for enable/diable
+     * @throws UserNotFoundException if user not found by id
+     */
     @Transactional
     @Override
     public void enable(int id, boolean enabled) {
@@ -64,6 +89,12 @@ public class UserServiceImpl implements UserService {
         log.info("User with id: {} change enable status to {}", id, enabled);
     }
 
+    /**
+     * Get user by id
+     *
+     * @param id id of user
+     * @throws UserNotFoundException if user not found by id
+     */
     @Override
     public UserDto getById(int id) {
         User userById = getUserById(id);
@@ -71,6 +102,12 @@ public class UserServiceImpl implements UserService {
         return mapper.toUserDto(userById);
     }
 
+    /**
+     * Get user by email
+     *
+     * @param email email of user
+     * @throws UserNotFoundException of user not found by email
+     */
     @Override
     public UserDto getByEmail(String email) {
         User user = repository.findUserByEmail(email).orElseThrow(() -> new UserNotFoundException(email));
@@ -78,6 +115,9 @@ public class UserServiceImpl implements UserService {
         return mapper.toUserDto(user);
     }
 
+    /**
+     * Get all users
+     */
     @Override
     public List<UserDto> getAll() {
         List<User> users = repository.findAll();
