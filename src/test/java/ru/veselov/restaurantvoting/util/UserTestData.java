@@ -43,11 +43,15 @@ public class UserTestData {
 
     public static UserDto userToCreate = new UserDto(null, "newUser", "new@gmail.com", "newPass");
 
+    public static UserDto userToCreateWithConflict = new UserDto(null, "newUser", "admin@gmail.com", "newPass");
+
     public static UserDto userToCreateWithId = new UserDto(1, "newUser", "new@gmail.com", "newPass");
 
     public static UserDto userAfterCreate = new UserDto(NEW_USER_ID, "newUser", "new@gmail.com", null);
 
     public static UserDto user2ToUpdate = new UserDto(USER2_ID, "User2Upd", "user2Upd@gmail.com", null);
+
+    public static UserDto user2ToUpdateForConflict = new UserDto(USER2_ID, "User2Upd", "admin@gmail.com", null);
 
     public static UserDto userNotFoundToUpdate = new UserDto(NOT_FOUND, "UsernfUpd", "usernfUpd@gmail.com", null);
 

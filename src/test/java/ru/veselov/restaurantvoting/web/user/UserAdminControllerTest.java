@@ -16,6 +16,7 @@ import ru.veselov.restaurantvoting.util.ResultActionErrorsUtil;
 import ru.veselov.restaurantvoting.util.SecurityUtils;
 import ru.veselov.restaurantvoting.util.UserTestData;
 import ru.veselov.restaurantvoting.web.AbstractRestControllerTest;
+import ru.veselov.restaurantvoting.web.GlobalExceptionHandler;
 
 import java.util.List;
 import java.util.Optional;
@@ -39,6 +40,16 @@ class UserAdminControllerTest extends AbstractRestControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isCreated())
                 .andExpect(MockMvcResultMatchers.header().exists("Location"))
                 .andExpect(UserTestData.USER_DTO_MATCHER.contentJson(UserTestData.userAfterCreate));
+    }
+
+    @Test
+    @SneakyThrows
+    void createWithLocation_EmailDuplicate_ReturnError() {
+        ResultActions resultActions = mockMvc.perform(MockMvcUtils.createUser(UserTestData.userToCreateWithConflict)
+                .with(SecurityUtils.userHttpBasic(UserTestData.admin)));
+
+        ResultActionErrorsUtil.checkConflictError(resultActions, GlobalExceptionHandler.USER_WITH_EMAIL_EXISTS,
+                UserAdminController.REST_URL);
     }
 
     @Test
@@ -102,6 +113,16 @@ class UserAdminControllerTest extends AbstractRestControllerTest {
 
     @Test
     @SneakyThrows
+    void update_EmailDuplicate_ReturnError() {
+        ResultActions resultActions = mockMvc.perform(MockMvcUtils.updateUser(UserTestData.USER2_ID, UserTestData.user2ToUpdateForConflict)
+                .with(SecurityUtils.userHttpBasic(UserTestData.admin)));
+
+        ResultActionErrorsUtil.checkConflictError(resultActions, GlobalExceptionHandler.USER_WITH_EMAIL_EXISTS,
+                MockMvcUtils.USER_ID_URL.formatted(UserTestData.USER2_ID));
+    }
+
+    @Test
+    @SneakyThrows
     void update_AllOKWithChangingPassword_UpdateUser() {
         mockMvc.perform(MockMvcUtils.updateUser(UserTestData.USER2_ID, UserTestData.user2ToUpdateWithPass)
                         .with(SecurityUtils.userHttpBasic(UserTestData.admin)))
@@ -130,7 +151,7 @@ class UserAdminControllerTest extends AbstractRestControllerTest {
     @SneakyThrows
     void deleteById_AllOk_DeleteUser() {
         mockMvc.perform(MockMvcUtils.deleteUserById(UserTestData.USER2_ID)
-                .with(SecurityUtils.userHttpBasic(UserTestData.admin)))
+                        .with(SecurityUtils.userHttpBasic(UserTestData.admin)))
                 .andExpect(MockMvcResultMatchers.status().isNoContent());
 
         Assertions.assertThat(userRepository.findById(UserTestData.USER2_ID)).isEmpty();
@@ -140,7 +161,7 @@ class UserAdminControllerTest extends AbstractRestControllerTest {
     @SneakyThrows
     void enable_AllOk_ChangeUserStatus() {
         mockMvc.perform(MockMvcUtils.changeUserStatus(UserTestData.USER2_ID, false)
-                .with(SecurityUtils.userHttpBasic(UserTestData.admin)))
+                        .with(SecurityUtils.userHttpBasic(UserTestData.admin)))
                 .andExpect(MockMvcResultMatchers.status().isNoContent());
 
         Assertions.assertThat(userRepository.findById(UserTestData.USER2_ID)).isPresent()
@@ -151,7 +172,7 @@ class UserAdminControllerTest extends AbstractRestControllerTest {
     @SneakyThrows
     void enable_UserNotFound_ReturnError() {
         ResultActions resultActions = mockMvc.perform(MockMvcUtils.changeUserStatus(UserTestData.NOT_FOUND, false)
-                        .with(SecurityUtils.userHttpBasic(UserTestData.admin)));
+                .with(SecurityUtils.userHttpBasic(UserTestData.admin)));
         ResultActionErrorsUtil.checkNotFoundFields(resultActions,
                 UserNotFoundException.MESSAGE_WITH_ID.formatted(UserTestData.NOT_FOUND),
                 MockMvcUtils.USER_ID_URL.formatted(UserTestData.NOT_FOUND));

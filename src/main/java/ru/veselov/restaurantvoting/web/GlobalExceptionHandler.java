@@ -42,13 +42,16 @@ public class GlobalExceptionHandler {
 
     public static final String UNIQUE_DISH_MENU_CONSTRAINT = "name_menu_idx";
     public static final String UNIQUE_MENU_RESTAURANT_DATE_CONSTRAINT = "restaurant_day_idx";
+    public static final String UNIQUE_EMAIL = "users_unique_email_idx";
     public static final String DISH_MENU_EXISTS = "Dish with such name already exists in menu";
     public static final String MENU_FOR_RESTAURANT_FOR_DATE_EXISTS = "Menu for this restaurant for date already exists";
+    public static final String USER_WITH_EMAIL_EXISTS = "User with email already exists";
 
 
     public static final Map<String, String> CONSTRAINTS_MAP = Map.of(
             UNIQUE_DISH_MENU_CONSTRAINT, DISH_MENU_EXISTS,
-            UNIQUE_MENU_RESTAURANT_DATE_CONSTRAINT, MENU_FOR_RESTAURANT_FOR_DATE_EXISTS
+            UNIQUE_MENU_RESTAURANT_DATE_CONSTRAINT, MENU_FOR_RESTAURANT_FOR_DATE_EXISTS,
+            UNIQUE_EMAIL, USER_WITH_EMAIL_EXISTS
     );
     public static final String VALIDATION_ERROR = "Validation error";
     public static final String VIOLATIONS = "violations";

@@ -5,14 +5,17 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import ru.veselov.restaurantvoting.model.User;
 import ru.veselov.restaurantvoting.repository.UserRepository;
 import ru.veselov.restaurantvoting.service.user.UserService;
 import ru.veselov.restaurantvoting.util.MockMvcUtils;
+import ru.veselov.restaurantvoting.util.ResultActionErrorsUtil;
 import ru.veselov.restaurantvoting.util.SecurityUtils;
 import ru.veselov.restaurantvoting.util.UserTestData;
 import ru.veselov.restaurantvoting.web.AbstractRestControllerTest;
+import ru.veselov.restaurantvoting.web.GlobalExceptionHandler;
 
 import java.util.Optional;
 
@@ -34,6 +37,16 @@ class ProfileControllerTest extends AbstractRestControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isCreated())
                 .andExpect(MockMvcResultMatchers.header().exists("Location"))
                 .andExpect(UserTestData.USER_DTO_MATCHER.contentJson(UserTestData.userAfterCreate));
+    }
+
+    @Test
+    @SneakyThrows
+    void register_EmailDuplicate_ReturnError() {
+        ResultActions resultActions = mockMvc.perform(MockMvcUtils.register(UserTestData.userToCreateWithConflict)
+                .with(SecurityUtils.userHttpBasic(UserTestData.admin)));
+
+        ResultActionErrorsUtil.checkConflictError(resultActions, GlobalExceptionHandler.USER_WITH_EMAIL_EXISTS,
+                MockMvcUtils.REGISTER);
     }
 
     @Test
@@ -66,6 +79,16 @@ class ProfileControllerTest extends AbstractRestControllerTest {
         Assertions.assertThat(byId).isPresent();
         passwordEncoder.matches(byId.get().getPassword(),
                 passwordEncoder.encode(UserTestData.user2ToUpdateWithPass.password()));
+    }
+
+    @Test
+    @SneakyThrows
+    void update_EmailDuplicate_ReturnError() {
+        ResultActions resultActions = mockMvc.perform(MockMvcUtils.updateUserProfile(UserTestData.user2ToUpdateForConflict)
+                .with(SecurityUtils.userHttpBasic(UserTestData.user2)));
+
+        ResultActionErrorsUtil.checkConflictError(resultActions, GlobalExceptionHandler.USER_WITH_EMAIL_EXISTS,
+                ProfileController.REST_URL);
     }
 
     @Test
