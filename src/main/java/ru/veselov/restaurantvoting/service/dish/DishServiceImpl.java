@@ -8,6 +8,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.veselov.restaurantvoting.dto.DishDto;
+import ru.veselov.restaurantvoting.exception.DishNotFoundException;
 import ru.veselov.restaurantvoting.mapper.DishMapper;
 import ru.veselov.restaurantvoting.model.Dish;
 import ru.veselov.restaurantvoting.model.Menu;
@@ -22,9 +23,8 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class DishServiceImpl implements DishService {
 
-    public static final String NOT_FOUND_MSG = "Dish with id: %s not found";
-
     private static final Sort SORT_BY_NAME = Sort.by(Sort.Direction.ASC, "name");
+
     private final DishRepository repository;
     private final MenuRepository menuRepository;
     private final DishMapper mapper;
@@ -59,8 +59,7 @@ public class DishServiceImpl implements DishService {
     @Override
     @Transactional
     public DishDto update(int id, DishDto dishDto) {
-        Dish foundDish = repository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_MSG.formatted(id)));
+        Dish foundDish = repository.findById(id).orElseThrow(() -> new DishNotFoundException(id));
         foundDish.setName(dishDto.name());
         foundDish.setPrice(dishDto.price());
         Dish updatedDish = repository.save(foundDish);
@@ -89,8 +88,7 @@ public class DishServiceImpl implements DishService {
      */
     @Override
     public DishDto findOne(int id) {
-        Dish dish = repository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_MSG.formatted(id)));
+        Dish dish = repository.findById(id).orElseThrow(() -> new DishNotFoundException(id));
         log.debug("Retrieving dish with id: {}", id);
         return mapper.toDto(dish);
     }

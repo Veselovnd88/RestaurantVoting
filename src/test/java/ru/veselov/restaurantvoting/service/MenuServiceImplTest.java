@@ -82,7 +82,7 @@ class MenuServiceImplTest {
         Assertions.assertThatExceptionOfType(RestaurantNotFoundException.class)
                 .isThrownBy(() -> menuService.create(RestaurantTestData.SUSHI_ID, MenuTestData.menuDtoToCreate))
                 .isInstanceOf(EntityNotFoundException.class)
-                .withMessage(RestaurantNotFoundException.MESSAGE_WITH_ID.formatted(RestaurantTestData.SUSHI_ID));
+                .withMessage(RestaurantNotFoundException.MSG_WITH_ID.formatted(RestaurantTestData.SUSHI_ID));
         Mockito.verifyNoInteractions(menuRepository);
     }
 
