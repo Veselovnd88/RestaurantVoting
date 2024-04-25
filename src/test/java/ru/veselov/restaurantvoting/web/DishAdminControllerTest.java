@@ -28,7 +28,6 @@ class DishAdminControllerTest extends AbstractRestControllerTest {
                         .with(SecurityUtils.userHttpBasic(UserTestData.admin)))
                 .andExpect(MockMvcResultMatchers.status().isCreated())
                 .andExpect(MockMvcResultMatchers.header().exists("Location"))
-                .andDo(MockMvcResultHandlers.print())
                 .andExpect(DishTestData.DISH_DTO_MATCHER.contentJson(DishTestData.savedNewTastyDish));
     }
 

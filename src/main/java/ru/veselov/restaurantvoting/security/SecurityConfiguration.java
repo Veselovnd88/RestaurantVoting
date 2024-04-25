@@ -30,7 +30,8 @@ public class SecurityConfiguration {
                 .httpBasic(Customizer.withDefaults())
                 .authorizeHttpRequests(authorize ->
                         authorize.requestMatchers("/swagger-ui/**", "/v3/api-docs/**",
-                                        "/error", "/webjars/**", "/swagger-ui.html").permitAll()
+                                        "/error", "/webjars/**", "/swagger-ui.html"
+                                ,"/api/v1/profile/register").permitAll()
                                 .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
                                 .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

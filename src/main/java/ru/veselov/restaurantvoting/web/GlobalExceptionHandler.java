@@ -2,6 +2,7 @@ package ru.veselov.restaurantvoting.web;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -41,13 +42,16 @@ public class GlobalExceptionHandler {
 
     public static final String UNIQUE_DISH_MENU_CONSTRAINT = "name_menu_idx";
     public static final String UNIQUE_MENU_RESTAURANT_DATE_CONSTRAINT = "restaurant_day_idx";
+    public static final String UNIQUE_EMAIL = "users_unique_email_idx";
     public static final String DISH_MENU_EXISTS = "Dish with such name already exists in menu";
     public static final String MENU_FOR_RESTAURANT_FOR_DATE_EXISTS = "Menu for this restaurant for date already exists";
+    public static final String USER_WITH_EMAIL_EXISTS = "User with email already exists";
 
 
     public static final Map<String, String> CONSTRAINTS_MAP = Map.of(
             UNIQUE_DISH_MENU_CONSTRAINT, DISH_MENU_EXISTS,
-            UNIQUE_MENU_RESTAURANT_DATE_CONSTRAINT, MENU_FOR_RESTAURANT_FOR_DATE_EXISTS
+            UNIQUE_MENU_RESTAURANT_DATE_CONSTRAINT, MENU_FOR_RESTAURANT_FOR_DATE_EXISTS,
+            UNIQUE_EMAIL, USER_WITH_EMAIL_EXISTS
     );
     public static final String VALIDATION_ERROR = "Validation error";
     public static final String VIOLATIONS = "violations";
@@ -66,13 +70,27 @@ public class GlobalExceptionHandler {
                 LIMIT_FOR_VOTING_EXCEEDED, Map.of(ERROR_CODE, ErrorCode.BAD_REQUEST.name()), null, true);
     }
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ExceptionHandler({MethodArgumentNotValidException.class})
     @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
     public ProblemDetail handleMethodArgumentNotValidException(HttpServletRequest req, MethodArgumentNotValidException e) {
         final List<ViolationError> violationErrors = e.getBindingResult().getFieldErrors().stream()
                 .map(error -> new ViolationError(
                         error.getField(), error.getDefaultMessage(),
                         formatValidationCurrentValue(error.getRejectedValue())))
+                .toList();
+        return createProblemDetail(req, HttpStatus.UNPROCESSABLE_ENTITY, e, VALIDATION_ERROR,
+                Map.of(ERROR_CODE, ErrorCode.VALIDATION.name(),
+                        VIOLATIONS, violationErrors),
+                FIELDS_VALIDATION_FAILED, false);
+    }
+
+    @ExceptionHandler({ConstraintViolationException.class})
+    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
+    public ProblemDetail handleConstraintViolationException(HttpServletRequest req, ConstraintViolationException e) {
+        final List<ViolationError> violationErrors = e.getConstraintViolations().stream()
+                .map(error -> new ViolationError(
+                        fieldNameFromPath(error.getPropertyPath().toString()), error.getMessage(),
+                        formatValidationCurrentValue(error.getInvalidValue())))
                 .toList();
         return createProblemDetail(req, HttpStatus.UNPROCESSABLE_ENTITY, e, VALIDATION_ERROR,
                 Map.of(ERROR_CODE, ErrorCode.VALIDATION.name(),
@@ -131,5 +149,13 @@ public class GlobalExceptionHandler {
             return "Collection elements validation failed";
         }
         return object.toString();
+    }
+
+    private String fieldNameFromPath(String path) {
+        String[] split = path.split("\\.");
+        if (split.length > 1) {
+            return split[split.length - 1];
+        }
+        return path;
     }
 }

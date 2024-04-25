@@ -24,13 +24,14 @@ public class ResultActionErrorsUtil {
 
     public static final String JSON_INSTANCE = "$.instance";
 
-    public static void checkNotFoundFields(ResultActions resultActions, String detail) throws Exception {
+    public static void checkNotFoundFields(ResultActions resultActions, String detail, String url) throws Exception {
         checkProblemJsonCompatibility(resultActions);
         checkTimeStampIsNotEmpty(resultActions);
         resultActions.andExpect(MockMvcResultMatchers.status().isNotFound())
                 .andExpect(MockMvcResultMatchers.jsonPath(JSON_ERROR_CODE)
                         .value(ErrorCode.NOT_FOUND.toString()))
                 .andExpect(MockMvcResultMatchers.jsonPath(JSON_TITLE).value(GlobalExceptionHandler.OBJECT_NOT_FOUND))
+                .andExpect(MockMvcResultMatchers.jsonPath(JSON_INSTANCE, Matchers.endsWith(url)))
                 .andExpect(MockMvcResultMatchers.jsonPath(JSON_DETAIL, Matchers.startsWith(detail)));
     }
 

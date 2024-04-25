@@ -6,13 +6,10 @@ import ru.veselov.restaurantvoting.dto.VoteDto;
 import ru.veselov.restaurantvoting.mapper.config.MapStructConfig;
 import ru.veselov.restaurantvoting.model.Vote;
 
-@Mapper(config = MapStructConfig.class)
+@Mapper(config = MapStructConfig.class, uses = {UserMapper.class})
 public interface VoteMapper {
 
     @Mapping(target = "votedAt", source = "votedAt")
-    @Mapping(target = "user.id", source = "user.id")
-    @Mapping(target = "user.email", source = "user.email")
-    @Mapping(target = "user.name", source = "user.name")
-    @Mapping(target = "restaurantId", source ="menu.restaurant.id" )
+    @Mapping(target = "restaurantId", source = "menu.restaurant.id")
     VoteDto toDto(Vote vote);
 }

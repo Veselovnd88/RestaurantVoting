@@ -35,7 +35,7 @@ public class VoteController {
     @Operation(summary = "Here user can vote for chosen restaurant")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Vote accepted")})
-    @PostMapping("/menus/{restaurantId}")
+    @PostMapping("/restaurants/{restaurantId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void vote(@PathVariable("restaurantId") int restaurantId, @AuthenticationPrincipal AuthorizedUser user) {
         service.vote(user.getId(), restaurantId, LocalDate.now(clock));
