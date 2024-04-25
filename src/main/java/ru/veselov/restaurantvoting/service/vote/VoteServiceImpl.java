@@ -38,6 +38,14 @@ public class VoteServiceImpl implements VoteService {
     @DateTimeFormat(pattern = "HH:mm")
     private LocalTime limitTime;
 
+    /**
+     * User vote for restaurant for date
+     *
+     * @param userId       user id
+     * @param restaurantId restaurant id
+     * @param localDate    date for vote
+     * @throws VotingTimeLimitExceedsException if vote time exceed limit
+     */
     @Override
     @Transactional
     public void vote(int userId, int restaurantId, LocalDate localDate) {
@@ -58,6 +66,13 @@ public class VoteServiceImpl implements VoteService {
         }
     }
 
+    /**
+     * Remove vote of user for date
+     *
+     * @param userId    user id
+     * @param localDate date
+     * @throws VotingTimeLimitExceedsException if vote time exceeds limit
+     */
     @Override
     @Transactional
     public void removeVote(int userId, LocalDate localDate) {
@@ -66,6 +81,13 @@ public class VoteServiceImpl implements VoteService {
         log.info("User [id: {}] decline his vote at [{}]", userId, localDate);
     }
 
+    /**
+     * Get user vote for date
+     *
+     * @param userId    user id
+     * @param localDate date
+     * @return Optional<VoteDto> optional for VoteDto
+     */
     @Override
     public Optional<VoteDto> getByUserIdForDate(int userId, LocalDate localDate) {
         Optional<Vote> optionalVote = repository.findByUserIdForDate(userId, localDate);

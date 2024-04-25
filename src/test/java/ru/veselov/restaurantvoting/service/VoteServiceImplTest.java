@@ -2,6 +2,7 @@ package ru.veselov.restaurantvoting.service;
 
 import jakarta.persistence.EntityNotFoundException;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -10,9 +11,15 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
+import ru.veselov.restaurantvoting.dto.VoteDto;
 import ru.veselov.restaurantvoting.exception.UserNotFoundException;
 import ru.veselov.restaurantvoting.exception.VotingTimeLimitExceedsException;
 import ru.veselov.restaurantvoting.extension.AdjustClockMockForVoting;
+import ru.veselov.restaurantvoting.mapper.UserMapper;
+import ru.veselov.restaurantvoting.mapper.UserMapperImpl;
+import ru.veselov.restaurantvoting.mapper.VoteMapper;
+import ru.veselov.restaurantvoting.mapper.VoteMapperImpl;
 import ru.veselov.restaurantvoting.model.Vote;
 import ru.veselov.restaurantvoting.repository.UserRepository;
 import ru.veselov.restaurantvoting.repository.VoteRepository;
@@ -41,6 +48,13 @@ class VoteServiceImplTest {
 
     @Captor
     ArgumentCaptor<Vote> voteCaptor;
+
+    @BeforeEach
+    void setup() {
+        VoteMapperImpl voteMapper = new VoteMapperImpl();
+        ReflectionTestUtils.setField(voteMapper, "userMapper", new UserMapperImpl(), UserMapper.class);
+        ReflectionTestUtils.setField(voteService, "voteMapper", voteMapper, VoteMapper.class);
+    }
 
     @Test
     @AdjustClockMockForVoting
@@ -108,5 +122,28 @@ class VoteServiceImplTest {
     void removeVote_TimeExceeds_ThrowException() {
         Assertions.assertThatThrownBy(() -> voteService.removeVote(UserTestData.USER1_ID, VoteTestData.VOTED_AT_DATE))
                 .isInstanceOf(VotingTimeLimitExceedsException.class);
+    }
+
+    @Test
+    void getByUserIdForDate_AllOk_ReturnOptionalWithVoteDto() {
+        Mockito.when(voteRepository.findByUserIdForDate(Mockito.anyInt(), Mockito.any()))
+                .thenReturn(Optional.of(VoteTestData.getNewUser1VoteSushi()));
+
+        Optional<VoteDto> optionalVoteDto = voteService
+                .getByUserIdForDate(UserTestData.USER1_ID, VoteTestData.VOTED_AT_DATE);
+
+        Assertions.assertThat(optionalVoteDto).isPresent()
+                .map(voteDto -> voteDto).hasValue(VoteTestData.user1VoteSushiDtoWithRestaurant);
+    }
+
+    @Test
+    void getByUserIdForDate_NoVotes_ReturnOptionalEmpty() {
+        Mockito.when(voteRepository.findByUserIdForDate(Mockito.anyInt(), Mockito.any()))
+                .thenReturn(Optional.empty());
+
+        Optional<VoteDto> optionalVoteDto = voteService
+                .getByUserIdForDate(UserTestData.USER1_ID, VoteTestData.VOTED_AT_DATE);
+
+        Assertions.assertThat(optionalVoteDto).isEmpty();
     }
 }
