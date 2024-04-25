@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.veselov.restaurantvoting.dto.MenuDto;
-import ru.veselov.restaurantvoting.service.MenuService;
+import ru.veselov.restaurantvoting.service.menu.MenuService;
 
 import java.util.List;
 

@@ -1,9 +1,10 @@
-package ru.veselov.restaurantvoting.service;
+package ru.veselov.restaurantvoting.service.menu;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Sort;
-import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.veselov.restaurantvoting.dto.InputMenuDto;
@@ -37,6 +38,7 @@ public class MenuServiceImpl implements MenuService {
      * @throws MenuNotFoundException                                   if restaurant doesn't exist
      * @throws org.springframework.dao.DataIntegrityViolationException if menu/local date conflict occurred
      */
+    @CacheEvict(value = {"restaurants", "menus"}, allEntries = true)
     @Override
     @Transactional
     public MenuDto create(int restaurantId, InputMenuDto menuDto) {
@@ -59,6 +61,7 @@ public class MenuServiceImpl implements MenuService {
      * @throws org.springframework.dao.DataIntegrityViolationException if dish exists for this menu
      * @throws org.springframework.dao.DataIntegrityViolationException if menu/local date conflict occurred
      */
+    @CacheEvict(value = "menus", allEntries = true)
     @Override
     @Transactional
     public MenuDto update(int id, InputMenuDto menuDto) {
@@ -89,6 +92,7 @@ public class MenuServiceImpl implements MenuService {
      * @param restaurantId restaurant id
      * @return list of menu dtos (with dishes, without votes)
      */
+    @Cacheable(value = "menus")
     @Override
     public List<MenuDto> getMenusByRestaurant(int restaurantId) {
         log.info("Retrieving all menus for restaurant id: {}", restaurantId);
@@ -100,23 +104,12 @@ public class MenuServiceImpl implements MenuService {
      *
      * @param id menu id
      */
+    @CacheEvict(value = {"restaurants", "menus"}, allEntries = true)
     @Override
     @Transactional
     public void deleteMenu(int id) {
         repository.deleteById(id);
         log.info("Menu with id: {} deleted", id);
-    }
-
-    /**
-     * Find menu by id without mapping to dto
-     *
-     * @param id menu id
-     * @throws MenuNotFoundException if menu doesn't exist
-     */
-    @Override
-    @NonNull
-    public Menu findMenuById(int id) {
-        return repository.findById(id).orElseThrow(() -> new MenuNotFoundException(id));
     }
 
     /**
@@ -127,6 +120,7 @@ public class MenuServiceImpl implements MenuService {
      * @return Menu object
      * @throws MenuNotFoundException if no menu found for such conditions
      */
+    @Cacheable(value = "menus")
     @Override
     public Menu findMenuByRestaurantIdAndLocalDate(int restaurantId, LocalDate localDate) {
         return repository.findByRestaurantIdByDate(restaurantId, localDate)

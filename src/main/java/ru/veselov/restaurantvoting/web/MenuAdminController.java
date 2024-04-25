@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.veselov.restaurantvoting.dto.InputMenuDto;
 import ru.veselov.restaurantvoting.dto.MenuDto;
-import ru.veselov.restaurantvoting.service.MenuService;
+import ru.veselov.restaurantvoting.service.menu.MenuService;
 import ru.veselov.restaurantvoting.util.ValidationUtil;
 
 import java.net.URI;

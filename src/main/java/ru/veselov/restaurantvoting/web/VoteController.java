@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import ru.veselov.restaurantvoting.security.AuthorizedUser;
-import ru.veselov.restaurantvoting.service.VoteService;
+import ru.veselov.restaurantvoting.service.vote.VoteService;
 
 import java.time.Clock;
 import java.time.LocalDate;

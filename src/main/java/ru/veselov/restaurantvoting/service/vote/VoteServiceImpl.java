@@ -1,4 +1,4 @@
-package ru.veselov.restaurantvoting.service;
+package ru.veselov.restaurantvoting.service.vote;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,6 +13,7 @@ import ru.veselov.restaurantvoting.model.User;
 import ru.veselov.restaurantvoting.model.Vote;
 import ru.veselov.restaurantvoting.repository.UserRepository;
 import ru.veselov.restaurantvoting.repository.VoteRepository;
+import ru.veselov.restaurantvoting.service.menu.MenuService;
 
 import java.time.Clock;
 import java.time.LocalDate;

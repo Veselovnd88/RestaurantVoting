@@ -5,7 +5,7 @@ import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.platform.commons.support.AnnotationSupport;
 import org.mockito.Mockito;
 import org.springframework.test.util.ReflectionTestUtils;
-import ru.veselov.restaurantvoting.service.VoteServiceImpl;
+import ru.veselov.restaurantvoting.service.vote.VoteServiceImpl;
 import ru.veselov.restaurantvoting.util.VoteTestData;
 
 import java.lang.reflect.Field;
