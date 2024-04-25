@@ -35,7 +35,7 @@ class RestaurantControllerTest extends AbstractRestControllerTest {
 
     @Test
     @SneakyThrows
-    void getOne_AllOk_ReturnOneRestaurantDtoWithMenuAndVotes() {
+    void getWithMenuAndVotesByDate_AllOk_ReturnOneRestaurantDtoWithMenuAndVotes() {
         mockMvc.perform(MockMvcUtils.getOneRestaurantWithMenuAndVotes(RestaurantTestData.SUSHI_ID).param("date", "2024-03-06"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andDo(MockMvcResultHandlers.print())

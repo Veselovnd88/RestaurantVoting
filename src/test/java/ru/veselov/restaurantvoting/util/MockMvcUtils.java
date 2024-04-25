@@ -131,6 +131,10 @@ public class MockMvcUtils {
         return MockMvcRequestBuilders.delete(VoteController.REST_URL);
     }
 
+    public static MockHttpServletRequestBuilder getTodayVote() {
+        return MockMvcRequestBuilders.get(VoteController.REST_URL);
+    }
+
     public static MockHttpServletRequestBuilder createUser(UserDto userDto) {
         return MockMvcRequestBuilders.post(UserAdminController.REST_URL)
                 .contentType(MediaType.APPLICATION_JSON)

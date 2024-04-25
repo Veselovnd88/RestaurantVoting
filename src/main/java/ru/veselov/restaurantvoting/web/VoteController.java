@@ -7,18 +7,22 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import ru.veselov.restaurantvoting.dto.VoteDto;
 import ru.veselov.restaurantvoting.security.AuthorizedUser;
 import ru.veselov.restaurantvoting.service.vote.VoteService;
 
 import java.time.Clock;
 import java.time.LocalDate;
+import java.util.Optional;
 
 @RestController
 @RequestMapping(value = VoteController.REST_URL)
@@ -39,6 +43,17 @@ public class VoteController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void vote(@PathVariable("restaurantId") int restaurantId, @AuthenticationPrincipal AuthorizedUser user) {
         service.vote(user.getId(), restaurantId, LocalDate.now(clock));
+    }
+
+    @Operation(summary = "Get today user's vote")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Vote retrieved")})
+    @GetMapping
+    public ResponseEntity<?> getTodayVote(@AuthenticationPrincipal AuthorizedUser user) {
+        Optional<VoteDto> optionalVoteDto = service.getByUserIdForDate(user.getId(), LocalDate.now(clock));
+        if (optionalVoteDto.isPresent()) {
+            return ResponseEntity.ok(optionalVoteDto.get());
+        } else return ResponseEntity.noContent().build();
     }
 
     @Operation(summary = "Remove user's vote for today")
