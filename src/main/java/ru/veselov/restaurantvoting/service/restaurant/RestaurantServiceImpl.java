@@ -1,6 +1,5 @@
 package ru.veselov.restaurantvoting.service.restaurant;
 
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
@@ -10,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.veselov.restaurantvoting.dto.InputRestaurantDto;
 import ru.veselov.restaurantvoting.dto.RestaurantDto;
+import ru.veselov.restaurantvoting.exception.RestaurantNotFoundException;
 import ru.veselov.restaurantvoting.mapper.RestaurantMapper;
 import ru.veselov.restaurantvoting.model.Menu;
 import ru.veselov.restaurantvoting.model.Restaurant;
@@ -65,13 +65,13 @@ public class RestaurantServiceImpl implements RestaurantService {
      *
      * @param id restaurant id
      * @return {@link RestaurantDto} found restaurant
+     * @throws RestaurantNotFoundException if restaurant not found by id
      */
     @Cacheable(value = "restaurants")
     @Override
     public RestaurantDto findById(int id) {
         log.info("Retrieving restaurant by id");
-        return mapper.entityToDto(repository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Restaurant with [id:%s] not found".formatted(id))));
+        return mapper.entityToDto(getRestaurantById(id));
     }
 
     /**
@@ -80,12 +80,11 @@ public class RestaurantServiceImpl implements RestaurantService {
      * @param date preferred date to find menu and votes
      * @param id   restaurant id
      * @return {@link RestaurantDto} found restaurant
-     * @throws EntityNotFoundException if restaurant with such id not found
+     * @throws RestaurantNotFoundException if restaurant with such id not found
      */
     @Override
     public RestaurantDto findByIdWithMenuAndVotesForDate(int id, LocalDate date) {
-        Restaurant restaurant = repository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Restaurant with [id:%s] not found".formatted(id)));
+        Restaurant restaurant = getRestaurantById(id);
         Optional<Menu> byRestaurantIdByDate = menuRepository.findByRestaurantIdByDate(id, date);
         restaurant.setMenus(byRestaurantIdByDate.map(List::of).orElse(Collections.emptyList()));
         log.info("Retrieving restaurant id: {} with votes and menu by date {}", id, date);
@@ -98,14 +97,13 @@ public class RestaurantServiceImpl implements RestaurantService {
      * @param id            restaurant id for update
      * @param restaurantDto dto with data to update
      * @return {@link RestaurantDto} updated restaurant
-     * @throws EntityNotFoundException if restaurant with such id not found
+     * @throws RestaurantNotFoundException if restaurant with such id not found
      */
-    @CacheEvict(value = "restaurants",allEntries = true)
+    @CacheEvict(value = "restaurants", allEntries = true)
     @Override
     @Transactional
     public RestaurantDto update(int id, InputRestaurantDto restaurantDto) {
-        Restaurant restaurant = repository.findById(id).orElseThrow(() ->
-                new EntityNotFoundException("Restaurant with id: %s not found".formatted(id)));
+        Restaurant restaurant = getRestaurantById(id);
         restaurant.setName(restaurantDto.name());
         Restaurant updatedRestaurant = repository.save(restaurant);
         log.info("Restaurant with id: {} updated", id);
@@ -123,5 +121,9 @@ public class RestaurantServiceImpl implements RestaurantService {
     public void delete(int id) {
         repository.deleteById(id);
         log.info("Restaurant with id: {} deleted", id);
+    }
+
+    private Restaurant getRestaurantById(int id) {
+        return repository.findById(id).orElseThrow(() -> new RestaurantNotFoundException(id));
     }
 }

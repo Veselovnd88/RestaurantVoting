@@ -14,9 +14,9 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import ru.veselov.restaurantvoting.dto.MenuDto;
 import ru.veselov.restaurantvoting.dto.VoteDto;
 import ru.veselov.restaurantvoting.exception.MenuNotFoundException;
+import ru.veselov.restaurantvoting.exception.VotingTimeLimitExceedsException;
 import ru.veselov.restaurantvoting.service.menu.MenuService;
 import ru.veselov.restaurantvoting.service.vote.VoteService;
-import ru.veselov.restaurantvoting.service.vote.VoteServiceImpl;
 import ru.veselov.restaurantvoting.util.MenuTestData;
 import ru.veselov.restaurantvoting.util.MockMvcUtils;
 import ru.veselov.restaurantvoting.util.RestaurantTestData;
@@ -74,7 +74,7 @@ class VoteControllerTest extends AbstractRestControllerTest {
                 .with(SecurityUtils.userHttpBasic(UserTestData.user2)));
 
         ResultActionErrorsUtil.checkVoteLimitExceedError(resultActions,
-                VoteServiceImpl.VOTE_AFTER_LIMIT.formatted(UserTestData.USER2_ID, limitTime, voteTime));
+                VotingTimeLimitExceedsException.VOTE_AFTER_LIMIT.formatted(UserTestData.USER2_ID, limitTime, voteTime));
     }
 
     @Test
@@ -141,7 +141,7 @@ class VoteControllerTest extends AbstractRestControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
 
         ResultActionErrorsUtil.checkVoteLimitExceedError(resultActions,
-                VoteServiceImpl.VOTE_AFTER_LIMIT.formatted(UserTestData.USER1_ID, limitTime, voteTime));
+                VotingTimeLimitExceedsException.VOTE_AFTER_LIMIT.formatted(UserTestData.USER1_ID, limitTime, voteTime));
     }
 
     private void configureClockMockForTimeNotExceeds() {
