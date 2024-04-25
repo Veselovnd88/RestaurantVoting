@@ -7,7 +7,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 import ru.veselov.restaurantvoting.model.Restaurant;
-import ru.veselov.restaurantvoting.service.RestaurantServiceImpl;
+import ru.veselov.restaurantvoting.service.restaurant.RestaurantServiceImpl;
 import ru.veselov.restaurantvoting.util.RestaurantTestData;
 
 import java.util.List;

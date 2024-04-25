@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import ru.veselov.restaurantvoting.service.DishService;
+import ru.veselov.restaurantvoting.service.dish.DishService;
 import ru.veselov.restaurantvoting.util.DishTestData;
 import ru.veselov.restaurantvoting.util.MenuTestData;
 import ru.veselov.restaurantvoting.util.MockMvcUtils;

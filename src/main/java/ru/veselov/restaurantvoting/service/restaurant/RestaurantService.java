@@ -1,4 +1,4 @@
-package ru.veselov.restaurantvoting.service;
+package ru.veselov.restaurantvoting.service.restaurant;
 
 import ru.veselov.restaurantvoting.dto.InputRestaurantDto;
 import ru.veselov.restaurantvoting.dto.RestaurantDto;

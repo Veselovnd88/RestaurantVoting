@@ -34,9 +34,8 @@ spring:
     init:
       data-locations: classpath:db/init.sql, classpath:db/populateDb.sql
       mode: always
+  cache:
+    type: none
 
 vote:
   limit-time: "23:00"
-
-logging:
-  config: classpath:logback.xml

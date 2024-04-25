@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.veselov.restaurantvoting.dto.RestaurantDto;
-import ru.veselov.restaurantvoting.service.RestaurantService;
+import ru.veselov.restaurantvoting.service.restaurant.RestaurantService;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -31,9 +31,9 @@ public class RestaurantController {
 
     private final RestaurantService service;
 
-    @Operation(summary = "Получить все рестораны")
+    @Operation(summary = "Get all restaurants")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Рестораны загружены",
+            @ApiResponse(responseCode = "200", description = "Restaurants retrieved",
                     content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                             schema = @Schema(implementation = RestaurantDto.class))})})
     @GetMapping
@@ -41,9 +41,9 @@ public class RestaurantController {
         return service.getAll();
     }
 
-    @Operation(summary = "Получить ресторан по id")
+    @Operation(summary = "Get restaurant by id")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Ресторан с id найден",
+            @ApiResponse(responseCode = "200", description = "Restaurant found",
                     content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                             schema = @Schema(implementation = RestaurantDto.class))})})
     @GetMapping("/{id}")
@@ -51,9 +51,9 @@ public class RestaurantController {
         return service.findById(id);
     }
 
-    @Operation(summary = "Получить ресторан по id, с меню и голосами на дату")
+    @Operation(summary = "Get restaurant by id with menu and votes for date")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Ресторан с id найден",
+            @ApiResponse(responseCode = "200", description = "Restaurant found",
                     content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                             schema = @Schema(implementation = RestaurantDto.class))})})
     @GetMapping("/{id}/with-menu")

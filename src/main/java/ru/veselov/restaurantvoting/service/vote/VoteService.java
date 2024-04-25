@@ -1,4 +1,4 @@
-package ru.veselov.restaurantvoting.service;
+package ru.veselov.restaurantvoting.service.vote;
 
 import java.time.LocalDate;
 

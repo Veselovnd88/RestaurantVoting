@@ -6,22 +6,22 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ArgumentsSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import ru.veselov.restaurantvoting.dto.InputRestaurantDto;
 import ru.veselov.restaurantvoting.extension.argproviders.BadRestaurantArgumentsProvider;
-import ru.veselov.restaurantvoting.service.RestaurantService;
+import ru.veselov.restaurantvoting.service.restaurant.RestaurantService;
 import ru.veselov.restaurantvoting.util.MockMvcUtils;
 import ru.veselov.restaurantvoting.util.RestaurantTestData;
 import ru.veselov.restaurantvoting.util.ResultActionErrorsUtil;
 import ru.veselov.restaurantvoting.web.GlobalExceptionHandler;
 import ru.veselov.restaurantvoting.web.RestaurantAdminController;
 
+@ActiveProfiles("test")
 @WebMvcTest(value = RestaurantAdminController.class, excludeAutoConfiguration = SecurityAutoConfiguration.class)
-@AutoConfigureMockMvc
 class RestaurantAdminControllerValidationTest {
 
     @Autowired

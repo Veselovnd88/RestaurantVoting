@@ -6,9 +6,9 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ArgumentsSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import ru.veselov.restaurantvoting.dto.UserDto;
@@ -20,9 +20,8 @@ import ru.veselov.restaurantvoting.util.ResultActionErrorsUtil;
 import ru.veselov.restaurantvoting.util.UserTestData;
 import ru.veselov.restaurantvoting.web.GlobalExceptionHandler;
 import ru.veselov.restaurantvoting.web.user.ProfileController;
-
+@ActiveProfiles("test")
 @WebMvcTest(value = ProfileController.class, excludeAutoConfiguration = SecurityAutoConfiguration.class)
-@AutoConfigureMockMvc
 class ProfileControllerValidationTest {
 
     @Autowired

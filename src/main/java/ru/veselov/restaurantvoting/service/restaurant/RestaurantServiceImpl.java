@@ -1,8 +1,10 @@
-package ru.veselov.restaurantvoting.service;
+package ru.veselov.restaurantvoting.service.restaurant;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,6 +39,7 @@ public class RestaurantServiceImpl implements RestaurantService {
      * @param restaurantDto dto with initial data about restaurant
      * @return {@link RestaurantDto} dto with data about saved restaurant
      */
+    @CacheEvict(value = {"restaurants", "menus"}, allEntries = true)
     @Override
     @Transactional
     public RestaurantDto create(InputRestaurantDto restaurantDto) {
@@ -50,8 +53,10 @@ public class RestaurantServiceImpl implements RestaurantService {
      *
      * @return {@link RestaurantDto} list of dtos
      */
+    @Cacheable(value = "restaurants")
+    @Override
     public List<RestaurantDto> getAll() {
-        log.debug("Retrieving restaurants with votes from repository");
+        log.info("Retrieving restaurants with votes from repository");
         return mapper.entitiesToDto(repository.findAll(SORT_BY_NAME));
     }
 
@@ -61,8 +66,10 @@ public class RestaurantServiceImpl implements RestaurantService {
      * @param id restaurant id
      * @return {@link RestaurantDto} found restaurant
      */
+    @Cacheable(value = "restaurants")
+    @Override
     public RestaurantDto findById(int id) {
-        log.debug("Retrieving restaurant by id");
+        log.info("Retrieving restaurant by id");
         return mapper.entityToDto(repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Restaurant with [id:%s] not found".formatted(id))));
     }
@@ -70,17 +77,18 @@ public class RestaurantServiceImpl implements RestaurantService {
     /**
      * Find restaurant by and bind menu with votes by date
      *
-     * @param date preffered date to find menu and votes
+     * @param date preferred date to find menu and votes
      * @param id   restaurant id
      * @return {@link RestaurantDto} found restaurant
      * @throws EntityNotFoundException if restaurant with such id not found
      */
+    @Override
     public RestaurantDto findByIdWithMenuAndVotesForDate(int id, LocalDate date) {
         Restaurant restaurant = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Restaurant with [id:%s] not found".formatted(id)));
         Optional<Menu> byRestaurantIdByDate = menuRepository.findByRestaurantIdByDate(id, date);
         restaurant.setMenus(byRestaurantIdByDate.map(List::of).orElse(Collections.emptyList()));
-        log.debug("Retrieving restaurant id: {} with votes and menu by date {}", id, date);
+        log.info("Retrieving restaurant id: {} with votes and menu by date {}", id, date);
         return mapper.entityToDtoWithMenus(restaurant);
     }
 
@@ -92,6 +100,7 @@ public class RestaurantServiceImpl implements RestaurantService {
      * @return {@link RestaurantDto} updated restaurant
      * @throws EntityNotFoundException if restaurant with such id not found
      */
+    @CacheEvict(value = "restaurants",allEntries = true)
     @Override
     @Transactional
     public RestaurantDto update(int id, InputRestaurantDto restaurantDto) {
@@ -108,6 +117,7 @@ public class RestaurantServiceImpl implements RestaurantService {
      *
      * @param id restaurant id
      */
+    @CacheEvict(value = {"restaurants", "menus"}, allEntries = true)
     @Override
     @Transactional
     public void delete(int id) {

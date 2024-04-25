@@ -11,6 +11,7 @@ import ru.veselov.restaurantvoting.dto.RestaurantDto;
 import ru.veselov.restaurantvoting.repository.MenuRepository;
 import ru.veselov.restaurantvoting.repository.RestaurantRepository;
 import ru.veselov.restaurantvoting.repository.VoteRepository;
+import ru.veselov.restaurantvoting.service.restaurant.RestaurantService;
 import ru.veselov.restaurantvoting.util.RestaurantTestData;
 import ru.veselov.restaurantvoting.util.VoteTestData;
 

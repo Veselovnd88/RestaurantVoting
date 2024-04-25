@@ -16,6 +16,8 @@ import ru.veselov.restaurantvoting.extension.AdjustClockMockForVoting;
 import ru.veselov.restaurantvoting.model.Vote;
 import ru.veselov.restaurantvoting.repository.UserRepository;
 import ru.veselov.restaurantvoting.repository.VoteRepository;
+import ru.veselov.restaurantvoting.service.menu.MenuService;
+import ru.veselov.restaurantvoting.service.vote.VoteServiceImpl;
 import ru.veselov.restaurantvoting.util.MenuTestData;
 import ru.veselov.restaurantvoting.util.UserTestData;
 import ru.veselov.restaurantvoting.util.VoteTestData;

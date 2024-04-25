@@ -26,6 +26,7 @@ import ru.veselov.restaurantvoting.mapper.VoteMapperImpl;
 import ru.veselov.restaurantvoting.model.Menu;
 import ru.veselov.restaurantvoting.repository.MenuRepository;
 import ru.veselov.restaurantvoting.repository.RestaurantRepository;
+import ru.veselov.restaurantvoting.service.menu.MenuServiceImpl;
 import ru.veselov.restaurantvoting.util.DishTestData;
 import ru.veselov.restaurantvoting.util.MenuTestData;
 import ru.veselov.restaurantvoting.util.RestaurantTestData;

@@ -1,8 +1,9 @@
-package ru.veselov.restaurantvoting.service;
+package ru.veselov.restaurantvoting.service.dish;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,10 +31,12 @@ public class DishServiceImpl implements DishService {
 
     /**
      * Save new dish
-     * @param menuId id of chosen menu
+     *
+     * @param menuId  id of chosen menu
      * @param dishDto dto for creating new Dish
      * @return {@link DishDto} saved dish
      */
+    @CacheEvict(value = {"restaurants", "menus"}, allEntries = true)
     @Override
     @Transactional
     public DishDto save(int menuId, DishDto dishDto) {
@@ -52,6 +55,7 @@ public class DishServiceImpl implements DishService {
      * @param dishDto dto with data to update
      * @return {@link DishDto}
      */
+    @CacheEvict(value = {"restaurants", "menus"}, allEntries = true)
     @Override
     @Transactional
     public DishDto update(int id, DishDto dishDto) {
@@ -69,6 +73,7 @@ public class DishServiceImpl implements DishService {
      *
      * @param id of dish to delete
      */
+    @CacheEvict(value = {"restaurants", "menus"}, allEntries = true)
     @Override
     @Transactional
     public void delete(int id) {
