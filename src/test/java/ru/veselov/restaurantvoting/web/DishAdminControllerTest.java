@@ -15,6 +15,7 @@ import ru.veselov.restaurantvoting.util.MockMvcUtils;
 import ru.veselov.restaurantvoting.util.ResultActionErrorsUtil;
 import ru.veselov.restaurantvoting.util.SecurityUtils;
 import ru.veselov.restaurantvoting.util.UserTestData;
+import ru.veselov.restaurantvoting.web.dish.DishAdminController;
 
 class DishAdminControllerTest extends AbstractRestControllerTest {
 

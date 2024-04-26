@@ -19,7 +19,7 @@ import ru.veselov.restaurantvoting.util.MockMvcUtils;
 import ru.veselov.restaurantvoting.util.RestaurantTestData;
 import ru.veselov.restaurantvoting.util.ResultActionErrorsUtil;
 import ru.veselov.restaurantvoting.web.GlobalExceptionHandler;
-import ru.veselov.restaurantvoting.web.MenuAdminController;
+import ru.veselov.restaurantvoting.web.menu.MenuAdminController;
 @ActiveProfiles("test")
 @WebMvcTest(value = MenuAdminController.class, excludeAutoConfiguration = SecurityAutoConfiguration.class)
 class MenuAdminControllerValidationTest {
@@ -30,9 +30,9 @@ class MenuAdminControllerValidationTest {
     @MockBean
     MenuService menuService;
 
-    @SneakyThrows
     @ParameterizedTest
     @ArgumentsSource(BadInputMenuDtoArgumentsProvider.class)
+    @SneakyThrows
     void create_SimilarDishes_ReturnValidationError(InputMenuDto menuDto, String fieldName) {
         ResultActions resultActions = mockMvc.perform(MockMvcUtils.createMenu(RestaurantTestData.SUSHI_ID, menuDto));
 
@@ -41,8 +41,8 @@ class MenuAdminControllerValidationTest {
                 MockMvcUtils.MENU_RESTAURANTS_ID_URL.formatted(RestaurantTestData.SUSHI_ID), fieldName, 0);
     }
 
-    @SneakyThrows
     @Test
+    @SneakyThrows
     void create_MenuWithId_ReturnValidationError() {
         ResultActions resultActions = mockMvc.perform(MockMvcUtils.createMenu(
                 RestaurantTestData.SUSHI_ID, MenuTestData.menuDtoToUpdate));
@@ -52,9 +52,9 @@ class MenuAdminControllerValidationTest {
                 MockMvcUtils.MENU_RESTAURANTS_ID_URL.formatted(RestaurantTestData.SUSHI_ID));
     }
 
-    @SneakyThrows
     @ParameterizedTest
     @ArgumentsSource(BadInputMenuDtoArgumentsProvider.class)
+    @SneakyThrows
     void update_SimilarDishes_ReturnValidationError(InputMenuDto menuDto, String fieldName) {
         ResultActions resultActions = mockMvc.perform(MockMvcUtils.updateMenu(MenuTestData.SUSHI_MENU_ID, menuDto));
 
@@ -63,8 +63,8 @@ class MenuAdminControllerValidationTest {
                 MockMvcUtils.MENU_ID_URL.formatted(MenuTestData.SUSHI_MENU_ID), fieldName, 0);
     }
 
-    @SneakyThrows
     @Test
+    @SneakyThrows
     void update_MenuWithoutId_ReturnValidationError() {
         ResultActions resultActions = mockMvc.perform(MockMvcUtils.updateMenu(MenuTestData.SUSHI_MENU_ID,
                 MenuTestData.menuDtoToCreate));

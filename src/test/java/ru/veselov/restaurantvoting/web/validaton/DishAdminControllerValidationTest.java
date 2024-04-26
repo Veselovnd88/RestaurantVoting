@@ -18,7 +18,7 @@ import ru.veselov.restaurantvoting.util.DishTestData;
 import ru.veselov.restaurantvoting.util.MenuTestData;
 import ru.veselov.restaurantvoting.util.MockMvcUtils;
 import ru.veselov.restaurantvoting.util.ResultActionErrorsUtil;
-import ru.veselov.restaurantvoting.web.DishAdminController;
+import ru.veselov.restaurantvoting.web.dish.DishAdminController;
 import ru.veselov.restaurantvoting.web.GlobalExceptionHandler;
 
 @ActiveProfiles("test")
@@ -31,9 +31,10 @@ class DishAdminControllerValidationTest {
     @MockBean
     DishService dishService;
 
-    @SneakyThrows
+
     @ParameterizedTest
     @ArgumentsSource(BadDishDtoArgumentsProvider.class)
+    @SneakyThrows
     void create_BadDishDtoPasses_ReturnError(DishDto dishDto, String fieldName) {
         ResultActions resultActions = mockMvc.perform(MockMvcUtils.createDish(MenuTestData.BURGER_MENU_ID, dishDto));
 
@@ -42,8 +43,8 @@ class DishAdminControllerValidationTest {
                 MockMvcUtils.DISH_MENUS_ID_URL.formatted(MenuTestData.BURGER_MENU_ID), fieldName, 0);
     }
 
-    @SneakyThrows
     @Test
+    @SneakyThrows
     void create_DishWithId_ReturnValidationError() {
         ResultActions resultActions = mockMvc.perform(MockMvcUtils.createDish(MenuTestData.BURGER_MENU_ID,
                 DishTestData.dishToUpdate));
@@ -53,9 +54,10 @@ class DishAdminControllerValidationTest {
                 MockMvcUtils.DISH_MENUS_ID_URL.formatted(MenuTestData.BURGER_MENU_ID));
     }
 
-    @SneakyThrows
+
     @ParameterizedTest
     @ArgumentsSource(BadDishDtoArgumentsProvider.class)
+    @SneakyThrows
     void update_BadDishDtoPasses_ReturnError(DishDto dishDto, String fieldName) {
         ResultActions resultActions = mockMvc.perform(MockMvcUtils.updateDish(DishTestData.TASTY_ROLL_ID, dishDto));
 
@@ -64,8 +66,8 @@ class DishAdminControllerValidationTest {
                 MockMvcUtils.DISH_ID_URL.formatted(DishTestData.TASTY_ROLL_ID), fieldName, 0);
     }
 
-    @SneakyThrows
     @Test
+    @SneakyThrows
     void update_DishWithoutId_ReturnValidationError() {
         ResultActions resultActions = mockMvc.perform(MockMvcUtils.updateDish(DishTestData.TASTY_ROLL_ID,
                 DishTestData.newTastyDish));

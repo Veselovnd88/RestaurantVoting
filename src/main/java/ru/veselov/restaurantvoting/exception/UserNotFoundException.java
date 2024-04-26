@@ -5,7 +5,6 @@ import jakarta.persistence.EntityNotFoundException;
 public class UserNotFoundException extends EntityNotFoundException {
 
     public static final String MESSAGE_WITH_ID = "User with id: %s not found";
-
     public static final String MESSAGE_WITH_EMAIL = "User with email: %s not found";
 
     public UserNotFoundException(int id) {

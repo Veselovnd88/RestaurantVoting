@@ -1,4 +1,4 @@
-package ru.veselov.restaurantvoting.web;
+package ru.veselov.restaurantvoting.web.menu;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;

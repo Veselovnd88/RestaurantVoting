@@ -18,7 +18,7 @@ import ru.veselov.restaurantvoting.util.MockMvcUtils;
 import ru.veselov.restaurantvoting.util.RestaurantTestData;
 import ru.veselov.restaurantvoting.util.ResultActionErrorsUtil;
 import ru.veselov.restaurantvoting.web.GlobalExceptionHandler;
-import ru.veselov.restaurantvoting.web.RestaurantAdminController;
+import ru.veselov.restaurantvoting.web.restaurant.RestaurantAdminController;
 
 @ActiveProfiles("test")
 @WebMvcTest(value = RestaurantAdminController.class, excludeAutoConfiguration = SecurityAutoConfiguration.class)
@@ -30,9 +30,9 @@ class RestaurantAdminControllerValidationTest {
     @MockBean
     RestaurantService restaurantService;
 
-    @SneakyThrows
-    @ParameterizedTest()
+    @ParameterizedTest
     @ArgumentsSource(BadRestaurantArgumentsProvider.class)
+    @SneakyThrows
     void create_BadRestaurantDto_ReturnError(InputRestaurantDto restaurantDto, String fieldName) {
         ResultActions resultActions = mockMvc.perform(MockMvcUtils.createRestaurant(restaurantDto));
 
@@ -41,8 +41,8 @@ class RestaurantAdminControllerValidationTest {
                 MockMvcUtils.RESTAURANT_URL, fieldName, 0);
     }
 
-    @SneakyThrows
     @Test
+    @SneakyThrows
     void create_RestaurantWithId_ReturnValidationError() {
         ResultActions resultActions = mockMvc.perform(MockMvcUtils.createRestaurant(RestaurantTestData.restaurantDtoToUpdate));
 
@@ -51,9 +51,9 @@ class RestaurantAdminControllerValidationTest {
                 MockMvcUtils.RESTAURANT_URL);
     }
 
-    @SneakyThrows
-    @ParameterizedTest()
+    @ParameterizedTest
     @ArgumentsSource(BadRestaurantArgumentsProvider.class)
+    @SneakyThrows
     void update_BadRestaurantDto_ReturnError(InputRestaurantDto restaurantDto, String fieldName) {
         ResultActions resultActions = mockMvc.perform(MockMvcUtils
                 .updateRestaurant(restaurantDto, RestaurantTestData.SUSHI_ID));
@@ -63,8 +63,8 @@ class RestaurantAdminControllerValidationTest {
                 MockMvcUtils.RESTAURANT_ID_URL.formatted(RestaurantTestData.SUSHI_ID), fieldName, 0);
     }
 
-    @SneakyThrows
     @Test
+    @SneakyThrows
     void update_RestaurantWithoutId_ReturnValidationError() {
         ResultActions resultActions = mockMvc.perform(MockMvcUtils.updateRestaurant(
                 RestaurantTestData.inputRestaurantDto, RestaurantTestData.SUSHI_ID));
