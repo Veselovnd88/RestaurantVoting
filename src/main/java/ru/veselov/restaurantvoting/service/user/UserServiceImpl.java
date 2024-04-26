@@ -36,8 +36,8 @@ public class UserServiceImpl implements UserService {
      * @return {@link UserDto} saved userDto
      * @throws org.springframework.dao.DataIntegrityViolationException if email duplicated
      */
-    @Transactional
     @Override
+    @Transactional
     public UserDto create(UserDto userDto) {
         User user = mapper.toUser(userDto);
         user.setRoles(Set.of(Role.USER));
@@ -53,8 +53,8 @@ public class UserServiceImpl implements UserService {
      * @param userDto new userDto
      * @throws org.springframework.dao.DataIntegrityViolationException if email duplicated
      */
-    @Transactional
     @Override
+    @Transactional
     public void update(UserDto userDto) {
         User user = getUserById(userDto.id());
         mapper.toUserUpdate(user, userDto);
@@ -69,8 +69,8 @@ public class UserServiceImpl implements UserService {
      *
      * @param id id of user to delete
      */
-    @Transactional
     @Override
+    @Transactional
     public void deleteById(int id) {
         repository.deleteById(id);
         log.info("User with id: {} deleted", id);
@@ -83,8 +83,8 @@ public class UserServiceImpl implements UserService {
      * @param enabled flag for enable/diable
      * @throws UserNotFoundException if user not found by id
      */
-    @Transactional
     @Override
+    @Transactional
     public void enable(int id, boolean enabled) {
         User userById = getUserById(id);
         userById.setEnabled(enabled);

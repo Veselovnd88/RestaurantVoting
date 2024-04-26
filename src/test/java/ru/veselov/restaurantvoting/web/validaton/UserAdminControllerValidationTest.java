@@ -80,7 +80,8 @@ class UserAdminControllerValidationTest {
 
     @ParameterizedTest
     @MethodSource("getBadEmail")
-    void getByEmail_BadEmails_ReturnValidationError(String badEmail) throws Exception {
+    @SneakyThrows
+    void getByEmail_BadEmails_ReturnValidationError(String badEmail) {
         ResultActions resultActions = mockMvc.perform(MockMvcUtils.getUserByEmail(badEmail));
 
         ResultActionErrorsUtil.checkValidationError(resultActions,

@@ -1,5 +1,4 @@
-package ru.veselov.restaurantvoting.web;
-
+package ru.veselov.restaurantvoting.web.dish;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -23,58 +22,57 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import ru.veselov.restaurantvoting.dto.InputMenuDto;
-import ru.veselov.restaurantvoting.dto.MenuDto;
-import ru.veselov.restaurantvoting.service.menu.MenuService;
+import ru.veselov.restaurantvoting.dto.DishDto;
+import ru.veselov.restaurantvoting.service.dish.DishService;
 import ru.veselov.restaurantvoting.util.ValidationUtil;
 
 import java.net.URI;
 
 @RestController
-@RequestMapping(value = MenuAdminController.REST_URL)
+@RequestMapping(value = DishAdminController.REST_URL)
 @RequiredArgsConstructor
 @Validated
 @SecurityRequirement(name = "basicAuth")
-@Tag(name = "Menu management", description = "Manage menus for admin")
-public class MenuAdminController {
+@Tag(name = "Dish management", description = "Manage dishes for admin")
+public class DishAdminController {
 
-    public static final String REST_URL = "/api/v1/admin/menus";
+    public static final String REST_URL = "/api/v1/admin/dishes";
 
-    private final MenuService service;
+    private final DishService service;
 
-    @Operation(summary = "Add menu to restaurant")
+    @Operation(summary = "Add new dish to menu")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Menu added",
+            @ApiResponse(responseCode = "201", description = "Dish created",
                     content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = MenuDto.class))})})
-    @PostMapping("/restaurants/{restaurantId}")
-    public ResponseEntity<MenuDto> add(@PathVariable int restaurantId, @Valid @RequestBody InputMenuDto menuDto) {
-        ValidationUtil.checkNew(menuDto);
-        MenuDto created = service.create(restaurantId, menuDto);
+                            schema = @Schema(implementation = DishDto.class))})})
+    @PostMapping("/menus/{menuId}")
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseEntity<DishDto> create(@PathVariable int menuId, @Valid @RequestBody DishDto dishDto) {
+        ValidationUtil.checkNew(dishDto);
+        DishDto created = service.save(menuId, dishDto);
         URI uriOfResource = ServletUriComponentsBuilder.fromCurrentContextPath()
-                .path(MenuController.REST_URL + "/{id}")
+                .path(DishController.REST_URL + "/{id}")
                 .buildAndExpand(created.id()).toUri();
         return ResponseEntity.created(uriOfResource).body(created);
     }
 
-    @Operation(summary = "Update menu")
+    @Operation(summary = "Update dish")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Menu updated",
+            @ApiResponse(responseCode = "200", description = "Dish updated",
                     content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = MenuDto.class))})})
-
+                            schema = @Schema(implementation = DishDto.class))})})
     @PutMapping("/{id}")
-    public MenuDto update(@PathVariable int id, @Valid @RequestBody InputMenuDto menuDto) {
-        ValidationUtil.assureIdConsistent(menuDto, id);
-        return service.update(id, menuDto);
+    public DishDto update(@PathVariable int id, @Valid @RequestBody DishDto dishDto) {
+        ValidationUtil.assureIdConsistent(dishDto, id);
+        return service.update(id, dishDto);
     }
 
-    @Operation(summary = "Delete menu and it's dishes")
+    @Operation(summary = "Delete dish")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "Menu deleted")})
+            @ApiResponse(responseCode = "204", description = "Dish delete")})
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    void delete(@PathVariable int id) {
-        service.deleteMenu(id);
+    public void delete(@PathVariable int id) {
+        service.delete(id);
     }
 }
