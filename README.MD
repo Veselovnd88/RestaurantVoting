@@ -1,4 +1,4 @@
-[![](https://img.shields.io/badge/Spring%20Boot%20Version-3.2.3-orange)](/pom.xml) [![](https://img.shields.io/badge/Java%20Version-21-orange)](/pom.xml)
+[![](https://img.shields.io/badge/Spring%20Boot%20Version-3.2.3-orange)](/pom.xml) [![](https://img.shields.io/badge/Java%20Version-17-orange)](/pom.xml)
 <img alt="GitHub Actions Workflow Status" src="https://img.shields.io/github/actions/workflow/status/Veselovnd88/RestaurantVoting/maven.yml?label=build-and-test">
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/4d2c93f026ed46748330273246ca079c)](https://app.codacy.com/gh/Veselovnd88/RestaurantVoting/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
 # Implementation for Restaurant Voting task
