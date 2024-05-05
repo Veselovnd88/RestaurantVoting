@@ -9,13 +9,13 @@ import ru.veselov.restaurantvoting.dto.InputMenuDto;
 import ru.veselov.restaurantvoting.dto.InputRestaurantDto;
 import ru.veselov.restaurantvoting.dto.UserDto;
 import ru.veselov.restaurantvoting.util.json.JsonUtil;
+import ru.veselov.restaurantvoting.web.VoteController;
 import ru.veselov.restaurantvoting.web.dish.DishAdminController;
 import ru.veselov.restaurantvoting.web.dish.DishController;
 import ru.veselov.restaurantvoting.web.menu.MenuAdminController;
 import ru.veselov.restaurantvoting.web.menu.MenuController;
 import ru.veselov.restaurantvoting.web.restaurant.RestaurantAdminController;
 import ru.veselov.restaurantvoting.web.restaurant.RestaurantController;
-import ru.veselov.restaurantvoting.web.VoteController;
 import ru.veselov.restaurantvoting.web.user.ProfileController;
 import ru.veselov.restaurantvoting.web.user.UserAdminController;
 
@@ -23,6 +23,10 @@ import ru.veselov.restaurantvoting.web.user.UserAdminController;
 public class MockMvcUtils {
 
     public static final String MENU_RESTAURANTS_ID_URL = MenuAdminController.REST_URL + "/restaurants/%s";
+
+    public static final String RESTAURANTS_WITH_MENU = RestaurantController.REST_URL + "/with-menu";
+
+    public static final String RESTAURANTS_WITH_MENU_ID = RestaurantController.REST_URL + "/with-menu/%s";
 
     public static final String MENU_ID_URL = MenuAdminController.REST_URL + "/%s";
 
@@ -67,8 +71,12 @@ public class MockMvcUtils {
         return MockMvcRequestBuilders.get(RestaurantController.REST_URL + "/" + id);
     }
 
-    public static MockHttpServletRequestBuilder getOneRestaurantWithMenuAndVotes(int id) {
-        return MockMvcRequestBuilders.get(RestaurantController.REST_URL + "/" + id + "/with-menu");
+    public static MockHttpServletRequestBuilder getOneRestaurantWithMenu(int id) {
+        return MockMvcRequestBuilders.get(RESTAURANTS_WITH_MENU_ID.formatted(id));
+    }
+
+    public static MockHttpServletRequestBuilder getAllRestaurantsWithMenu() {
+        return MockMvcRequestBuilders.get(RESTAURANTS_WITH_MENU);
     }
 
     public static MockHttpServletRequestBuilder createDish(int menuId, DishDto dishDto) {

@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.veselov.restaurantvoting.dto.RestaurantDto;
 import ru.veselov.restaurantvoting.service.restaurant.RestaurantService;
 
+import java.time.Clock;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -30,6 +31,8 @@ public class RestaurantController {
     public static final String REST_URL = "/api/v1/restaurants";
 
     private final RestaurantService service;
+
+    private final Clock clock;
 
     @Operation(summary = "Get all restaurants")
     @ApiResponses(value = {
@@ -51,14 +54,24 @@ public class RestaurantController {
         return service.findById(id);
     }
 
-    @Operation(summary = "Get restaurant by id with menu and votes for date")
+    @Operation(summary = "Get restaurant by id with menu for date")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Restaurant found",
                     content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                             schema = @Schema(implementation = RestaurantDto.class))})})
-    @GetMapping("/{id}/with-menu")
-    public RestaurantDto getWithMenuAndVotesByDate(@PathVariable int id,
-                                                   @RequestParam(value = "date", required = false) LocalDate date) {
-        return service.findByIdWithMenuAndVotesForDate(id, date == null ? LocalDate.now() : date);
+    @GetMapping("/with-menu/{id}")
+    public RestaurantDto getWithMenuByDate(@PathVariable int id,
+                                           @RequestParam(value = "date", required = false) LocalDate date) {
+        return service.findByIdWithMenuForDate(id, date == null ? LocalDate.now(clock) : date);
+    }
+
+    @Operation(summary = "Get restaurants with menu for date")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Restaurants found",
+                    content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = RestaurantDto.class))})})
+    @GetMapping("/with-menu")
+    public List<RestaurantDto> getAllWithMenuByDate(@RequestParam(value = "date", required = false) LocalDate date) {
+        return service.findAllWithMenuByDate(date == null ? LocalDate.now(clock) : date);
     }
 }

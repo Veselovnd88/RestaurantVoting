@@ -15,7 +15,6 @@ import ru.veselov.restaurantvoting.service.restaurant.RestaurantService;
 import ru.veselov.restaurantvoting.util.RestaurantTestData;
 import ru.veselov.restaurantvoting.util.VoteTestData;
 
-import java.time.LocalDate;
 import java.util.List;
 
 
@@ -55,25 +54,17 @@ class RestaurantServiceImplTest {
     }
 
     @Test
-    void findByIdWithMenuAndVotesForDate_AllOk_ReturnDtoWithMenuAndVotesForDate() {
+    void findByIdWithMenuAndVotesForDate_AllOk_ReturnDtoWithMenuForDate() {
         RestaurantDto foundRestaurant = restaurantService
-                .findByIdWithMenuAndVotesForDate(RestaurantTestData.SUSHI_ID, VoteTestData.VOTED_AT_DATE);
+                .findByIdWithMenuForDate(RestaurantTestData.SUSHI_ID, VoteTestData.VOTED_AT_DATE);
 
         Assertions.assertThat(foundRestaurant).isEqualTo(RestaurantTestData.getSushiRestaurantDtoWithMenuByDate());
     }
 
     @Test
-    void findByIdWithMenuAndVotesForDate_NoMenuForThisDate_ReturnDtoEmptyMenuList() {
-        RestaurantDto foundRestaurant = restaurantService
-                .findByIdWithMenuAndVotesForDate(RestaurantTestData.SUSHI_ID, LocalDate.of(2020, 3, 3));
-
-        Assertions.assertThat(foundRestaurant).isEqualTo(RestaurantTestData.sushiRestaurantDtoWithEmptyMenus);
-    }
-
-    @Test
-    void findByIdWithMenuAndVotesForDate_NotFound_ThrowException() {
+    void findByIdWithMenuForDate_NotFound_ThrowException() {
         Assertions.assertThatThrownBy(() -> restaurantService
-                        .findByIdWithMenuAndVotesForDate(RestaurantTestData.NOT_FOUND, VoteTestData.VOTED_AT_DATE))
+                        .findByIdWithMenuForDate(RestaurantTestData.NOT_FOUND, VoteTestData.VOTED_AT_DATE))
                 .isInstanceOf(EntityNotFoundException.class);
     }
 

@@ -6,7 +6,8 @@ import org.mapstruct.Mapping;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 import ru.veselov.restaurantvoting.dto.InputRestaurantDto;
 import ru.veselov.restaurantvoting.dto.RestaurantDto;
-import ru.veselov.restaurantvoting.mapper.annotation.WithVotesAndDishes;
+import ru.veselov.restaurantvoting.mapper.annotation.WithDishes;
+import ru.veselov.restaurantvoting.mapper.annotation.WithMenu;
 import ru.veselov.restaurantvoting.mapper.annotation.WithoutMenu;
 import ru.veselov.restaurantvoting.mapper.config.MapStructConfig;
 import ru.veselov.restaurantvoting.model.Restaurant;
@@ -17,7 +18,9 @@ import java.util.List;
         uses = MenuMapper.class,
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface RestaurantMapper {
-    @Mapping(target = "menus", qualifiedBy = WithVotesAndDishes.class)
+
+    @Mapping(target = "menus", qualifiedBy = WithDishes.class)
+    @WithMenu
     RestaurantDto entityToDtoWithMenus(Restaurant restaurant);
 
 
@@ -27,6 +30,9 @@ public interface RestaurantMapper {
 
     @IterableMapping(qualifiedBy = WithoutMenu.class)
     List<RestaurantDto> entitiesToDto(List<Restaurant> restaurants);
+
+    @IterableMapping(qualifiedBy = WithMenu.class)
+    List<RestaurantDto> entitiesToDtoWithMenus(List<Restaurant> restaurants);
 
     Restaurant toEntity(InputRestaurantDto restaurantDto);
 }

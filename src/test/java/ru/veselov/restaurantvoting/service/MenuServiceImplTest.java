@@ -19,10 +19,6 @@ import ru.veselov.restaurantvoting.mapper.DishMapper;
 import ru.veselov.restaurantvoting.mapper.DishMapperImpl;
 import ru.veselov.restaurantvoting.mapper.MenuMapper;
 import ru.veselov.restaurantvoting.mapper.MenuMapperImpl;
-import ru.veselov.restaurantvoting.mapper.UserMapper;
-import ru.veselov.restaurantvoting.mapper.UserMapperImpl;
-import ru.veselov.restaurantvoting.mapper.VoteMapper;
-import ru.veselov.restaurantvoting.mapper.VoteMapperImpl;
 import ru.veselov.restaurantvoting.model.Menu;
 import ru.veselov.restaurantvoting.repository.MenuRepository;
 import ru.veselov.restaurantvoting.repository.RestaurantRepository;
@@ -53,10 +49,7 @@ class MenuServiceImplTest {
     @BeforeEach
     void setUp() {
         MenuMapperImpl menuMapper = new MenuMapperImpl();
-        VoteMapperImpl voteMapper = new VoteMapperImpl();
-        ReflectionTestUtils.setField(voteMapper, "userMapper", new UserMapperImpl(), UserMapper.class);
         ReflectionTestUtils.setField(menuMapper, "dishMapper", new DishMapperImpl(), DishMapper.class);
-        ReflectionTestUtils.setField(menuMapper, "voteMapper", voteMapper, VoteMapper.class);
         ReflectionTestUtils.setField(menuService, "mapper", menuMapper, MenuMapper.class);
     }
 
@@ -95,7 +88,7 @@ class MenuServiceImplTest {
 
         Mockito.verify(menuRepository, Mockito.times(1)).save(menuArgumentCaptor.capture());
         Menu captured = menuArgumentCaptor.getValue();
-        Assertions.assertThat(captured).extracting(Menu::getDate).isEqualTo(MenuTestData.ADDED_DATE.plusDays(1));
+        Assertions.assertThat(captured).extracting(Menu::getDate).isEqualTo(MenuTestData.MENU_DATE.plusDays(1));
         DishTestData.DISH_MATCHER.assertMatch(captured.getDishes(), DishTestData.getUpdatedDishesInSortedSet());
     }
 
@@ -109,12 +102,12 @@ class MenuServiceImplTest {
     }
 
     @Test
-    void getMenuById_AllOk_ReturnMenuDtoWithDishesAndVotes() {
+    void getMenuById_AllOk_ReturnMenuDtoWithDishes() {
         Mockito.when(menuRepository.findByIdWithDishesAndVotes(Mockito.anyInt())).thenReturn(Optional.of(MenuTestData.getSushiRestaurantMenuWithVotes()));
 
         MenuDto menuById = menuService.getMenuByIdWithDishesAndVotes(MenuTestData.SUSHI_MENU_ID);
 
-        Assertions.assertThat(menuById).isEqualTo(MenuTestData.sushiRestaurantMenuDtoWithVotes);
+        Assertions.assertThat(menuById).isEqualTo(MenuTestData.sushiRestaurantMenuDto);
     }
 
     @Test

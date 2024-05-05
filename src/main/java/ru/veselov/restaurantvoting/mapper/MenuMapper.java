@@ -7,8 +7,7 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import ru.veselov.restaurantvoting.dto.InputMenuDto;
 import ru.veselov.restaurantvoting.dto.MenuDto;
-import ru.veselov.restaurantvoting.mapper.annotation.WithVotesAndDishes;
-import ru.veselov.restaurantvoting.mapper.annotation.WithoutRestaurant;
+import ru.veselov.restaurantvoting.mapper.annotation.WithDishes;
 import ru.veselov.restaurantvoting.mapper.annotation.WithoutVotes;
 import ru.veselov.restaurantvoting.mapper.config.MapStructConfig;
 import ru.veselov.restaurantvoting.model.Dish;
@@ -24,8 +23,8 @@ public interface MenuMapper {
     @Mapping(target = "id", source = "id")
     @Mapping(target = "date", source = "date")
     @Mapping(target = "dishes", source = "dishes")
-    @Mapping(target = "votes", source = "votes", qualifiedBy = WithoutRestaurant.class)
-    @WithVotesAndDishes
+    @Mapping(target = "votes", ignore = true)
+    @WithDishes
     MenuDto toDto(Menu menu);
 
 
@@ -39,7 +38,7 @@ public interface MenuMapper {
     @IterableMapping(qualifiedBy = WithoutVotes.class)
     List<MenuDto> toDtosWithoutVotes(List<Menu> menus);
 
-    @IterableMapping(qualifiedBy = WithVotesAndDishes.class)
+    @IterableMapping(qualifiedBy = WithDishes.class)
     List<MenuDto> toDtos(List<Menu> menus);
 
     @Mapping(target = "date", source = "date")

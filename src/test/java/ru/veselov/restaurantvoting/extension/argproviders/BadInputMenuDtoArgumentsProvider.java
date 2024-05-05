@@ -19,11 +19,11 @@ public class BadInputMenuDtoArgumentsProvider implements ArgumentsProvider {
     @Override
     public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) {
         InputMenuDto nullDate = new InputMenuDto(null, null, List.of(DishTestData.newTastyDish, DishTestData.philadelphiaDto));
-        InputMenuDto similarDishes = new InputMenuDto(null, MenuTestData.ADDED_DATE,
+        InputMenuDto similarDishes = new InputMenuDto(null, MenuTestData.MENU_DATE,
                 List.of(DishTestData.newTastyDish, DishTestData.newTastyDish));
-        InputMenuDto oneDish = new InputMenuDto(null, MenuTestData.ADDED_DATE, List.of(DishTestData.newTastyDish));
-        InputMenuDto noDishes = new InputMenuDto(null, MenuTestData.ADDED_DATE, Collections.emptyList());
-        InputMenuDto sixDishes = new InputMenuDto(null, MenuTestData.ADDED_DATE,
+        InputMenuDto oneDish = new InputMenuDto(null, MenuTestData.MENU_DATE, List.of(DishTestData.newTastyDish));
+        InputMenuDto noDishes = new InputMenuDto(null, MenuTestData.MENU_DATE, Collections.emptyList());
+        InputMenuDto sixDishes = new InputMenuDto(null, MenuTestData.MENU_DATE,
                 List.of(DishTestData.newTastyDish, DishTestData.philadelphiaDto, DishTestData.diabloPizzaDto,
                         DishTestData.doubleBurgerDto, DishTestData.friesPotatoDto, DishTestData.pizzaArrivaDto));
 

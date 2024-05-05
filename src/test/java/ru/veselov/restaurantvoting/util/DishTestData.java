@@ -31,27 +31,15 @@ public class DishTestData {
 
     public static Dish pizzaArriva = new Dish(100012, "Pizza Arriva", 60000);
 
-    public static DishDto pizzaArrivaDto = new DishDto(100012, "Pizza Arriva", 60000);
-
     public static Dish diabloPizza = new Dish(100013, "Diablo Pizza", 85000);
-
-    public static DishDto diabloPizzaDto = new DishDto(100013, "Diablo Pizza", 85000);
 
     public static Dish margarita = new Dish(100014, "Margarita", 55000);
 
-    public static DishDto margaritaDto = new DishDto(100014, "Margarita", 55000);
-
     public static Dish doubleBurger = new Dish(100015, "Double Burger", 65000);
-
-    public static DishDto doubleBurgerDto = new DishDto(100015, "Double Burger", 65000);
 
     public static Dish tripleBurger = new Dish(100016, "Triple Burger", 75000);
 
-    public static DishDto tripleBurgerDto = new DishDto(100016, "Triple Burger", 75000);
-
     public static Dish friesPotato = new Dish(100017, "Fries Potato", 35000);
-
-    public static DishDto friesPotatoDto = new DishDto(100017, "Fries Potato", 35000);
 
     public static DishDto philadelphiaDto = new DishDto(100010, "Philadelphia", 30000);
 
@@ -64,6 +52,22 @@ public class DishTestData {
     public static DishDto unagiDto = new DishDto(UNAGI_ID, "Unagi", 40000);
 
     public static List<DishDto> sushiDishesDtos = List.of(philadelphiaDto, tastyRollDto, unagiDto);
+
+    public static DishDto pizzaArrivaDto = new DishDto(100012, "Pizza Arriva", 60000);
+
+    public static DishDto diabloPizzaDto = new DishDto(100013, "Diablo Pizza", 85000);
+
+    public static DishDto margaritaDto = new DishDto(100014, "Margarita", 55000);
+
+    public static List<DishDto> pizzaDishesDtos = List.of(diabloPizzaDto, margaritaDto, pizzaArrivaDto);
+
+    public static DishDto doubleBurgerDto = new DishDto(100015, "Double Burger", 65000);
+
+    public static DishDto tripleBurgerDto = new DishDto(100016, "Triple Burger", 75000);
+
+    public static DishDto friesPotatoDto = new DishDto(100017, "Fries Potato", 35000);
+
+    public static List<DishDto> burgerDishesDtos = List.of(doubleBurgerDto, friesPotatoDto, tripleBurgerDto);
 
     public static DishDto newTastyDish = new DishDto(null, "veryTasty", 10000);
 

@@ -98,7 +98,7 @@ class MenuAdminControllerTest extends AbstractRestControllerTest {
     void update_ChangeToDateOfExistingMenu_ReturnError() {
         MenuDto menuDto = menuService.create(RestaurantTestData.SUSHI_ID, MenuTestData.menuDtoToCreate);
         InputMenuDto menuDtoToUpdateForConflict =
-                new InputMenuDto(menuDto.id(), MenuTestData.ADDED_DATE,
+                new InputMenuDto(menuDto.id(), MenuTestData.MENU_DATE,
                         List.of(DishTestData.savedWithMenuNewTastyDish, DishTestData.savedWithMenuNewTastyDish2));
         ResultActions resultActions = mockMvc
                 .perform(MockMvcUtils.updateMenu(menuDto.id(), menuDtoToUpdateForConflict)

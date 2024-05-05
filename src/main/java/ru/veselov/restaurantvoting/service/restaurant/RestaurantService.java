@@ -12,11 +12,13 @@ public interface RestaurantService {
 
     List<RestaurantDto> getAll();
 
-    RestaurantDto findByIdWithMenuAndVotesForDate(int id, LocalDate date);
+    RestaurantDto findByIdWithMenuForDate(int id, LocalDate date);
 
     RestaurantDto findById(int id);
 
     RestaurantDto update(int id, InputRestaurantDto restaurantDto);
 
     void delete(int id);
+
+    List<RestaurantDto> findAllWithMenuByDate(LocalDate date);
 }

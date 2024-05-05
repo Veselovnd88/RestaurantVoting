@@ -11,15 +11,12 @@ import ru.veselov.restaurantvoting.dto.InputRestaurantDto;
 import ru.veselov.restaurantvoting.dto.RestaurantDto;
 import ru.veselov.restaurantvoting.exception.RestaurantNotFoundException;
 import ru.veselov.restaurantvoting.mapper.RestaurantMapper;
-import ru.veselov.restaurantvoting.model.Menu;
 import ru.veselov.restaurantvoting.model.Restaurant;
 import ru.veselov.restaurantvoting.repository.MenuRepository;
 import ru.veselov.restaurantvoting.repository.RestaurantRepository;
 
 import java.time.LocalDate;
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Slf4j
@@ -31,7 +28,6 @@ public class RestaurantServiceImpl implements RestaurantService {
 
     private final RestaurantRepository repository;
     private final RestaurantMapper mapper;
-    private final MenuRepository menuRepository;
 
     /**
      * Create restaurant
@@ -75,20 +71,32 @@ public class RestaurantServiceImpl implements RestaurantService {
     }
 
     /**
-     * Find restaurant by and bind menu with votes by date
+     * Find restaurant with menu by date
      *
-     * @param date preferred date to find menu and votes
+     * @param date preferred date to find menu
      * @param id   restaurant id
      * @return {@link RestaurantDto} found restaurant
      * @throws RestaurantNotFoundException if restaurant with such id not found
      */
     @Override
-    public RestaurantDto findByIdWithMenuAndVotesForDate(int id, LocalDate date) {
-        Restaurant restaurant = getRestaurantById(id);
-        Optional<Menu> byRestaurantIdByDate = menuRepository.findByRestaurantIdByDate(id, date);
-        restaurant.setMenus(byRestaurantIdByDate.map(List::of).orElse(Collections.emptyList()));
+    public RestaurantDto findByIdWithMenuForDate(int id, LocalDate date) {
+        Restaurant restaurant = repository.findByIdWithMenuByDate(id, date)
+                .orElseThrow(() -> new RestaurantNotFoundException(id, date));
         log.info("Retrieving restaurant id: {} with votes and menu by date {}", id, date);
         return mapper.entityToDtoWithMenus(restaurant);
+    }
+
+    /**
+     * Find restaurants with menus by date
+     *
+     * @param date preferred date to find menu
+     * @return {@link List<RestaurantDto>} found restaurants
+     */
+    @Override
+    public List<RestaurantDto> findAllWithMenuByDate(LocalDate date) {
+        List<Restaurant> allRestaurantsWithMenu = repository.findAllWithMenuByDate(SORT_BY_NAME, date);
+        log.info("Retrieving restaurants with menus by date {}", date);
+        return mapper.entitiesToDtoWithMenus(allRestaurantsWithMenu);
     }
 
     /**

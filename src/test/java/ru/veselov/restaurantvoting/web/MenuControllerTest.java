@@ -21,7 +21,7 @@ class MenuControllerTest extends AbstractRestControllerTest {
                         .with(SecurityUtils.userHttpBasic(UserTestData.user1)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(MenuTestData.MENU_DTO_MATCHER.contentJson(MenuTestData.sushiRestaurantMenuDtoWithVotes));
+                .andExpect(MenuTestData.MENU_DTO_MATCHER.contentJson(MenuTestData.sushiRestaurantMenuDto));
     }
 
     @Test

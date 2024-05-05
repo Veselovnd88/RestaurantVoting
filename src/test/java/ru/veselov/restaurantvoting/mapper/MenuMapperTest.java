@@ -16,17 +16,14 @@ class MenuMapperTest {
     MenuMapper menuMapper = new MenuMapperImpl();
 
     public MenuMapperTest() {
-        VoteMapperImpl voteMapper = new VoteMapperImpl();
-        ReflectionTestUtils.setField(voteMapper, "userMapper", new UserMapperImpl(), UserMapper.class);
         ReflectionTestUtils.setField(menuMapper, "dishMapper", new DishMapperImpl(), DishMapper.class);
-        ReflectionTestUtils.setField(menuMapper, "voteMapper", voteMapper, VoteMapper.class);
     }
 
     @Test
     void toDto_AllOk_ReturnCorrectMappedMenuDto() {
         MenuDto menuDto = menuMapper.toDto(MenuTestData.getSushiRestaurantMenuWithVotes());
 
-        Assertions.assertThat(menuDto).isEqualTo(MenuTestData.sushiRestaurantMenuDtoWithVotes);
+        Assertions.assertThat(menuDto).isEqualTo(MenuTestData.sushiRestaurantMenuDto);
     }
 
     @Test
@@ -56,7 +53,7 @@ class MenuMapperTest {
         Menu menuToUpdate = new Menu(null, LocalDate.of(2019, 3, 3), null, null, null);
         Menu menu = menuMapper.toEntityUpdate(menuToUpdate, MenuTestData.menuDtoToCreate);
 
-        Assertions.assertThat(menu).extracting(Menu::getDate).isEqualTo(MenuTestData.ADDED_DATE.plusDays(1));
+        Assertions.assertThat(menu).extracting(Menu::getDate).isEqualTo(MenuTestData.MENU_DATE.plusDays(1));
         DishTestData.DISH_MATCHER.assertMatch(menu.getDishes(), DishTestData.getUpdatedDishesInSortedSet());
     }
 }

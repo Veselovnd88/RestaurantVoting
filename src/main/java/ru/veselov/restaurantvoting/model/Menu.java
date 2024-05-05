@@ -6,9 +6,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.NamedAttributeNode;
-import jakarta.persistence.NamedEntityGraph;
-import jakarta.persistence.NamedSubgraph;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
@@ -30,19 +27,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Getter
 @Setter
-@NamedEntityGraph(name = Menu.GRAPH_DISHES_VOTES_USERS,
-        attributeNodes = {
-                @NamedAttributeNode(value = "dishes"),
-                @NamedAttributeNode(value = "votes", subgraph = "votes")
-        },
-        subgraphs = @NamedSubgraph(
-                name = "votes",
-                attributeNodes = {@NamedAttributeNode(value = "user")}
-        )
-)
 public class Menu extends AbstractBaseEntity {
-
-    public static final String GRAPH_DISHES_VOTES_USERS = "Menu.dishes.votes.users";
 
     @Column(name = "date")
     @NotNull
