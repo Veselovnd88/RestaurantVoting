@@ -26,7 +26,7 @@ import java.util.List;
 @Slf4j
 public class MenuServiceImpl implements MenuService {
 
-    private static final Sort SORT_BY_DATE = Sort.by(Sort.Direction.DESC, "addedAt");
+    private static final Sort SORT_BY_DATE = Sort.by(Sort.Direction.DESC, "date");
 
     private final MenuRepository repository;
     private final RestaurantRepository restaurantRepository;
@@ -48,7 +48,7 @@ public class MenuServiceImpl implements MenuService {
         menu.setRestaurant(restaurant);
 
         Menu saved = repository.save(menu);
-        log.info("New menu for restaurant {} for date {} saved", restaurantId, menuDto.addedAt());
+        log.info("New menu for restaurant {} for date {} saved", restaurantId, menuDto.date());
         return mapper.toDto(saved);
     }
 

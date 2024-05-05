@@ -69,8 +69,8 @@ class MenuServiceImplTest {
 
         Mockito.verify(menuRepository, Mockito.times(1)).save(menuArgumentCaptor.capture());
         Menu captured = menuArgumentCaptor.getValue();
-        Assertions.assertThat(captured).extracting(Menu::getAddedAt, Menu::getRestaurant)
-                .contains(MenuTestData.menuDtoToCreate.addedAt(), RestaurantTestData.sushiRestaurant);
+        Assertions.assertThat(captured).extracting(Menu::getDate, Menu::getRestaurant)
+                .contains(MenuTestData.menuDtoToCreate.date(), RestaurantTestData.sushiRestaurant);
         DishTestData.DISH_MATCHER.assertMatch(captured.getDishes(),
                 DishTestData.tastyDishEntity, DishTestData.tastyDishEntity2);
     }
@@ -95,7 +95,7 @@ class MenuServiceImplTest {
 
         Mockito.verify(menuRepository, Mockito.times(1)).save(menuArgumentCaptor.capture());
         Menu captured = menuArgumentCaptor.getValue();
-        Assertions.assertThat(captured).extracting(Menu::getAddedAt).isEqualTo(MenuTestData.ADDED_DATE.plusDays(1));
+        Assertions.assertThat(captured).extracting(Menu::getDate).isEqualTo(MenuTestData.ADDED_DATE.plusDays(1));
         DishTestData.DISH_MATCHER.assertMatch(captured.getDishes(), DishTestData.getUpdatedDishesInSortedSet());
     }
 

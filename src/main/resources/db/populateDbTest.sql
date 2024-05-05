@@ -34,7 +34,7 @@ VALUES ('SushiWok'),  --3
        ('DoDoPizza'), --4
        ('BurgerPizza'); --5
 
-INSERT INTO menu(restaurant_id, added_at)
+INSERT INTO menu(restaurant_id, date)
 VALUES (100003, '2024-03-06'), --6
        (100004, '2024-03-06'), --7
        (100005, '2024-03-06'); --8

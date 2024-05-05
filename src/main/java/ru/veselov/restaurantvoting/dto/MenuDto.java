@@ -13,8 +13,8 @@ public record MenuDto(
         @JsonProperty("id")
         Integer id,
 
-        @JsonProperty("addedAt")
-        LocalDate addedAt,
+        @JsonProperty("date")
+        LocalDate date,
 
         @JsonProperty("dishes")
         List<DishDto> dishes,

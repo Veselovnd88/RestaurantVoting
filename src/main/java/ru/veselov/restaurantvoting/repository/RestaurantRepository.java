@@ -10,6 +10,6 @@ import java.util.Optional;
 
 public interface RestaurantRepository extends JpaRepository<Restaurant, Integer> {
 
-    @Query("SELECT r FROM Restaurant r LEFT JOIN FETCH r.menus m WHERE r.id =:id AND m.addedAt= :date")
+    @Query("SELECT r FROM Restaurant r LEFT JOIN FETCH r.menus m WHERE r.id =:id AND m.date= :date")
     Optional<Restaurant> findByIdWithMenuByDate(@Param("id") int id, @Param("date") LocalDate date);
 }

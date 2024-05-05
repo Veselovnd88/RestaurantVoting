@@ -14,10 +14,10 @@ import java.util.stream.Stream;
 public class BadInputMenuDtoArgumentsProvider implements ArgumentsProvider {
 
     public static final String DISHES = "dishes";
-    public static final String ADDED_AT = "addedAt";
+    public static final String ADDED_AT = "date";
 
     @Override
-    public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) throws Exception {
+    public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) {
         InputMenuDto nullDate = new InputMenuDto(null, null, List.of(DishTestData.newTastyDish, DishTestData.philadelphiaDto));
         InputMenuDto similarDishes = new InputMenuDto(null, MenuTestData.ADDED_DATE,
                 List.of(DishTestData.newTastyDish, DishTestData.newTastyDish));

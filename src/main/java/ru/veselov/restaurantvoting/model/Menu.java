@@ -44,9 +44,9 @@ public class Menu extends AbstractBaseEntity {
 
     public static final String GRAPH_DISHES_VOTES_USERS = "Menu.dishes.votes.users";
 
-    @Column(name = "added_at")
+    @Column(name = "date")
     @NotNull
-    private LocalDate addedAt;
+    private LocalDate date;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "restaurant_id")
@@ -64,23 +64,23 @@ public class Menu extends AbstractBaseEntity {
     @ToString.Exclude
     private Set<Vote> votes;
 
-    public Menu(Integer id, LocalDate addedAt, Restaurant restaurant, Dish... dishes) {
+    public Menu(Integer id, LocalDate date, Restaurant restaurant, Dish... dishes) {
         super(id);
-        this.addedAt = addedAt;
+        this.date = date;
         this.restaurant = restaurant;
         this.dishes = Set.of(dishes);
     }
 
-    public Menu(Integer id, LocalDate addedAt, Restaurant restaurant, Set<Dish> dishes) {
+    public Menu(Integer id, LocalDate date, Restaurant restaurant, Set<Dish> dishes) {
         super(id);
-        this.addedAt = addedAt;
+        this.date = date;
         this.restaurant = restaurant;
         this.dishes = dishes;
     }
 
-    public Menu(Integer id, LocalDate addedAt, Restaurant restaurant, Set<Dish> dishes, Set<Vote> votes) {
+    public Menu(Integer id, LocalDate date, Restaurant restaurant, Set<Dish> dishes, Set<Vote> votes) {
         super(id);
-        this.addedAt = addedAt;
+        this.date = date;
         this.restaurant = restaurant;
         this.dishes = dishes;
         this.votes = votes;

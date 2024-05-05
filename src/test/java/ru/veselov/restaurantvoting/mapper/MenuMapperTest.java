@@ -56,7 +56,7 @@ class MenuMapperTest {
         Menu menuToUpdate = new Menu(null, LocalDate.of(2019, 3, 3), null, null, null);
         Menu menu = menuMapper.toEntityUpdate(menuToUpdate, MenuTestData.menuDtoToCreate);
 
-        Assertions.assertThat(menu).extracting(Menu::getAddedAt).isEqualTo(MenuTestData.ADDED_DATE.plusDays(1));
+        Assertions.assertThat(menu).extracting(Menu::getDate).isEqualTo(MenuTestData.ADDED_DATE.plusDays(1));
         DishTestData.DISH_MATCHER.assertMatch(menu.getDishes(), DishTestData.getUpdatedDishesInSortedSet());
     }
 }

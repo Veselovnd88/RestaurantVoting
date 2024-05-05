@@ -21,9 +21,9 @@ public record InputMenuDto(
         Integer id,
 
         @NotNull
-        @JsonProperty("addedAt")
+        @JsonProperty("date")
         @Schema(description = "Day of menu added", defaultValue = "2024-04-26")
-        LocalDate addedAt,
+        LocalDate date,
 
         @NotEmpty
         @Size(min = 2, max = 5)

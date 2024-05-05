@@ -22,7 +22,7 @@ import java.util.Set;
 public interface MenuMapper {
 
     @Mapping(target = "id", source = "id")
-    @Mapping(target = "addedAt", source = "addedAt")
+    @Mapping(target = "date", source = "date")
     @Mapping(target = "dishes", source = "dishes")
     @Mapping(target = "votes", source = "votes", qualifiedBy = WithoutRestaurant.class)
     @WithVotesAndDishes
@@ -30,7 +30,7 @@ public interface MenuMapper {
 
 
     @Mapping(target = "id", source = "id")
-    @Mapping(target = "addedAt", source = "addedAt")
+    @Mapping(target = "date", source = "date")
     @Mapping(target = "dishes", source = "dishes")
     @Mapping(target = "votes", ignore = true)
     @WithoutVotes
@@ -42,11 +42,11 @@ public interface MenuMapper {
     @IterableMapping(qualifiedBy = WithVotesAndDishes.class)
     List<MenuDto> toDtos(List<Menu> menus);
 
-    @Mapping(target = "addedAt", source = "addedAt")
+    @Mapping(target = "date", source = "date")
     @Mapping(target = "dishes", source = "dishes")
     Menu toEntity(InputMenuDto menuDto);
 
-    @Mapping(target = "addedAt", source = "addedAt")
+    @Mapping(target = "date", source = "date")
     @Mapping(target = "dishes", source = "dishes")
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "votes", ignore = true)
