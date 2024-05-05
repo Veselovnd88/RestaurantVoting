@@ -1,6 +1,5 @@
 package ru.veselov.restaurantvoting.service;
 
-import jakarta.persistence.EntityNotFoundException;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,6 +12,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import ru.veselov.restaurantvoting.dto.VoteDto;
+import ru.veselov.restaurantvoting.exception.NotFoundException;
 import ru.veselov.restaurantvoting.exception.UserNotFoundException;
 import ru.veselov.restaurantvoting.exception.VotingTimeLimitExceedsException;
 import ru.veselov.restaurantvoting.extension.AdjustClockMockForVoting;
@@ -79,7 +79,7 @@ class VoteServiceImplTest {
         Assertions.assertThatExceptionOfType(UserNotFoundException.class).isThrownBy(
                         () -> voteService.vote(UserTestData.USER1_ID, MenuTestData.SUSHI_MENU_ID, VoteTestData.VOTED_AT_DATE))
                 .withMessage(UserNotFoundException.MESSAGE_WITH_ID.formatted(UserTestData.USER1_ID))
-                .isInstanceOf(EntityNotFoundException.class);
+                .isInstanceOf(NotFoundException.class);
 
         Mockito.verify(voteRepository, Mockito.never()).save(Mockito.any());
     }

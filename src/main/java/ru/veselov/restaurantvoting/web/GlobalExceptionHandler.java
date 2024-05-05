@@ -1,6 +1,5 @@
 package ru.veselov.restaurantvoting.web;
 
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +19,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import ru.veselov.restaurantvoting.dto.ViolationError;
 import ru.veselov.restaurantvoting.exception.ErrorCode;
 import ru.veselov.restaurantvoting.exception.IllegalRequestDataException;
+import ru.veselov.restaurantvoting.exception.NotFoundException;
 import ru.veselov.restaurantvoting.exception.VotingTimeLimitExceedsException;
 import ru.veselov.restaurantvoting.util.ValidationUtil;
 
@@ -58,8 +58,8 @@ public class GlobalExceptionHandler {
     public static final String FIELDS_VALIDATION_FAILED = "Fields validation failed";
     public static final String REQUEST_VALIDATION_FAILED = "Request validation failed";
 
-    @ExceptionHandler(EntityNotFoundException.class)
-    public ProblemDetail handleEntityNotFoundException(HttpServletRequest req, EntityNotFoundException e) {
+    @ExceptionHandler(NotFoundException.class)
+    public ProblemDetail handleNotFoundExceptionException(HttpServletRequest req, NotFoundException e) {
         return createProblemDetail(req, HttpStatus.NOT_FOUND, e,
                 OBJECT_NOT_FOUND, Map.of(ERROR_CODE, ErrorCode.NOT_FOUND.name()), null, true);
     }

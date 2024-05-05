@@ -1,10 +1,8 @@
 package ru.veselov.restaurantvoting.exception;
 
-import jakarta.persistence.EntityNotFoundException;
-
 import java.time.LocalDate;
 
-public class RestaurantNotFoundException extends EntityNotFoundException {
+public class RestaurantNotFoundException extends NotFoundException {
 
     public static final String MSG_WITH_ID = "Restaurant with [id: %s] not found";
 

@@ -1,6 +1,5 @@
 package ru.veselov.restaurantvoting.web;
 
-import jakarta.persistence.EntityNotFoundException;
 import lombok.SneakyThrows;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -12,6 +11,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import ru.veselov.restaurantvoting.dto.DishDto;
 import ru.veselov.restaurantvoting.dto.InputMenuDto;
 import ru.veselov.restaurantvoting.dto.MenuDto;
+import ru.veselov.restaurantvoting.exception.NotFoundException;
 import ru.veselov.restaurantvoting.exception.RestaurantNotFoundException;
 import ru.veselov.restaurantvoting.service.dish.DishService;
 import ru.veselov.restaurantvoting.service.menu.MenuService;
@@ -117,12 +117,12 @@ class MenuAdminControllerTest extends AbstractRestControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isNoContent());
 
         Assertions.assertThatThrownBy(() -> menuService.getMenuByIdWithDishesAndVotes(MenuTestData.SUSHI_MENU_ID))
-                .isInstanceOf(EntityNotFoundException.class);
+                .isInstanceOf(NotFoundException.class);
         Assertions.assertThatThrownBy(() -> dishService.findOne(DishTestData.TASTY_ROLL_ID))
-                .isInstanceOf(EntityNotFoundException.class);
+                .isInstanceOf(NotFoundException.class);
         Assertions.assertThatThrownBy(() -> dishService.findOne(DishTestData.UNAGI_ID))
-                .isInstanceOf(EntityNotFoundException.class);
+                .isInstanceOf(NotFoundException.class);
         Assertions.assertThatThrownBy(() -> dishService.findOne(DishTestData.PHILADELPHIA_ID))
-                .isInstanceOf(EntityNotFoundException.class);
+                .isInstanceOf(NotFoundException.class);
     }
 }

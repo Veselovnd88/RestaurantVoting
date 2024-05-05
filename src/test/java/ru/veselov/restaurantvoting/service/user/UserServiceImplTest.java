@@ -1,6 +1,5 @@
 package ru.veselov.restaurantvoting.service.user;
 
-import jakarta.persistence.EntityNotFoundException;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,6 +14,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.util.ReflectionTestUtils;
 import ru.veselov.restaurantvoting.dto.UserDto;
+import ru.veselov.restaurantvoting.exception.NotFoundException;
 import ru.veselov.restaurantvoting.exception.UserNotFoundException;
 import ru.veselov.restaurantvoting.mapper.UserMapper;
 import ru.veselov.restaurantvoting.mapper.UserMapperImpl;
@@ -110,7 +110,7 @@ class UserServiceImplTest {
         Assertions.assertThatExceptionOfType(UserNotFoundException.class).isThrownBy(
                         () -> userService.update(UserTestData.user2ToUpdate))
                 .withMessage(UserNotFoundException.MESSAGE_WITH_ID.formatted(UserTestData.USER2_ID))
-                .isInstanceOf(EntityNotFoundException.class);
+                .isInstanceOf(NotFoundException.class);
     }
 
     @Test
@@ -137,7 +137,7 @@ class UserServiceImplTest {
         Assertions.assertThatExceptionOfType(UserNotFoundException.class)
                 .isThrownBy(() -> userService.enable(UserTestData.USER2_ID, false))
                 .withMessage(UserNotFoundException.MESSAGE_WITH_ID.formatted(UserTestData.USER2_ID))
-                .isInstanceOf(EntityNotFoundException.class);
+                .isInstanceOf(NotFoundException.class);
     }
 
     @Test
@@ -156,7 +156,7 @@ class UserServiceImplTest {
         Assertions.assertThatExceptionOfType(UserNotFoundException.class)
                 .isThrownBy(() -> userService.getById(UserTestData.USER2_ID))
                 .withMessage(UserNotFoundException.MESSAGE_WITH_ID.formatted(UserTestData.USER2_ID))
-                .isInstanceOf(EntityNotFoundException.class);
+                .isInstanceOf(NotFoundException.class);
     }
 
     @Test
@@ -174,7 +174,7 @@ class UserServiceImplTest {
         Assertions.assertThatExceptionOfType(UserNotFoundException.class)
                 .isThrownBy(() -> userService.getByEmail(email))
                 .withMessage(UserNotFoundException.MESSAGE_WITH_EMAIL.formatted(email))
-                .isInstanceOf(EntityNotFoundException.class);
+                .isInstanceOf(NotFoundException.class);
     }
 
     @Test

@@ -1,6 +1,5 @@
 package ru.veselov.restaurantvoting.service;
 
-import jakarta.persistence.EntityNotFoundException;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,6 +13,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import ru.veselov.restaurantvoting.dto.MenuDto;
 import ru.veselov.restaurantvoting.exception.MenuNotFoundException;
+import ru.veselov.restaurantvoting.exception.NotFoundException;
 import ru.veselov.restaurantvoting.exception.RestaurantNotFoundException;
 import ru.veselov.restaurantvoting.mapper.DishMapper;
 import ru.veselov.restaurantvoting.mapper.DishMapperImpl;
@@ -74,7 +74,7 @@ class MenuServiceImplTest {
 
         Assertions.assertThatExceptionOfType(RestaurantNotFoundException.class)
                 .isThrownBy(() -> menuService.create(RestaurantTestData.SUSHI_ID, MenuTestData.menuDtoToCreate))
-                .isInstanceOf(EntityNotFoundException.class)
+                .isInstanceOf(NotFoundException.class)
                 .withMessage(RestaurantNotFoundException.MSG_WITH_ID.formatted(RestaurantTestData.SUSHI_ID));
         Mockito.verifyNoInteractions(menuRepository);
     }
@@ -97,7 +97,7 @@ class MenuServiceImplTest {
         Mockito.when(menuRepository.findById(Mockito.anyInt())).thenReturn(Optional.empty());
 
         Assertions.assertThatException().isThrownBy(() -> menuService.update(MenuTestData.SUSHI_MENU_ID, MenuTestData.menuDtoToCreate))
-                .isInstanceOf(EntityNotFoundException.class);
+                .isInstanceOf(NotFoundException.class);
         Mockito.verify(menuRepository, Mockito.never()).save(Mockito.any());
     }
 
@@ -115,7 +115,7 @@ class MenuServiceImplTest {
         Mockito.when(menuRepository.findByIdWithDishesAndVotes(Mockito.anyInt())).thenReturn(Optional.empty());
 
         Assertions.assertThatThrownBy(() -> menuService.getMenuByIdWithDishesAndVotes(MenuTestData.SUSHI_MENU_ID))
-                .isInstanceOf(EntityNotFoundException.class);
+                .isInstanceOf(NotFoundException.class);
     }
 
     @Test
@@ -148,7 +148,7 @@ class MenuServiceImplTest {
                         menuService.findMenuByRestaurantIdAndLocalDate(RestaurantTestData.SUSHI_ID, localDate))
                 .withMessage(MenuNotFoundException.MESSAGE_WITH_REST_ID_FOR_DATE
                         .formatted(RestaurantTestData.SUSHI_ID, localDate))
-                .isInstanceOf(EntityNotFoundException.class);
+                .isInstanceOf(NotFoundException.class);
 
         Mockito.verify(menuRepository).findByRestaurantIdByDate(RestaurantTestData.SUSHI_ID, localDate);
     }

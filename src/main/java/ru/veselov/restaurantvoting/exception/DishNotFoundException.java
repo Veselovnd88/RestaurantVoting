@@ -1,8 +1,6 @@
 package ru.veselov.restaurantvoting.exception;
 
-import jakarta.persistence.EntityNotFoundException;
-
-public class DishNotFoundException extends EntityNotFoundException {
+public class DishNotFoundException extends NotFoundException {
 
     public static final String MSG_WITH_ID = "Dish with id: %s not found";
 

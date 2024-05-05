@@ -1,6 +1,5 @@
 package ru.veselov.restaurantvoting.service;
 
-import jakarta.persistence.EntityNotFoundException;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 import ru.veselov.restaurantvoting.dto.RestaurantDto;
+import ru.veselov.restaurantvoting.exception.NotFoundException;
 import ru.veselov.restaurantvoting.repository.MenuRepository;
 import ru.veselov.restaurantvoting.repository.RestaurantRepository;
 import ru.veselov.restaurantvoting.repository.VoteRepository;
@@ -50,7 +50,7 @@ class RestaurantServiceImplTest {
     @Test
     void findById_NotFound_ThrowException() {
         Assertions.assertThatThrownBy(() -> restaurantService.findById(RestaurantTestData.NOT_FOUND))
-                .isInstanceOf(EntityNotFoundException.class);
+                .isInstanceOf(NotFoundException.class);
     }
 
     @Test
@@ -65,7 +65,7 @@ class RestaurantServiceImplTest {
     void findByIdWithMenuForDate_NotFound_ThrowException() {
         Assertions.assertThatThrownBy(() -> restaurantService
                         .findByIdWithMenuForDate(RestaurantTestData.NOT_FOUND, VoteTestData.VOTED_AT_DATE))
-                .isInstanceOf(EntityNotFoundException.class);
+                .isInstanceOf(NotFoundException.class);
     }
 
     @Test
@@ -89,6 +89,6 @@ class RestaurantServiceImplTest {
         restaurantService.delete(RestaurantTestData.SUSHI_ID);
 
         Assertions.assertThatThrownBy(() -> restaurantService.findById(RestaurantTestData.SUSHI_ID))
-                .isInstanceOf(EntityNotFoundException.class);
+                .isInstanceOf(NotFoundException.class);
     }
 }

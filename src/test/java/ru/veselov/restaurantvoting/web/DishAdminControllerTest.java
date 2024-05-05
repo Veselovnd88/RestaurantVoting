@@ -1,6 +1,5 @@
 package ru.veselov.restaurantvoting.web;
 
-import jakarta.persistence.EntityNotFoundException;
 import lombok.SneakyThrows;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -8,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import ru.veselov.restaurantvoting.exception.NotFoundException;
 import ru.veselov.restaurantvoting.service.dish.DishService;
 import ru.veselov.restaurantvoting.util.DishTestData;
 import ru.veselov.restaurantvoting.util.MenuTestData;
@@ -52,7 +52,7 @@ class DishAdminControllerTest extends AbstractRestControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isNoContent());
 
         Assertions.assertThatException().isThrownBy(() -> dishService.findOne(DishTestData.TASTY_ROLL_ID))
-                .isInstanceOf(EntityNotFoundException.class);
+                .isInstanceOf(NotFoundException.class);
     }
 
     @Test
