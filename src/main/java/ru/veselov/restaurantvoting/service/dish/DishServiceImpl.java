@@ -1,6 +1,5 @@
 package ru.veselov.restaurantvoting.service.dish;
 
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
@@ -9,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.veselov.restaurantvoting.dto.DishDto;
 import ru.veselov.restaurantvoting.exception.DishNotFoundException;
+import ru.veselov.restaurantvoting.exception.MenuNotFoundException;
 import ru.veselov.restaurantvoting.mapper.DishMapper;
 import ru.veselov.restaurantvoting.model.Dish;
 import ru.veselov.restaurantvoting.model.Menu;
@@ -40,7 +40,8 @@ public class DishServiceImpl implements DishService {
     @Override
     @Transactional
     public DishDto save(int menuId, DishDto dishDto) {
-        Menu menu = menuRepository.findByIdWithDishesAndVotes(menuId).orElseThrow(() -> new EntityNotFoundException("Menu with id not found"));
+        Menu menu = menuRepository.findByIdWithDishesAndVotes(menuId)
+                .orElseThrow(() -> new MenuNotFoundException(menuId));
         Dish dish = mapper.toEntity(dishDto);
         dish.setMenu(menu);
         Dish savedDish = repository.save(dish);
