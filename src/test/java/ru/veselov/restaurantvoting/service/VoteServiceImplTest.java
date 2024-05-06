@@ -15,8 +15,6 @@ import ru.veselov.restaurantvoting.dto.VoteDto;
 import ru.veselov.restaurantvoting.exception.NotFoundException;
 import ru.veselov.restaurantvoting.exception.UserNotFoundException;
 import ru.veselov.restaurantvoting.exception.VotingTimeLimitExceedsException;
-import ru.veselov.restaurantvoting.mapper.UserMapper;
-import ru.veselov.restaurantvoting.mapper.UserMapperImpl;
 import ru.veselov.restaurantvoting.mapper.VoteMapper;
 import ru.veselov.restaurantvoting.mapper.VoteMapperImpl;
 import ru.veselov.restaurantvoting.model.Vote;
@@ -52,7 +50,6 @@ class VoteServiceImplTest {
     @BeforeEach
     void setup() {
         VoteMapperImpl voteMapper = new VoteMapperImpl();
-        ReflectionTestUtils.setField(voteMapper, "userMapper", new UserMapperImpl(), UserMapper.class);
         ReflectionTestUtils.setField(voteService, "voteMapper", voteMapper, VoteMapper.class);
         ReflectionTestUtils.setField(voteService, "limitTime", VoteTestData.LIMIT_TIME, LocalTime.class);
     }
@@ -68,7 +65,7 @@ class VoteServiceImplTest {
 
         Mockito.verify(voteRepository, Mockito.times(1)).save(voteCaptor.capture());
         Vote vote = voteCaptor.getValue();
-        VoteTestData.VOTE_MATCHER_WITH_USER_VOTES.assertMatch(vote, VoteTestData.user1VoteSushiPreSaved);
+        VoteTestData.VOTE_MATCHER.assertMatch(vote, VoteTestData.user1VoteSushiPreSaved);
     }
 
     @Test

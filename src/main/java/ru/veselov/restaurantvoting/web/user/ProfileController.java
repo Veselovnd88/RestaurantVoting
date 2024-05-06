@@ -28,7 +28,7 @@ import ru.veselov.restaurantvoting.dto.UserDto;
 import ru.veselov.restaurantvoting.security.AuthorizedUser;
 import ru.veselov.restaurantvoting.service.user.UserService;
 import ru.veselov.restaurantvoting.util.ValidationUtil;
-import ru.veselov.restaurantvoting.web.validaton.ValidationGroup;
+import ru.veselov.restaurantvoting.web.validation.ValidationGroup;
 
 import java.net.URI;
 

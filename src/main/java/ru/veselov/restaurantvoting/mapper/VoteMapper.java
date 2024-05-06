@@ -9,7 +9,7 @@ import ru.veselov.restaurantvoting.model.Vote;
 
 import java.util.List;
 
-@Mapper(config = MapStructConfig.class, uses = {UserMapper.class})
+@Mapper(config = MapStructConfig.class)
 public interface VoteMapper {
 
     @Mapping(target = "votedAt", source = "votedAt")

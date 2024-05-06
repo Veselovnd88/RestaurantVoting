@@ -10,7 +10,5 @@ public record VoteDto(
         @JsonProperty("restaurantId")
         Integer restaurantId,
         @JsonProperty("votedAt")
-        LocalDate votedAt,
-        @JsonProperty("user")
-        UserDto user) {
+        LocalDate votedAt) {
 }

@@ -9,7 +9,9 @@ import java.util.Optional;
 
 public interface VoteService {
 
-    void vote(int userId, int restaurantId, LocalDateTime localDateTime);
+    VoteDto vote(int userId, int restaurantId, LocalDateTime localDateTime);
+
+    void changeVote(int userId, int restaurantId, LocalDateTime localDateTime);
 
     Optional<VoteDto> getByUserIdForDate(int userId, LocalDate localDate);
 

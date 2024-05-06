@@ -1,4 +1,4 @@
-package ru.veselov.restaurantvoting.web.validaton;
+package ru.veselov.restaurantvoting.web.validation;
 
 import jakarta.validation.ConstraintValidatorContext;
 import org.assertj.core.api.Assertions;

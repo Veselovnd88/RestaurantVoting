@@ -12,13 +12,16 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.veselov.restaurantvoting.dto.VoteDto;
 import ru.veselov.restaurantvoting.security.AuthorizedUser;
 import ru.veselov.restaurantvoting.service.vote.VoteService;
 
+import java.net.URI;
 import java.time.Clock;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -39,11 +42,25 @@ public class VoteController {
 
     @Operation(summary = "Here user can vote for chosen restaurant")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "Vote accepted")})
+            @ApiResponse(responseCode = "201", description = "Vote created")})
     @PostMapping("/restaurants/{restaurantId}")
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseEntity<VoteDto> vote(@PathVariable("restaurantId") int restaurantId,
+                                        @AuthenticationPrincipal AuthorizedUser user) {
+        VoteDto created = service.vote(user.getId(), restaurantId, LocalDateTime.now(clock));
+        URI uriOfResource = ServletUriComponentsBuilder.fromCurrentContextPath()
+                .path(VoteController.REST_URL)
+                .buildAndExpand("/today").toUri();
+        return ResponseEntity.created(uriOfResource).body(created);
+    }
+
+    @Operation(summary = "Here user can change his vote")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Vote accepted")})
+    @PutMapping("/restaurants/{restaurantId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void vote(@PathVariable("restaurantId") int restaurantId, @AuthenticationPrincipal AuthorizedUser user) {
-        service.vote(user.getId(), restaurantId, LocalDateTime.now(clock));
+    public void changeVote(@PathVariable("restaurantId") int restaurantId, @AuthenticationPrincipal AuthorizedUser user) {
+        service.changeVote(user.getId(), restaurantId, LocalDateTime.now(clock));
     }
 
     @Operation(summary = "Get today user's vote")

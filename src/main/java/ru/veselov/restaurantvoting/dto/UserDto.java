@@ -8,7 +8,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 import ru.veselov.restaurantvoting.util.HasId;
-import ru.veselov.restaurantvoting.web.validaton.ValidationGroup;
+import ru.veselov.restaurantvoting.web.validation.ValidationGroup;
 
 public record UserDto(
 

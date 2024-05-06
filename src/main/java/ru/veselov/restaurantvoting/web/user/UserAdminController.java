@@ -31,7 +31,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.veselov.restaurantvoting.dto.UserDto;
 import ru.veselov.restaurantvoting.service.user.UserService;
 import ru.veselov.restaurantvoting.util.ValidationUtil;
-import ru.veselov.restaurantvoting.web.validaton.ValidationGroup;
+import ru.veselov.restaurantvoting.web.validation.ValidationGroup;
 
 import java.net.URI;
 import java.util.List;

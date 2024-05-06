@@ -1,9 +1,7 @@
 package ru.veselov.restaurantvoting.web;
 
 import lombok.SneakyThrows;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,13 +10,10 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import ru.veselov.restaurantvoting.dto.MenuDto;
-import ru.veselov.restaurantvoting.dto.VoteDto;
 import ru.veselov.restaurantvoting.exception.MenuNotFoundException;
 import ru.veselov.restaurantvoting.exception.VotingTimeLimitExceedsException;
 import ru.veselov.restaurantvoting.service.menu.MenuService;
 import ru.veselov.restaurantvoting.service.vote.VoteService;
-import ru.veselov.restaurantvoting.util.MenuTestData;
 import ru.veselov.restaurantvoting.util.MockMvcUtils;
 import ru.veselov.restaurantvoting.util.RestaurantTestData;
 import ru.veselov.restaurantvoting.util.ResultActionErrorsUtil;
@@ -53,45 +48,26 @@ class VoteControllerTest extends AbstractRestControllerTest {
 
     @Test
     @SneakyThrows
-    @Disabled
-    void vote_AllOk_VoteToTheMenu() {
-        configureClockMockForTimeNotExceeds();
-
-        mockMvc.perform(MockMvcUtils.vote(RestaurantTestData.BURGER_ID)
-                        .with(SecurityUtils.userHttpBasic(UserTestData.user2)))
-                .andExpect(MockMvcResultMatchers.status().isNoContent());
-
-        MenuDto burgerMenu = menuService.getMenuByIdWithDishesAndVotes(MenuTestData.BURGER_MENU_ID);
-        Assertions.assertThat(burgerMenu.votes()).flatExtracting(VoteDto::user).contains(UserTestData.user2Dto);
-        MenuDto sushiMenu = menuService.getMenuByIdWithDishesAndVotes(MenuTestData.SUSHI_MENU_ID);
-        Assertions.assertThat(sushiMenu.votes()).flatExtracting(VoteDto::user).doesNotContain(UserTestData.user2Dto);
-    }
-
-    @Test
-    @SneakyThrows
-    void vote_VoteTimeExceeds_VoteToTheMenu() {
-        configureClockMockForTimeExceeds();
-
-        ResultActions resultActions = mockMvc.perform(MockMvcUtils.vote(RestaurantTestData.BURGER_ID)
-                .with(SecurityUtils.userHttpBasic(UserTestData.user2)));
-
-        ResultActionErrorsUtil.checkVoteLimitExceedError(resultActions,
-                VotingTimeLimitExceedsException.VOTE_AFTER_LIMIT
-                        .formatted(UserTestData.USER2_ID, limitTime, VoteTestData.VOTING_TIME_EXCEEDED.toLocalTime()));
-    }
-
-    @Test
-    @SneakyThrows
-    @Disabled
-    void vote_NewVoteForMenu_AddVote() {
+    void vote_AllOk_ReturnDtoWithLocation() {
         configureClockMockForTimeNotExceeds();
 
         mockMvc.perform(MockMvcUtils.vote(RestaurantTestData.BURGER_ID)
                         .with(SecurityUtils.userHttpBasic(UserTestData.user3)))
-                .andExpect(MockMvcResultMatchers.status().isNoContent());
+                .andExpect(MockMvcResultMatchers.status().isCreated())
+                .andExpect(MockMvcResultMatchers.header().exists("Location"))
+                .andExpect(VoteTestData.VOTE_DTO_MATCHER.contentJson(VoteTestData.user3VoteBurgerDto));
+    }
 
-        MenuDto burgerMenu = menuService.getMenuByIdWithDishesAndVotes(MenuTestData.BURGER_MENU_ID);
-        Assertions.assertThat(burgerMenu.votes()).flatExtracting(VoteDto::user).contains(UserTestData.user3Dto);
+    @Test
+    @SneakyThrows
+    void vote_VoteForThisDayAlreadyExists_ReturnConflictError() {
+        configureClockMockForTimeNotExceeds();
+
+        ResultActions resultActions = mockMvc.perform(MockMvcUtils.vote(RestaurantTestData.BURGER_ID)
+                .with(SecurityUtils.userHttpBasic(UserTestData.user2)));
+
+        ResultActionErrorsUtil.checkConflictError(resultActions, GlobalExceptionHandler.VOTE_FOR_TODAY_EXISTS,
+                MockMvcUtils.VOTE_RESTAURANT_ID_URL.formatted(RestaurantTestData.BURGER_ID));
     }
 
     @Test
@@ -111,10 +87,33 @@ class VoteControllerTest extends AbstractRestControllerTest {
 
     @Test
     @SneakyThrows
+    void changeVote_ChangeVote_ReturnNotContent() {
+        configureClockMockForTimeNotExceeds();
+
+        mockMvc.perform(MockMvcUtils.changeVote(RestaurantTestData.BURGER_ID)
+                        .with(SecurityUtils.userHttpBasic(UserTestData.user2)))
+                .andExpect(MockMvcResultMatchers.status().isNoContent());
+    }
+
+    @Test
+    @SneakyThrows
+    void changeVote_VoteTimeExceeds_ReturnError() {
+        configureClockMockForTimeExceeds();
+
+        ResultActions resultActions = mockMvc.perform(MockMvcUtils.changeVote(RestaurantTestData.BURGER_ID)
+                .with(SecurityUtils.userHttpBasic(UserTestData.user2)));
+
+        ResultActionErrorsUtil.checkVoteLimitExceedError(resultActions,
+                VotingTimeLimitExceedsException.VOTE_AFTER_LIMIT
+                        .formatted(UserTestData.USER2_ID, limitTime, VoteTestData.VOTING_TIME_EXCEEDED.toLocalTime()));
+    }
+
+    @Test
+    @SneakyThrows
     void vote_MenuNotFoundReVote_ReturnError() {
         configureClockMockForTimeNotExceeds();
 
-        ResultActions resultActions = mockMvc.perform(MockMvcUtils.vote(RestaurantTestData.NOT_FOUND)
+        ResultActions resultActions = mockMvc.perform(MockMvcUtils.changeVote(RestaurantTestData.NOT_FOUND)
                         .with(SecurityUtils.userHttpBasic(UserTestData.user1)))
                 .andExpect(MockMvcResultMatchers.status().isNotFound());
 

@@ -9,7 +9,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import org.springframework.lang.Nullable;
 import ru.veselov.restaurantvoting.util.HasId;
-import ru.veselov.restaurantvoting.web.validaton.DifferentDishes;
+import ru.veselov.restaurantvoting.web.validation.DifferentDishes;
 
 import java.time.LocalDate;
 import java.util.List;

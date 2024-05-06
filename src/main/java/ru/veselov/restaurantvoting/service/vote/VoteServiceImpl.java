@@ -8,7 +8,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.veselov.restaurantvoting.dto.VoteDto;
-import ru.veselov.restaurantvoting.exception.UserNotFoundException;
+import ru.veselov.restaurantvoting.exception.VoteNotFoundException;
 import ru.veselov.restaurantvoting.exception.VotingTimeLimitExceedsException;
 import ru.veselov.restaurantvoting.mapper.VoteMapper;
 import ru.veselov.restaurantvoting.model.Menu;
@@ -47,26 +47,38 @@ public class VoteServiceImpl implements VoteService {
      * @param userId        user id
      * @param restaurantId  restaurant id
      * @param localDateTime date for vote
-     * @throws VotingTimeLimitExceedsException if vote time exceed limit
+     * @throws org.springframework.dao.DataIntegrityViolationException if vote for this date already exists
      */
     @Override
     @Transactional
-    public void vote(int userId, int restaurantId, LocalDateTime localDateTime) {
-        Optional<Vote> voteOptional = repository.findByUserIdForDate(userId, localDateTime.toLocalDate());
-        if (voteOptional.isPresent()) {
-            checkVoteTimeExceedsLimit(userId, localDateTime);
-            Menu menu = menuService.findMenuByRestaurantIdAndLocalDate(restaurantId, localDateTime.toLocalDate());
-            Vote vote = voteOptional.get();
-            vote.setMenu(menu);
-            repository.save(vote);
-            log.info("User [id: {}] changes his mind and re-voted for menu id: {}", userId, restaurantId);
-        } else {
-            User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
-            Menu menu = menuService.findMenuByRestaurantIdAndLocalDate(restaurantId, localDateTime.toLocalDate());
-            Vote vote = new Vote(user, menu, localDateTime.toLocalDate());
-            repository.save(vote);
-            log.info("User [id: {}] voted for menu [id: {}]", userId, restaurantId);
-        }
+    public VoteDto vote(int userId, int restaurantId, LocalDateTime localDateTime) {
+        User user = userRepository.getReferenceById(userId);
+        Menu menu = menuService.findMenuByRestaurantIdAndLocalDate(restaurantId, localDateTime.toLocalDate());
+        Vote vote = new Vote(user, menu, localDateTime.toLocalDate());
+        Vote saved = repository.save(vote);
+        log.info("User [id: {}] voted for menu [id: {}]", userId, restaurantId);
+        return voteMapper.toDto(saved);
+    }
+
+    /**
+     * User change his mind and vote for restaurant for date
+     *
+     * @param userId        user id
+     * @param restaurantId  restaurant id
+     * @param localDateTime date for vote
+     * @throws VotingTimeLimitExceedsException if vote time exceed limit
+     * @throws VoteNotFoundException           if user doesn't have vote for this day
+     */
+    @Override
+    @Transactional
+    public void changeVote(int userId, int restaurantId, LocalDateTime localDateTime) {
+        checkVoteTimeExceedsLimit(userId, localDateTime);
+        Vote vote = repository.findByUserIdForDate(userId, localDateTime.toLocalDate())
+                .orElseThrow(() -> new VoteNotFoundException(userId, localDateTime.toLocalDate()));
+        Menu menu = menuService.findMenuByRestaurantIdAndLocalDate(restaurantId, localDateTime.toLocalDate());
+        vote.setMenu(menu);
+        repository.save(vote);
+        log.info("User [id: {}] changes his mind and re-voted for menu [id: {}]", userId, restaurantId);
     }
 
     /**

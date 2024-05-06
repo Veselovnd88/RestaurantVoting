@@ -1,4 +1,4 @@
-package ru.veselov.restaurantvoting.web.validaton;
+package ru.veselov.restaurantvoting.web.validation;
 
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
