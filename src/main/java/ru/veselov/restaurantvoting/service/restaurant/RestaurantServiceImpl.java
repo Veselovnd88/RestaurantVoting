@@ -12,7 +12,6 @@ import ru.veselov.restaurantvoting.dto.RestaurantDto;
 import ru.veselov.restaurantvoting.exception.RestaurantNotFoundException;
 import ru.veselov.restaurantvoting.mapper.RestaurantMapper;
 import ru.veselov.restaurantvoting.model.Restaurant;
-import ru.veselov.restaurantvoting.repository.MenuRepository;
 import ru.veselov.restaurantvoting.repository.RestaurantRepository;
 
 import java.time.LocalDate;
@@ -94,7 +93,7 @@ public class RestaurantServiceImpl implements RestaurantService {
      */
     @Override
     public List<RestaurantDto> findAllWithMenuByDate(LocalDate date) {
-        List<Restaurant> allRestaurantsWithMenu = repository.findAllWithMenuByDate(SORT_BY_NAME, date);
+        List<Restaurant> allRestaurantsWithMenu = repository.findAllWithMenuByDate(date, SORT_BY_NAME);
         log.info("Retrieving restaurants with menus by date {}", date);
         return mapper.entitiesToDtoWithMenus(allRestaurantsWithMenu);
     }

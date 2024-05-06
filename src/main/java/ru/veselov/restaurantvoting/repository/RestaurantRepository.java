@@ -22,5 +22,5 @@ public interface RestaurantRepository extends JpaRepository<Restaurant, Integer>
             "LEFT JOIN FETCH r.menus m " +
             "LEFT JOIN FETCH m.dishes " +
             "WHERE m.date= :date")
-    List<Restaurant> findAllWithMenuByDate(Sort sort, @Param("date") LocalDate date);
+    List<Restaurant> findAllWithMenuByDate(@Param("date") LocalDate date, Sort sort);
 }

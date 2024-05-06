@@ -30,6 +30,7 @@ import java.time.Clock;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneOffset;
+import java.util.List;
 
 class VoteControllerTest extends AbstractRestControllerTest {
 
@@ -166,6 +167,15 @@ class VoteControllerTest extends AbstractRestControllerTest {
         mockMvc.perform(MockMvcUtils.getTodayVote()
                         .with(SecurityUtils.userHttpBasic(UserTestData.user3)))
                 .andExpect(MockMvcResultMatchers.status().isNoContent());
+    }
+
+    @Test
+    @SneakyThrows
+    void getAll_AllOk_ReturnTodayVote() {
+        mockMvc.perform(MockMvcUtils.getAllVotes()
+                        .with(SecurityUtils.userHttpBasic(UserTestData.user1)))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(VoteTestData.VOTE_DTO_MATCHER.contentJson(List.of(VoteTestData.user1VoteSushiDtoWithRestaurant)));
     }
 
     private void configureClockMockForTimeNotExceeds() {

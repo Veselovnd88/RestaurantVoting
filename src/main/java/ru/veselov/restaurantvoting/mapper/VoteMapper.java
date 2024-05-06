@@ -7,6 +7,8 @@ import ru.veselov.restaurantvoting.mapper.annotation.WithoutRestaurant;
 import ru.veselov.restaurantvoting.mapper.config.MapStructConfig;
 import ru.veselov.restaurantvoting.model.Vote;
 
+import java.util.List;
+
 @Mapper(config = MapStructConfig.class, uses = {UserMapper.class})
 public interface VoteMapper {
 
@@ -18,4 +20,6 @@ public interface VoteMapper {
     @Mapping(target = "restaurantId", ignore = true)
     @WithoutRestaurant
     VoteDto toDtoWithoutRestaurant(Vote vote);
+
+    List<VoteDto> toDtos(List<Vote> votes);
 }

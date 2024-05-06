@@ -3,6 +3,7 @@ package ru.veselov.restaurantvoting.service.vote;
 import ru.veselov.restaurantvoting.dto.VoteDto;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 public interface VoteService {
@@ -12,4 +13,6 @@ public interface VoteService {
     void removeVote(int userId, LocalDate localDate);
 
     Optional<VoteDto> getByUserIdForDate(int userId, LocalDate localDate);
+
+    List<VoteDto> getAllByUserId(int userId);
 }

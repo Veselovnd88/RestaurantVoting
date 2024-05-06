@@ -22,6 +22,7 @@ import ru.veselov.restaurantvoting.service.vote.VoteService;
 
 import java.time.Clock;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -48,12 +49,20 @@ public class VoteController {
     @Operation(summary = "Get today user's vote")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Vote retrieved")})
-    @GetMapping
+    @GetMapping("/today")
     public ResponseEntity<?> getTodayVote(@AuthenticationPrincipal AuthorizedUser user) {
         Optional<VoteDto> optionalVoteDto = service.getByUserIdForDate(user.getId(), LocalDate.now(clock));
         if (optionalVoteDto.isPresent()) {
             return ResponseEntity.ok(optionalVoteDto.get());
         } else return ResponseEntity.noContent().build();
+    }
+
+    @Operation(summary = "Get all user's votes")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Votes retrieved")})
+    @GetMapping
+    public List<VoteDto> getAll(@AuthenticationPrincipal AuthorizedUser user) {
+        return service.getAllByUserId(user.getId());
     }
 
     @Operation(summary = "Remove user's vote for today")

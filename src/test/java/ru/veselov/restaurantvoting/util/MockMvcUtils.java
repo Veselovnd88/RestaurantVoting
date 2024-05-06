@@ -45,6 +45,7 @@ public class MockMvcUtils {
     public static final String VOTE_RESTAURANT_ID_URL = VoteController.REST_URL + "/restaurants/%s";
 
     public static final String REGISTER = ProfileController.REST_URL + "/register";
+    public static final String VOTE_TODAY = VoteController.REST_URL + "/today";
 
 
     public static MockHttpServletRequestBuilder createRestaurant(InputRestaurantDto restaurantDto) {
@@ -99,14 +100,6 @@ public class MockMvcUtils {
         return MockMvcRequestBuilders.get(DishController.REST_URL + "/" + id);
     }
 
-    public static MockHttpServletRequestBuilder getAllDishes() {
-        return MockMvcRequestBuilders.get(DishController.REST_URL);
-    }
-
-    public static MockHttpServletRequestBuilder getAllDishesByRestaurantId(int id) {
-        return MockMvcRequestBuilders.get(DishController.REST_URL + "/restaurants/" + id);
-    }
-
     public static MockHttpServletRequestBuilder createMenu(int restaurantId, InputMenuDto menuDto) {
         return MockMvcRequestBuilders.post(MENU_RESTAURANTS_ID_URL.formatted(restaurantId))
                 .contentType(MediaType.APPLICATION_JSON)
@@ -140,6 +133,10 @@ public class MockMvcUtils {
     }
 
     public static MockHttpServletRequestBuilder getTodayVote() {
+        return MockMvcRequestBuilders.get(VOTE_TODAY);
+    }
+
+    public static MockHttpServletRequestBuilder getAllVotes() {
         return MockMvcRequestBuilders.get(VoteController.REST_URL);
     }
 

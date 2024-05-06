@@ -3,6 +3,7 @@ package ru.veselov.restaurantvoting.service.vote;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Sort;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +21,7 @@ import ru.veselov.restaurantvoting.service.menu.MenuService;
 import java.time.Clock;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -27,6 +29,8 @@ import java.util.Optional;
 @Slf4j
 @Transactional(readOnly = true)
 public class VoteServiceImpl implements VoteService {
+
+    public static final Sort SORT_BY_DATE_DESC = Sort.by(Sort.Direction.DESC, "votedAt");
 
     private final VoteRepository repository;
     private final UserRepository userRepository;
@@ -96,6 +100,17 @@ public class VoteServiceImpl implements VoteService {
             log.info("User [id: {}] vote at [{}]", userId, localDate);
             return Optional.of(voteMapper.toDto(vote));
         } else return Optional.empty();
+    }
+
+    /**
+     * Get all user's votes
+     *
+     * @param userId user id
+     * @return List<VoteDto> vote dtos
+     */
+    @Override
+    public List<VoteDto> getAllByUserId(int userId) {
+        return voteMapper.toDtos(repository.findAllByUserId(userId, SORT_BY_DATE_DESC));
     }
 
     private void checkVoteTimeExceedsLimit(int userId) {
