@@ -3,7 +3,6 @@ package ru.veselov.restaurantvoting.service.dish;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.veselov.restaurantvoting.dto.DishDto;
@@ -15,15 +14,11 @@ import ru.veselov.restaurantvoting.model.Menu;
 import ru.veselov.restaurantvoting.repository.DishRepository;
 import ru.veselov.restaurantvoting.repository.MenuRepository;
 
-import java.util.List;
-
 @Service
 @RequiredArgsConstructor
 @Slf4j
 @Transactional(readOnly = true)
 public class DishServiceImpl implements DishService {
-
-    private static final Sort SORT_BY_NAME = Sort.by(Sort.Direction.ASC, "name");
 
     private final DishRepository repository;
     private final MenuRepository menuRepository;
@@ -92,27 +87,5 @@ public class DishServiceImpl implements DishService {
         Dish dish = repository.findById(id).orElseThrow(() -> new DishNotFoundException(id));
         log.debug("Retrieving dish with id: {}", id);
         return mapper.toDto(dish);
-    }
-
-    /**
-     * Get all dishes
-     *
-     * @return {@link DishDto} list of dish dtos
-     */
-    @Override
-    public List<DishDto> findAll() {
-        log.debug("Retrieving all dishes from db");
-        return mapper.toDtos(repository.findAll(SORT_BY_NAME));
-    }
-
-    /**
-     * Get all by restaurant id
-     *
-     * @param id of restaurant
-     * @return {@link DishDto} list of dish dtos
-     */
-    @Override
-    public List<DishDto> findAllByRestaurantId(int id) {
-        return mapper.toDtos(repository.findAllByRestaurantId(id, SORT_BY_NAME));
     }
 }
