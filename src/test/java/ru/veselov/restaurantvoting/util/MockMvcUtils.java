@@ -128,10 +128,6 @@ public class MockMvcUtils {
         return MockMvcRequestBuilders.post(VOTE_RESTAURANT_ID_URL.formatted(restaurantId));
     }
 
-    public static MockHttpServletRequestBuilder removeVote() {
-        return MockMvcRequestBuilders.delete(VoteController.REST_URL);
-    }
-
     public static MockHttpServletRequestBuilder getTodayVote() {
         return MockMvcRequestBuilders.get(VOTE_TODAY);
     }

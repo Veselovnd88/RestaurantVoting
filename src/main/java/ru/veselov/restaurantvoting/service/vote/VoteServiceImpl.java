@@ -18,8 +18,8 @@ import ru.veselov.restaurantvoting.repository.UserRepository;
 import ru.veselov.restaurantvoting.repository.VoteRepository;
 import ru.veselov.restaurantvoting.service.menu.MenuService;
 
-import java.time.Clock;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
@@ -36,7 +36,6 @@ public class VoteServiceImpl implements VoteService {
     private final UserRepository userRepository;
     private final MenuService menuService;
     private final VoteMapper voteMapper;
-    private final Clock clock;
 
     @Value("${vote.limit-time}")
     @DateTimeFormat(pattern = "HH:mm")
@@ -45,44 +44,29 @@ public class VoteServiceImpl implements VoteService {
     /**
      * User vote for restaurant for date
      *
-     * @param userId       user id
-     * @param restaurantId restaurant id
-     * @param localDate    date for vote
+     * @param userId        user id
+     * @param restaurantId  restaurant id
+     * @param localDateTime date for vote
      * @throws VotingTimeLimitExceedsException if vote time exceed limit
      */
     @Override
     @Transactional
-    public void vote(int userId, int restaurantId, LocalDate localDate) {
-        Optional<Vote> voteOptional = repository.findByUserIdForDate(userId, localDate);
+    public void vote(int userId, int restaurantId, LocalDateTime localDateTime) {
+        Optional<Vote> voteOptional = repository.findByUserIdForDate(userId, localDateTime.toLocalDate());
         if (voteOptional.isPresent()) {
-            checkVoteTimeExceedsLimit(userId);
-            Menu menu = menuService.findMenuByRestaurantIdAndLocalDate(restaurantId, localDate);
+            checkVoteTimeExceedsLimit(userId, localDateTime);
+            Menu menu = menuService.findMenuByRestaurantIdAndLocalDate(restaurantId, localDateTime.toLocalDate());
             Vote vote = voteOptional.get();
             vote.setMenu(menu);
             repository.save(vote);
             log.info("User [id: {}] changes his mind and re-voted for menu id: {}", userId, restaurantId);
         } else {
             User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
-            Menu menu = menuService.findMenuByRestaurantIdAndLocalDate(restaurantId, localDate);
-            Vote vote = new Vote(user, menu, LocalDate.now(clock));
+            Menu menu = menuService.findMenuByRestaurantIdAndLocalDate(restaurantId, localDateTime.toLocalDate());
+            Vote vote = new Vote(user, menu, localDateTime.toLocalDate());
             repository.save(vote);
             log.info("User [id: {}] voted for menu [id: {}]", userId, restaurantId);
         }
-    }
-
-    /**
-     * Remove vote of user for date
-     *
-     * @param userId    user id
-     * @param localDate date
-     * @throws VotingTimeLimitExceedsException if vote time exceeds limit
-     */
-    @Override
-    @Transactional
-    public void removeVote(int userId, LocalDate localDate) {
-        checkVoteTimeExceedsLimit(userId);
-        repository.deleteByUserIdForDate(userId, localDate);
-        log.info("User [id: {}] decline his vote at [{}]", userId, localDate);
     }
 
     /**
@@ -113,10 +97,9 @@ public class VoteServiceImpl implements VoteService {
         return voteMapper.toDtos(repository.findAllByUserId(userId, SORT_BY_DATE_DESC));
     }
 
-    private void checkVoteTimeExceedsLimit(int userId) {
-        LocalTime now = LocalTime.now(clock);
-        if (now.isAfter(limitTime)) {
-            throw new VotingTimeLimitExceedsException(userId, limitTime, now);
+    private void checkVoteTimeExceedsLimit(int userId, LocalDateTime localDateTime) {
+        if (localDateTime.toLocalTime().isAfter(limitTime)) {
+            throw new VotingTimeLimitExceedsException(userId, limitTime, localDateTime.toLocalTime());
         }
     }
 }

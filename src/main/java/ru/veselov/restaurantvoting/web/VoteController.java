@@ -9,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,6 +21,7 @@ import ru.veselov.restaurantvoting.service.vote.VoteService;
 
 import java.time.Clock;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,7 +43,7 @@ public class VoteController {
     @PostMapping("/restaurants/{restaurantId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void vote(@PathVariable("restaurantId") int restaurantId, @AuthenticationPrincipal AuthorizedUser user) {
-        service.vote(user.getId(), restaurantId, LocalDate.now(clock));
+        service.vote(user.getId(), restaurantId, LocalDateTime.now(clock));
     }
 
     @Operation(summary = "Get today user's vote")
@@ -63,15 +63,5 @@ public class VoteController {
     @GetMapping
     public List<VoteDto> getAll(@AuthenticationPrincipal AuthorizedUser user) {
         return service.getAllByUserId(user.getId());
-    }
-
-    @Operation(summary = "Remove user's vote for today")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "Vote removed")
-    })
-    @DeleteMapping
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void removeVote(@AuthenticationPrincipal AuthorizedUser user) {
-        service.removeVote(user.getId(), LocalDate.now(clock));
     }
 }

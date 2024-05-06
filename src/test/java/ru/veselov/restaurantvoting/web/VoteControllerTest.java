@@ -27,7 +27,6 @@ import ru.veselov.restaurantvoting.util.UserTestData;
 import ru.veselov.restaurantvoting.util.VoteTestData;
 
 import java.time.Clock;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneOffset;
 import java.util.List;
@@ -71,13 +70,14 @@ class VoteControllerTest extends AbstractRestControllerTest {
     @Test
     @SneakyThrows
     void vote_VoteTimeExceeds_VoteToTheMenu() {
-        LocalTime voteTime = configureClockMockForTimeExceeds();
+        configureClockMockForTimeExceeds();
 
         ResultActions resultActions = mockMvc.perform(MockMvcUtils.vote(RestaurantTestData.BURGER_ID)
                 .with(SecurityUtils.userHttpBasic(UserTestData.user2)));
 
         ResultActionErrorsUtil.checkVoteLimitExceedError(resultActions,
-                VotingTimeLimitExceedsException.VOTE_AFTER_LIMIT.formatted(UserTestData.USER2_ID, limitTime, voteTime));
+                VotingTimeLimitExceedsException.VOTE_AFTER_LIMIT
+                        .formatted(UserTestData.USER2_ID, limitTime, VoteTestData.VOTING_TIME_EXCEEDED.toLocalTime()));
     }
 
     @Test
@@ -126,32 +126,6 @@ class VoteControllerTest extends AbstractRestControllerTest {
 
     @Test
     @SneakyThrows
-    @Disabled
-    void removeVote_AllOk_RemoveVote() {
-        configureClockMockForTimeNotExceeds();
-
-        mockMvc.perform(MockMvcUtils.removeVote().with(SecurityUtils.userHttpBasic(UserTestData.user1)))
-                .andExpect(MockMvcResultMatchers.status().isNoContent());
-
-        MenuDto sushiMenu = menuService.getMenuByIdWithDishesAndVotes(MenuTestData.SUSHI_MENU_ID);
-        Assertions.assertThat(sushiMenu.votes()).flatExtracting(VoteDto::user).doesNotContain(UserTestData.user1Dto);
-    }
-
-    @Test
-    @SneakyThrows
-    void removeVote_TimeExceeds_ReturnError() {
-        LocalTime voteTime = configureClockMockForTimeExceeds();
-
-        ResultActions resultActions = mockMvc.perform(MockMvcUtils.removeVote()
-                        .with(SecurityUtils.userHttpBasic(UserTestData.user1)))
-                .andExpect(MockMvcResultMatchers.status().isBadRequest());
-
-        ResultActionErrorsUtil.checkVoteLimitExceedError(resultActions,
-                VotingTimeLimitExceedsException.VOTE_AFTER_LIMIT.formatted(UserTestData.USER1_ID, limitTime, voteTime));
-    }
-
-    @Test
-    @SneakyThrows
     void getTodayVote_AllOk_ReturnTodayVote() {
         configureClockMockForTimeNotExceeds();
         mockMvc.perform(MockMvcUtils.getTodayVote()
@@ -179,14 +153,10 @@ class VoteControllerTest extends AbstractRestControllerTest {
     }
 
     private void configureClockMockForTimeNotExceeds() {
-        Mockito.when(clock.instant())
-                .thenReturn(LocalDateTime.of(VoteTestData.VOTED_AT_DATE, LocalTime.of(22, 0, 0)).toInstant(ZoneOffset.UTC));
+        Mockito.when(clock.instant()).thenReturn(VoteTestData.VOTING_TIME.toInstant(ZoneOffset.UTC));
     }
 
-    private LocalTime configureClockMockForTimeExceeds() {
-        LocalTime voteTime = LocalTime.of(23, 3, 0);
-        Mockito.when(clock.instant())
-                .thenReturn(LocalDateTime.of(VoteTestData.VOTED_AT_DATE, voteTime).toInstant(ZoneOffset.UTC));
-        return voteTime;
+    private void configureClockMockForTimeExceeds() {
+        Mockito.when(clock.instant()).thenReturn(VoteTestData.VOTING_TIME_EXCEEDED.toInstant(ZoneOffset.UTC));
     }
 }

@@ -4,6 +4,8 @@ import ru.veselov.restaurantvoting.dto.VoteDto;
 import ru.veselov.restaurantvoting.model.Vote;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 public class VoteTestData {
@@ -14,7 +16,13 @@ public class VoteTestData {
 
     public static final MatcherFactory.Matcher<VoteDto> VOTE_DTO_MATCHER = MatcherFactory.usingIgnoringFieldsComparator(VoteDto.class);
 
+    public static final LocalTime LIMIT_TIME = LocalTime.of(11, 0, 0);
+
     public static final LocalDate VOTED_AT_DATE = LocalDate.of(2024, 3, 6);
+
+    public static final LocalDateTime VOTING_TIME = LocalDateTime.of(VOTED_AT_DATE, LIMIT_TIME.minusHours(1));
+
+    public static final LocalDateTime VOTING_TIME_EXCEEDED = LocalDateTime.of(VOTED_AT_DATE, LIMIT_TIME.plusHours(1));
 
     public static Vote user1VoteSushi = new Vote(100018, VOTED_AT_DATE, UserTestData.user1);
 

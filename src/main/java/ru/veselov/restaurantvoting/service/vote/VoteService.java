@@ -3,14 +3,13 @@ package ru.veselov.restaurantvoting.service.vote;
 import ru.veselov.restaurantvoting.dto.VoteDto;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 public interface VoteService {
 
-    void vote(int userId, int restaurantId, LocalDate localDate);
-
-    void removeVote(int userId, LocalDate localDate);
+    void vote(int userId, int restaurantId, LocalDateTime localDateTime);
 
     Optional<VoteDto> getByUserIdForDate(int userId, LocalDate localDate);
 
