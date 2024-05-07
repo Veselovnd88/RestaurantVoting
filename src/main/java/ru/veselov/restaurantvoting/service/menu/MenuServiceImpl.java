@@ -35,20 +35,19 @@ public class MenuServiceImpl implements MenuService {
     /**
      * Create new menu for restaurant for date
      *
-     * @throws MenuNotFoundException                                   if restaurant doesn't exist
+     * @throws RestaurantNotFoundException                             if restaurant doesn't exist
      * @throws org.springframework.dao.DataIntegrityViolationException if menu/local date conflict occurred
      */
     @CacheEvict(value = {"restaurants", "menus"}, allEntries = true)
     @Override
     @Transactional
-    public MenuDto create(int restaurantId, InputMenuDto menuDto) {
+    public MenuDto create(int restaurantId, LocalDate date) {
         Restaurant restaurant = restaurantRepository.findById(restaurantId)
                 .orElseThrow(() -> new RestaurantNotFoundException(restaurantId));
-        Menu menu = mapper.toEntity(menuDto);
-        menu.setRestaurant(restaurant);
+        Menu menu = new Menu(date, restaurant);
 
         Menu saved = repository.save(menu);
-        log.info("New menu for restaurant {} for date {} saved", restaurantId, menuDto.date());
+        log.info("New menu for restaurant {} for date {} saved", restaurantId, date);
         return mapper.toDto(saved);
     }
 
@@ -80,7 +79,7 @@ public class MenuServiceImpl implements MenuService {
      * @throws MenuNotFoundException if menu for this id doesn't exist
      */
     @Override
-    public MenuDto getMenuByIdWithDishesAndVotes(int id) {
+    public MenuDto getMenuByIdWithDishes(int id) {
         log.info("Retrieving menu by id: {}", id);
         Menu menu = repository.findByIdWithDishes(id).orElseThrow(() -> new MenuNotFoundException(id));
         return mapper.toDto(menu);

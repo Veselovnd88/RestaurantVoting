@@ -30,6 +30,7 @@ import ru.veselov.restaurantvoting.service.menu.MenuService;
 import ru.veselov.restaurantvoting.util.ValidationUtil;
 
 import java.net.URI;
+import java.time.LocalDate;
 
 @RestController
 @RequestMapping(value = MenuAdminController.REST_URL)
@@ -50,9 +51,8 @@ public class MenuAdminController {
                             schema = @Schema(implementation = MenuDto.class))})})
     @PostMapping
     public ResponseEntity<MenuDto> add(@RequestParam("restaurantId") int restaurantId,
-                                       @Valid @RequestBody InputMenuDto menuDto) {
-        ValidationUtil.checkNew(menuDto);
-        MenuDto created = service.create(restaurantId, menuDto);
+                                       @RequestParam("date") LocalDate date) {
+        MenuDto created = service.create(restaurantId, date);
         URI uriOfResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(MenuController.REST_URL + "/{id}")
                 .buildAndExpand(created.id()).toUri();

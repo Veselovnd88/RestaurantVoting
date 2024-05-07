@@ -19,6 +19,8 @@ import ru.veselov.restaurantvoting.web.restaurant.RestaurantController;
 import ru.veselov.restaurantvoting.web.user.ProfileController;
 import ru.veselov.restaurantvoting.web.user.UserAdminController;
 
+import java.time.LocalDate;
+
 @UtilityClass
 public class MockMvcUtils {
 
@@ -95,11 +97,10 @@ public class MockMvcUtils {
         return MockMvcRequestBuilders.get(DishController.REST_URL + "/" + id);
     }
 
-    public static MockHttpServletRequestBuilder createMenu(int restaurantId, InputMenuDto menuDto) {
+    public static MockHttpServletRequestBuilder createMenu(int restaurantId, LocalDate date) {
         return MockMvcRequestBuilders.post(MenuAdminController.REST_URL)
                 .param("restaurantId", String.valueOf(restaurantId))
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(JsonUtil.writeValue(menuDto));
+                .param("date", String.valueOf(date));
     }
 
     public static MockHttpServletRequestBuilder updateMenu(int id, InputMenuDto menuDto) {

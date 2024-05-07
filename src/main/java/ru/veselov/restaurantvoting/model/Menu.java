@@ -44,6 +44,11 @@ public class Menu extends AbstractBaseEntity {
     @OrderBy("name")
     private Set<Dish> dishes;
 
+    public Menu(LocalDate date, Restaurant restaurant) {
+        this.date = date;
+        this.restaurant = restaurant;
+    }
+
     public Menu(Integer id, LocalDate date, Restaurant restaurant, Dish... dishes) {
         super(id);
         this.date = date;

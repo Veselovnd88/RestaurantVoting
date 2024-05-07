@@ -8,8 +8,6 @@ import ru.veselov.restaurantvoting.model.Menu;
 import ru.veselov.restaurantvoting.model.Restaurant;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.List;
 
@@ -28,9 +26,9 @@ public class MenuTestData {
 
     public static final int PIZZA_MENU_ID = SUSHI_MENU_ID + 1;
 
-    public static final int NOT_FOUND_MENU = 200006;
-
     public static final int BURGER_MENU_ID = SUSHI_MENU_ID + 2;
+
+    public static final int NOT_FOUND = 200006;
 
     public static MenuDto sushiRestaurantMenuDto = new MenuDto(SUSHI_MENU_ID, MENU_DATE, DishTestData.sushiDishesDtos, null);
 
@@ -46,32 +44,9 @@ public class MenuTestData {
 
     public static Menu menuToCreateWithoutId = new Menu(null, MENU_DATE.plusDays(1), null);
 
-    public static MenuDto createdMenuDto = new MenuDto(100022, MENU_DATE.plusDays(1),
-            List.of(DishTestData.savedWithMenuNewTastyDish, DishTestData.savedWithMenuNewTastyDish2), null);
+    public static MenuDto createdMenuDto = new MenuDto(100022, MENU_DATE.plusDays(1), null, null);
 
-    public static InputMenuDto menuDtoToCreate = new InputMenuDto(null, MENU_DATE.plusDays(1),
-            new ArrayList<>(Arrays.asList(DishTestData.newTastyDish, DishTestData.newTastyDish2)));
-
-    public static InputMenuDto menuDtoToCreateSimilarDishes = new InputMenuDto(null, MENU_DATE.plusDays(1),
-            List.of(DishTestData.newTastyDish, DishTestData.newTastyDish));
-
-    public static InputMenuDto menuDtoToCreateForConflict = new InputMenuDto(null, MENU_DATE,
-            List.of(DishTestData.newTastyDish, DishTestData.newTastyDish2));
-
-    public static InputMenuDto menuDtoToUpdate = new InputMenuDto(SUSHI_MENU_ID, MENU_DATE,
-            List.of(DishTestData.newTastyDish, DishTestData.newTastyDish2));
-
-    public static InputMenuDto menuDtoToUpdateForConflict =
-            new InputMenuDto(null, MENU_DATE, List.of(DishTestData.savedNewTastyDish));
-
-    public static InputMenuDto menuDtoToUpdateWithSimilarDishes = new InputMenuDto(SUSHI_MENU_ID, MENU_DATE,
-            List.of(DishTestData.newTastyDish, DishTestData.newTastyDish));
-
-    public static InputMenuDto menuDtoToUpdateWithChangedDish = new InputMenuDto(SUSHI_MENU_ID, MENU_DATE,
-            List.of(DishTestData.philadelphiaDto, DishTestData.tastyRollDto, DishTestData.changedUnagiDto));
-
-    public static MenuDto menuDtoToUpdateWithChangedDishAfterUpdate = new MenuDto(SUSHI_MENU_ID, MENU_DATE,
-            List.of(DishTestData.philadelphiaDto, DishTestData.tastyRollDto, DishTestData.changedUnagiDto), null);
+    public static InputMenuDto menuDtoToUpdate = new InputMenuDto(SUSHI_MENU_ID, MENU_DATE.plusDays(5));
 
     public static Menu getGetSushiRestaurantMenu() {
         return new Menu(100006, MenuTestData.MENU_DATE, new Restaurant(RestaurantTestData.SUSHI_ID, "SushiWok"),

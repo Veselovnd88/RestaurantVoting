@@ -23,7 +23,6 @@ import ru.veselov.restaurantvoting.model.Menu;
 import ru.veselov.restaurantvoting.repository.MenuRepository;
 import ru.veselov.restaurantvoting.repository.RestaurantRepository;
 import ru.veselov.restaurantvoting.service.menu.MenuServiceImpl;
-import ru.veselov.restaurantvoting.util.DishTestData;
 import ru.veselov.restaurantvoting.util.MenuTestData;
 import ru.veselov.restaurantvoting.util.RestaurantTestData;
 
@@ -58,14 +57,12 @@ class MenuServiceImplTest {
         Mockito.when(restaurantRepository.findById(Mockito.anyInt()))
                 .thenReturn(Optional.of(RestaurantTestData.sushiRestaurant));
 
-        menuService.create(RestaurantTestData.SUSHI_ID, MenuTestData.menuDtoToCreate);
+        menuService.create(RestaurantTestData.SUSHI_ID, MenuTestData.MENU_DATE);
 
         Mockito.verify(menuRepository, Mockito.times(1)).save(menuArgumentCaptor.capture());
         Menu captured = menuArgumentCaptor.getValue();
         Assertions.assertThat(captured).extracting(Menu::getDate, Menu::getRestaurant)
-                .contains(MenuTestData.menuDtoToCreate.date(), RestaurantTestData.sushiRestaurant);
-        DishTestData.DISH_MATCHER.assertMatch(captured.getDishes(),
-                DishTestData.tastyDishEntity, DishTestData.tastyDishEntity2);
+                .contains(MenuTestData.MENU_DATE, RestaurantTestData.sushiRestaurant);
     }
 
     @Test
@@ -73,7 +70,7 @@ class MenuServiceImplTest {
         Mockito.when(restaurantRepository.findById(Mockito.anyInt())).thenReturn(Optional.empty());
 
         Assertions.assertThatExceptionOfType(RestaurantNotFoundException.class)
-                .isThrownBy(() -> menuService.create(RestaurantTestData.SUSHI_ID, MenuTestData.menuDtoToCreate))
+                .isThrownBy(() -> menuService.create(RestaurantTestData.SUSHI_ID, MenuTestData.MENU_DATE))
                 .isInstanceOf(NotFoundException.class)
                 .withMessage(RestaurantNotFoundException.MSG_WITH_ID.formatted(RestaurantTestData.SUSHI_ID));
         Mockito.verifyNoInteractions(menuRepository);
@@ -84,19 +81,18 @@ class MenuServiceImplTest {
         Mockito.when(menuRepository.findById(Mockito.anyInt()))
                 .thenReturn(Optional.of(MenuTestData.getGetSushiRestaurantMenu()));
 
-        menuService.update(MenuTestData.SUSHI_MENU_ID, MenuTestData.menuDtoToCreate);
+        menuService.update(MenuTestData.SUSHI_MENU_ID, MenuTestData.menuDtoToUpdate);
 
         Mockito.verify(menuRepository, Mockito.times(1)).save(menuArgumentCaptor.capture());
         Menu captured = menuArgumentCaptor.getValue();
-        Assertions.assertThat(captured).extracting(Menu::getDate).isEqualTo(MenuTestData.MENU_DATE.plusDays(1));
-        DishTestData.DISH_MATCHER.assertMatch(captured.getDishes(), DishTestData.getUpdatedDishesInSortedSet());
+        Assertions.assertThat(captured).extracting(Menu::getDate).isEqualTo(MenuTestData.MENU_DATE.plusDays(5));
     }
 
     @Test
     void update_MenuNotFound_ThrowException() {
         Mockito.when(menuRepository.findById(Mockito.anyInt())).thenReturn(Optional.empty());
 
-        Assertions.assertThatException().isThrownBy(() -> menuService.update(MenuTestData.SUSHI_MENU_ID, MenuTestData.menuDtoToCreate))
+        Assertions.assertThatException().isThrownBy(() -> menuService.update(MenuTestData.SUSHI_MENU_ID, MenuTestData.menuDtoToUpdate))
                 .isInstanceOf(NotFoundException.class);
         Mockito.verify(menuRepository, Mockito.never()).save(Mockito.any());
     }
@@ -105,7 +101,7 @@ class MenuServiceImplTest {
     void getMenuById_AllOk_ReturnMenuDtoWithDishes() {
         Mockito.when(menuRepository.findByIdWithDishes(Mockito.anyInt())).thenReturn(Optional.of(MenuTestData.getGetSushiRestaurantMenu()));
 
-        MenuDto menuById = menuService.getMenuByIdWithDishesAndVotes(MenuTestData.SUSHI_MENU_ID);
+        MenuDto menuById = menuService.getMenuByIdWithDishes(MenuTestData.SUSHI_MENU_ID);
 
         Assertions.assertThat(menuById).isEqualTo(MenuTestData.sushiRestaurantMenuDto);
     }
@@ -114,7 +110,8 @@ class MenuServiceImplTest {
     void getMenuById_MenuNotFound_ThrowException() {
         Mockito.when(menuRepository.findByIdWithDishes(Mockito.anyInt())).thenReturn(Optional.empty());
 
-        Assertions.assertThatThrownBy(() -> menuService.getMenuByIdWithDishesAndVotes(MenuTestData.SUSHI_MENU_ID))
+        Assertions.assertThatExceptionOfType(MenuNotFoundException.class)
+                .isThrownBy(() -> menuService.getMenuByIdWithDishes(MenuTestData.NOT_FOUND))
                 .isInstanceOf(NotFoundException.class);
     }
 

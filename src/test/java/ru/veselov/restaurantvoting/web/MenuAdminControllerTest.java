@@ -8,7 +8,6 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import ru.veselov.restaurantvoting.dto.DishDto;
 import ru.veselov.restaurantvoting.dto.InputMenuDto;
 import ru.veselov.restaurantvoting.dto.MenuDto;
 import ru.veselov.restaurantvoting.exception.NotFoundException;
@@ -24,8 +23,6 @@ import ru.veselov.restaurantvoting.util.SecurityUtils;
 import ru.veselov.restaurantvoting.util.UserTestData;
 import ru.veselov.restaurantvoting.web.menu.MenuAdminController;
 
-import java.util.List;
-
 @WithMockUser(value = "ADMIN")
 class MenuAdminControllerTest extends AbstractRestControllerTest {
 
@@ -38,7 +35,7 @@ class MenuAdminControllerTest extends AbstractRestControllerTest {
     @Test
     @SneakyThrows
     void create_AllOk_CreateMenu() {
-        mockMvc.perform(MockMvcUtils.createMenu(RestaurantTestData.SUSHI_ID, MenuTestData.menuDtoToCreate)
+        mockMvc.perform(MockMvcUtils.createMenu(RestaurantTestData.SUSHI_ID, MenuTestData.MENU_DATE.plusDays(1))
                         .with(SecurityUtils.userHttpBasic(UserTestData.admin)))
                 .andExpect(MockMvcResultMatchers.status().isCreated())
                 .andExpect(MockMvcResultMatchers.header().exists("Location"))
@@ -49,8 +46,9 @@ class MenuAdminControllerTest extends AbstractRestControllerTest {
     @Test
     @SneakyThrows
     void create_MenuAlreadyExists_ReturnError() {
-        ResultActions resultActions = mockMvc.perform(MockMvcUtils.createMenu(RestaurantTestData.SUSHI_ID, MenuTestData.menuDtoToCreateForConflict)
-                .with(SecurityUtils.userHttpBasic(UserTestData.admin)));
+        ResultActions resultActions = mockMvc
+                .perform(MockMvcUtils.createMenu(RestaurantTestData.SUSHI_ID, MenuTestData.MENU_DATE)
+                        .with(SecurityUtils.userHttpBasic(UserTestData.admin)));
 
         ResultActionErrorsUtil.checkConflictError(resultActions,
                 GlobalExceptionHandler.MENU_FOR_RESTAURANT_FOR_DATE_EXISTS,
@@ -61,7 +59,7 @@ class MenuAdminControllerTest extends AbstractRestControllerTest {
     @SneakyThrows
     void create_RestaurantNotFound_ReturnError() {
         ResultActions resultActions = mockMvc.perform(MockMvcUtils.createMenu(RestaurantTestData.NOT_FOUND,
-                        MenuTestData.menuDtoToCreateForConflict)
+                        MenuTestData.MENU_DATE)
                 .with(SecurityUtils.userHttpBasic(UserTestData.admin)));
 
         ResultActionErrorsUtil.checkNotFoundFields(resultActions,
@@ -75,32 +73,16 @@ class MenuAdminControllerTest extends AbstractRestControllerTest {
         mockMvc.perform(MockMvcUtils.updateMenu(MenuTestData.SUSHI_MENU_ID, MenuTestData.menuDtoToUpdate)
                         .with(SecurityUtils.userHttpBasic(UserTestData.admin)))
                 .andExpect(MockMvcResultMatchers.status().isOk());
-        MenuDto foundMenu = menuService.getMenuByIdWithDishesAndVotes(MenuTestData.SUSHI_MENU_ID);
-        Assertions.assertThat(foundMenu.dishes()).hasSize(2).flatExtracting(DishDto::id, DishDto::name, DishDto::price)
-                .containsExactly(100022, "veryTasty", 10000, 100023, "veryTasty2", 10000);
-    }
-
-    @Test
-    @SneakyThrows
-    void update_AllOk_UpdateMenuWithRenamingDish() {
-        mockMvc.perform(MockMvcUtils.updateMenu(MenuTestData.SUSHI_MENU_ID, MenuTestData.menuDtoToUpdateWithChangedDish)
-                        .with(SecurityUtils.userHttpBasic(UserTestData.admin)))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(MenuTestData.MENU_DTO_MATCHER.contentJson(MenuTestData.menuDtoToUpdateWithChangedDishAfterUpdate));
-
-        MenuDto foundMenu = menuService.getMenuByIdWithDishesAndVotes(MenuTestData.SUSHI_MENU_ID);
-        Assertions.assertThat(foundMenu.dishes()).hasSize(3).contains(DishTestData.philadelphiaDto, DishTestData.tastyRollDto,
-                DishTestData.changedUnagiDto);
+        MenuDto foundMenu = menuService.getMenuByIdWithDishes(MenuTestData.SUSHI_MENU_ID);
+        Assertions.assertThat(foundMenu.date()).isEqualTo(MenuTestData.menuDtoToUpdate.date());
     }
 
     @Test
     @SneakyThrows
     void update_ChangeToDateOfExistingMenu_ReturnError() {
-        MenuDto menuDto = menuService.create(RestaurantTestData.SUSHI_ID, MenuTestData.menuDtoToCreate);
-        InputMenuDto menuDtoToUpdateForConflict =
-                new InputMenuDto(menuDto.id(), MenuTestData.MENU_DATE,
-                        List.of(DishTestData.savedWithMenuNewTastyDish, DishTestData.savedWithMenuNewTastyDish2));
+        MenuDto menuDto = menuService.create(RestaurantTestData.SUSHI_ID, MenuTestData.MENU_DATE.plusDays(1));
+        InputMenuDto menuDtoToUpdateForConflict = new InputMenuDto(menuDto.id(), MenuTestData.MENU_DATE);
+
         ResultActions resultActions = mockMvc
                 .perform(MockMvcUtils.updateMenu(menuDto.id(), menuDtoToUpdateForConflict)
                         .with(SecurityUtils.userHttpBasic(UserTestData.admin)));
@@ -117,7 +99,7 @@ class MenuAdminControllerTest extends AbstractRestControllerTest {
                         .with(SecurityUtils.userHttpBasic(UserTestData.admin)))
                 .andExpect(MockMvcResultMatchers.status().isNoContent());
 
-        Assertions.assertThatThrownBy(() -> menuService.getMenuByIdWithDishesAndVotes(MenuTestData.SUSHI_MENU_ID))
+        Assertions.assertThatThrownBy(() -> menuService.getMenuByIdWithDishes(MenuTestData.SUSHI_MENU_ID))
                 .isInstanceOf(NotFoundException.class);
         Assertions.assertThatThrownBy(() -> dishService.findOne(DishTestData.TASTY_ROLL_ID))
                 .isInstanceOf(NotFoundException.class);
