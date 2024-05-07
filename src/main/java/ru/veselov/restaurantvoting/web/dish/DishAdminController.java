@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -45,9 +46,9 @@ public class DishAdminController {
             @ApiResponse(responseCode = "201", description = "Dish created",
                     content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                             schema = @Schema(implementation = DishDto.class))})})
-    @PostMapping("/menus/{menuId}")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<DishDto> create(@PathVariable int menuId, @Valid @RequestBody DishDto dishDto) {
+    public ResponseEntity<DishDto> create(@RequestParam("menuId") int menuId, @Valid @RequestBody DishDto dishDto) {
         ValidationUtil.checkNew(dishDto);
         DishDto created = service.save(menuId, dishDto);
         URI uriOfResource = ServletUriComponentsBuilder.fromCurrentContextPath()

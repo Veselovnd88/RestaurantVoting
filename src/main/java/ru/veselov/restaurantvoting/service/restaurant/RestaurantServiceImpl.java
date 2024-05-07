@@ -40,7 +40,7 @@ public class RestaurantServiceImpl implements RestaurantService {
     public RestaurantDto create(InputRestaurantDto restaurantDto) {
         Restaurant savedRestaurant = repository.save(mapper.toEntity(restaurantDto));
         log.info("New restaurant: {} successfully saved", savedRestaurant.getName());
-        return mapper.entityToDtoWithMenus(savedRestaurant);
+        return mapper.entityToDto(savedRestaurant);
     }
 
     /**
@@ -51,7 +51,7 @@ public class RestaurantServiceImpl implements RestaurantService {
     @Cacheable(value = "restaurants")
     @Override
     public List<RestaurantDto> getAll() {
-        log.info("Retrieving restaurants with votes from repository");
+        log.info("Retrieving restaurants from repository");
         return mapper.entitiesToDto(repository.findAll(SORT_BY_NAME));
     }
 

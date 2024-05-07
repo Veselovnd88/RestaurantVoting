@@ -67,7 +67,7 @@ class VoteControllerTest extends AbstractRestControllerTest {
                 .with(SecurityUtils.userHttpBasic(UserTestData.user2)));
 
         ResultActionErrorsUtil.checkConflictError(resultActions, GlobalExceptionHandler.VOTE_FOR_TODAY_EXISTS,
-                MockMvcUtils.VOTE_RESTAURANT_ID_URL.formatted(RestaurantTestData.BURGER_ID));
+                VoteController.REST_URL);
     }
 
     @Test
@@ -81,7 +81,7 @@ class VoteControllerTest extends AbstractRestControllerTest {
 
         ResultActionErrorsUtil.checkNotFoundFields(resultActions,
                 RestaurantNotFoundException.MSG_WITH_ID.formatted(RestaurantTestData.NOT_FOUND),
-                MockMvcUtils.VOTE_RESTAURANT_ID_URL.formatted(RestaurantTestData.NOT_FOUND));
+                VoteController.REST_URL);
     }
 
     @Test
@@ -118,7 +118,7 @@ class VoteControllerTest extends AbstractRestControllerTest {
 
         ResultActionErrorsUtil.checkNotFoundFields(resultActions,
                 RestaurantNotFoundException.MSG_WITH_ID.formatted(RestaurantTestData.NOT_FOUND),
-                MockMvcUtils.VOTE_RESTAURANT_ID_URL.formatted(RestaurantTestData.NOT_FOUND));
+                VoteController.REST_URL);
     }
 
     @Test

@@ -13,6 +13,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.veselov.restaurantvoting.dto.MenuDto;
 import ru.veselov.restaurantvoting.service.menu.MenuService;
@@ -36,8 +37,8 @@ public class MenuController {
                     content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                             array = @ArraySchema(schema = @Schema(implementation = MenuDto.class)))}
             )})
-    @GetMapping("/restaurants/{restaurantId}")
-    public List<MenuDto> getMenusByRestaurant(@PathVariable int restaurantId) {
+    @GetMapping
+    public List<MenuDto> getMenusByRestaurant(@RequestParam("restaurantId") int restaurantId) {
         return service.getMenusByRestaurant(restaurantId);
     }
 

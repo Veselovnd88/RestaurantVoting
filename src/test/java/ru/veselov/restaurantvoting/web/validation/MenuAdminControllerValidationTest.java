@@ -38,7 +38,7 @@ class MenuAdminControllerValidationTest {
 
         ResultActionErrorsUtil.checkValidationError(resultActions,
                 GlobalExceptionHandler.FIELDS_VALIDATION_FAILED,
-                MockMvcUtils.MENU_RESTAURANTS_ID_URL.formatted(RestaurantTestData.SUSHI_ID), fieldName, 0);
+                MenuAdminController.REST_URL, fieldName, 0);
     }
 
     @Test
@@ -49,7 +49,7 @@ class MenuAdminControllerValidationTest {
 
         ResultActionErrorsUtil.checkRequestValidationError(resultActions,
                 GlobalExceptionHandler.REQUEST_VALIDATION_FAILED,
-                MockMvcUtils.MENU_RESTAURANTS_ID_URL.formatted(RestaurantTestData.SUSHI_ID));
+                MenuAdminController.REST_URL);
     }
 
     @ParameterizedTest

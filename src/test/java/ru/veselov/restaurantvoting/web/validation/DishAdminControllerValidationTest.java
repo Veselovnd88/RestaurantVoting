@@ -40,7 +40,7 @@ class DishAdminControllerValidationTest {
 
         ResultActionErrorsUtil.checkValidationError(resultActions,
                 GlobalExceptionHandler.FIELDS_VALIDATION_FAILED,
-                MockMvcUtils.DISH_MENUS_ID_URL.formatted(MenuTestData.BURGER_MENU_ID), fieldName, 0);
+                DishAdminController.REST_URL, fieldName, 0);
     }
 
     @Test
@@ -51,7 +51,7 @@ class DishAdminControllerValidationTest {
 
         ResultActionErrorsUtil.checkRequestValidationError(resultActions,
                 GlobalExceptionHandler.REQUEST_VALIDATION_FAILED,
-                MockMvcUtils.DISH_MENUS_ID_URL.formatted(MenuTestData.BURGER_MENU_ID));
+                DishAdminController.REST_URL);
     }
 
 

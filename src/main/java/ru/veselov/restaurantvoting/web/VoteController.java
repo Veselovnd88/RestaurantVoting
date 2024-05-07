@@ -10,10 +10,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -43,9 +43,9 @@ public class VoteController {
     @Operation(summary = "Here user can vote for chosen restaurant")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Vote created")})
-    @PostMapping("/restaurants/{restaurantId}")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<VoteDto> vote(@PathVariable("restaurantId") int restaurantId,
+    public ResponseEntity<VoteDto> vote(@RequestParam("restaurantId") int restaurantId,
                                         @AuthenticationPrincipal AuthorizedUser user) {
         VoteDto created = service.vote(user.getId(), restaurantId, LocalDateTime.now(clock));
         URI uriOfResource = ServletUriComponentsBuilder.fromCurrentContextPath()
@@ -57,9 +57,9 @@ public class VoteController {
     @Operation(summary = "Here user can change his vote")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Vote accepted")})
-    @PutMapping("/restaurants/{restaurantId}")
+    @PutMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void changeVote(@PathVariable("restaurantId") int restaurantId, @AuthenticationPrincipal AuthorizedUser user) {
+    public void changeVote(@RequestParam("restaurantId") int restaurantId, @AuthenticationPrincipal AuthorizedUser user) {
         service.changeVote(user.getId(), restaurantId, LocalDateTime.now(clock));
     }
 

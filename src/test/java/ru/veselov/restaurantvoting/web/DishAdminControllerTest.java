@@ -63,7 +63,7 @@ class DishAdminControllerTest extends AbstractRestControllerTest {
                 .with(SecurityUtils.userHttpBasic(UserTestData.admin)));
 
         ResultActionErrorsUtil.checkConflictError(resultActions, GlobalExceptionHandler.DISH_MENU_EXISTS,
-                DishAdminController.REST_URL + "/menus/" + MenuTestData.SUSHI_MENU_ID);
+                DishAdminController.REST_URL);
     }
 
     @Test

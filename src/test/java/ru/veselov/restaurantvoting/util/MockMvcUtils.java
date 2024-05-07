@@ -22,15 +22,11 @@ import ru.veselov.restaurantvoting.web.user.UserAdminController;
 @UtilityClass
 public class MockMvcUtils {
 
-    public static final String MENU_RESTAURANTS_ID_URL = MenuAdminController.REST_URL + "/restaurants/%s";
-
     public static final String RESTAURANTS_WITH_MENU = RestaurantController.REST_URL + "/with-menu";
 
     public static final String RESTAURANTS_WITH_MENU_ID = RestaurantController.REST_URL + "/with-menu/%s";
 
     public static final String MENU_ID_URL = MenuAdminController.REST_URL + "/%s";
-
-    public static final String DISH_MENUS_ID_URL = DishAdminController.REST_URL + "/menus/%s";
 
     public static final String DISH_ID_URL = DishAdminController.REST_URL + "/%s";
 
@@ -42,9 +38,8 @@ public class MockMvcUtils {
 
     public static final String USER_EMAIL_URL = UserAdminController.REST_URL + "/by-email";
 
-    public static final String VOTE_RESTAURANT_ID_URL = VoteController.REST_URL + "/restaurants/%s";
-
     public static final String REGISTER = ProfileController.REST_URL + "/register";
+
     public static final String VOTE_TODAY = VoteController.REST_URL + "/today";
 
 
@@ -81,7 +76,7 @@ public class MockMvcUtils {
     }
 
     public static MockHttpServletRequestBuilder createDish(int menuId, DishDto dishDto) {
-        return MockMvcRequestBuilders.post(DISH_MENUS_ID_URL.formatted(menuId))
+        return MockMvcRequestBuilders.post(DishAdminController.REST_URL).param("menuId", String.valueOf(menuId))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(dishDto));
     }
@@ -101,7 +96,8 @@ public class MockMvcUtils {
     }
 
     public static MockHttpServletRequestBuilder createMenu(int restaurantId, InputMenuDto menuDto) {
-        return MockMvcRequestBuilders.post(MENU_RESTAURANTS_ID_URL.formatted(restaurantId))
+        return MockMvcRequestBuilders.post(MenuAdminController.REST_URL)
+                .param("restaurantId", String.valueOf(restaurantId))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(menuDto));
     }
@@ -117,7 +113,7 @@ public class MockMvcUtils {
     }
 
     public static MockHttpServletRequestBuilder getMenusByRestaurantId(int restaurantId) {
-        return MockMvcRequestBuilders.get(MenuController.REST_URL + "/restaurants/" + restaurantId);
+        return MockMvcRequestBuilders.get(MenuController.REST_URL).param("restaurantId", String.valueOf(restaurantId));
     }
 
     public static MockHttpServletRequestBuilder deleteMenu(int id) {
@@ -125,11 +121,11 @@ public class MockMvcUtils {
     }
 
     public static MockHttpServletRequestBuilder vote(int restaurantId) {
-        return MockMvcRequestBuilders.post(VOTE_RESTAURANT_ID_URL.formatted(restaurantId));
+        return MockMvcRequestBuilders.post(VoteController.REST_URL).param("restaurantId", String.valueOf(restaurantId));
     }
 
     public static MockHttpServletRequestBuilder changeVote(int restaurantId) {
-        return MockMvcRequestBuilders.put(VOTE_RESTAURANT_ID_URL.formatted(restaurantId));
+        return MockMvcRequestBuilders.put(VoteController.REST_URL).param("restaurantId", String.valueOf(restaurantId));
     }
 
     public static MockHttpServletRequestBuilder getTodayVote() {

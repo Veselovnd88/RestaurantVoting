@@ -22,6 +22,7 @@ import ru.veselov.restaurantvoting.util.RestaurantTestData;
 import ru.veselov.restaurantvoting.util.ResultActionErrorsUtil;
 import ru.veselov.restaurantvoting.util.SecurityUtils;
 import ru.veselov.restaurantvoting.util.UserTestData;
+import ru.veselov.restaurantvoting.web.menu.MenuAdminController;
 
 import java.util.List;
 
@@ -53,7 +54,7 @@ class MenuAdminControllerTest extends AbstractRestControllerTest {
 
         ResultActionErrorsUtil.checkConflictError(resultActions,
                 GlobalExceptionHandler.MENU_FOR_RESTAURANT_FOR_DATE_EXISTS,
-                MockMvcUtils.MENU_RESTAURANTS_ID_URL.formatted(RestaurantTestData.SUSHI_ID));
+                MenuAdminController.REST_URL);
     }
 
     @Test
@@ -65,7 +66,7 @@ class MenuAdminControllerTest extends AbstractRestControllerTest {
 
         ResultActionErrorsUtil.checkNotFoundFields(resultActions,
                 RestaurantNotFoundException.MSG_WITH_ID.formatted(RestaurantTestData.NOT_FOUND),
-                MockMvcUtils.MENU_RESTAURANTS_ID_URL.formatted(RestaurantTestData.NOT_FOUND));
+                MenuAdminController.REST_URL);
     }
 
     @Test
