@@ -4,7 +4,4 @@ public interface ValidationGroup {
 
     interface OnCreate {
     }
-
-    interface OnUpdate {
-    }
 }

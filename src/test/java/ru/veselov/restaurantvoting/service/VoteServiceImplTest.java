@@ -13,7 +13,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import ru.veselov.restaurantvoting.dto.VoteDto;
 import ru.veselov.restaurantvoting.exception.NotFoundException;
-import ru.veselov.restaurantvoting.exception.UserNotFoundException;
+import ru.veselov.restaurantvoting.exception.VoteNotFoundException;
 import ru.veselov.restaurantvoting.exception.VotingTimeLimitExceedsException;
 import ru.veselov.restaurantvoting.mapper.VoteMapper;
 import ru.veselov.restaurantvoting.mapper.VoteMapperImpl;
@@ -55,9 +55,8 @@ class VoteServiceImplTest {
     }
 
     @Test
-    void vote_NewVoteForMenu_AddVote() {
-        Mockito.when(voteRepository.findByUserIdForDate(Mockito.anyInt(), Mockito.any())).thenReturn(Optional.empty());
-        Mockito.when(userRepository.findById(UserTestData.USER1_ID)).thenReturn(Optional.of(UserTestData.user1));
+    void vote_NewVote_AddVote() {
+        Mockito.when(userRepository.getReferenceById(UserTestData.USER1_ID)).thenReturn(UserTestData.user1);
         Mockito.when(menuService.findMenuByRestaurantIdAndLocalDate(Mockito.anyInt(), Mockito.any()))
                 .thenReturn(MenuTestData.getSushiRestaurantMenuWithVotes());
 
@@ -69,40 +68,39 @@ class VoteServiceImplTest {
     }
 
     @Test
-    void vote_UserNotFound_ThrowException() {
-        Mockito.when(voteRepository.findByUserIdForDate(Mockito.anyInt(), Mockito.any())).thenReturn(Optional.empty());
-        Mockito.when(userRepository.findById(UserTestData.USER1_ID)).thenReturn(Optional.empty());
-
-        Assertions.assertThatExceptionOfType(UserNotFoundException.class).isThrownBy(
-                        () -> voteService.vote(UserTestData.USER1_ID, MenuTestData.SUSHI_MENU_ID, VoteTestData.VOTING_TIME))
-                .withMessage(UserNotFoundException.MESSAGE_WITH_ID.formatted(UserTestData.USER1_ID))
-                .isInstanceOf(NotFoundException.class);
-
-        Mockito.verify(voteRepository, Mockito.never()).save(Mockito.any());
-    }
-
-    @Test
-    void vote_AlreadyVotedForAnotherMenuTimeDoesntExceedsLimit_MakeAnotherVote() {
+    void changeVote_AllOk_ChangeVoteForAnotherMenu() {
         Mockito.when(voteRepository.findByUserIdForDate(Mockito.anyInt(), Mockito.any()))
                 .thenReturn(Optional.of(VoteTestData.getNewUser1VoteSushi()));
         Mockito.when(menuService.findMenuByRestaurantIdAndLocalDate(Mockito.anyInt(), Mockito.any()))
                 .thenReturn(MenuTestData.burgerRestaurantMenu);
 
-        voteService.vote(UserTestData.USER1_ID, MenuTestData.BURGER_MENU_ID, VoteTestData.VOTING_TIME);
+        voteService.changeVote(UserTestData.USER1_ID, MenuTestData.SUSHI_MENU_ID, VoteTestData.VOTING_TIME);
 
         Mockito.verify(voteRepository, Mockito.times(1)).save(voteCaptor.capture());
         Vote vote = voteCaptor.getValue();
-        VoteTestData.VOTE_MATCHER_WITH_USER_VOTES.assertMatch(vote, VoteTestData.getUpdatedUser1VoteBurger());
+        VoteTestData.VOTE_MATCHER.assertMatch(vote, VoteTestData.user1VoteSushi);
     }
 
     @Test
-    void vote_TimeExceedsLimit_ThrowException() {
-        Mockito.when(voteRepository.findByUserIdForDate(Mockito.anyInt(), Mockito.any()))
-                .thenReturn(Optional.of(VoteTestData.getNewUser1VoteSushi()));
+    void changeVote_VoteNotFound_ThrowException() {
+        Mockito.when(voteRepository.findByUserIdForDate(Mockito.anyInt(), Mockito.any())).thenReturn(Optional.empty());
 
-        Assertions.assertThatThrownBy(() -> voteService.vote(UserTestData.USER1_ID, MenuTestData.BURGER_MENU_ID,
+        Assertions.assertThatExceptionOfType(VoteNotFoundException.class)
+                .isThrownBy(
+                        () -> voteService.changeVote(UserTestData.USER1_ID, MenuTestData.BURGER_MENU_ID, VoteTestData.VOTING_TIME))
+                .withMessage(VoteNotFoundException
+                        .MSG_USER_ID_LOCAL_DATE.formatted(UserTestData.USER1_ID, VoteTestData.VOTING_TIME.toLocalDate()))
+                .isInstanceOf(NotFoundException.class);
+
+        Mockito.verify(voteRepository, Mockito.never()).save(voteCaptor.capture());
+    }
+
+    @Test
+    void changeVote_TimeExceedsLimit_ThrowException() {
+        Assertions.assertThatThrownBy(() -> voteService.changeVote(UserTestData.USER1_ID, MenuTestData.BURGER_MENU_ID,
                         VoteTestData.VOTING_TIME_EXCEEDED))
                 .isInstanceOf(VotingTimeLimitExceedsException.class);
+
         Mockito.verify(voteRepository, Mockito.never()).save(Mockito.any());
     }
 

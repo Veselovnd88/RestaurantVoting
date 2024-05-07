@@ -8,6 +8,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.veselov.restaurantvoting.dto.VoteDto;
+import ru.veselov.restaurantvoting.exception.MenuNotFoundException;
 import ru.veselov.restaurantvoting.exception.VoteNotFoundException;
 import ru.veselov.restaurantvoting.exception.VotingTimeLimitExceedsException;
 import ru.veselov.restaurantvoting.mapper.VoteMapper;
@@ -68,6 +69,7 @@ public class VoteServiceImpl implements VoteService {
      * @param localDateTime date for vote
      * @throws VotingTimeLimitExceedsException if vote time exceed limit
      * @throws VoteNotFoundException           if user doesn't have vote for this day
+     * @throws MenuNotFoundException           if no menu for voting
      */
     @Override
     @Transactional
