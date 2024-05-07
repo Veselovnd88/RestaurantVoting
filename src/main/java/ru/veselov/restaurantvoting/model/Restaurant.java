@@ -27,6 +27,12 @@ public class Restaurant extends AbstractNamedEntity {
     @OrderBy("date DESC")
     private Set<Menu> menus;
 
+    //https://stackoverflow.com/questions/4334970/hibernate-throws-multiplebagfetchexception-cannot-simultaneously-fetch-multipl/51055523#51055523
+    @OneToMany(mappedBy = "restaurant", fetch = FetchType.LAZY)
+    @OrderBy("id")
+    @ToString.Exclude
+    private Set<Vote> votes;
+
     public Restaurant(Integer id, String name) {
         super(id, name);
     }

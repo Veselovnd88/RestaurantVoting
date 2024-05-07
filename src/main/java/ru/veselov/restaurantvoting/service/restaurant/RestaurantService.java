@@ -2,6 +2,7 @@ package ru.veselov.restaurantvoting.service.restaurant;
 
 import ru.veselov.restaurantvoting.dto.InputRestaurantDto;
 import ru.veselov.restaurantvoting.dto.RestaurantDto;
+import ru.veselov.restaurantvoting.model.Restaurant;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -21,4 +22,6 @@ public interface RestaurantService {
     void delete(int id);
 
     List<RestaurantDto> findAllWithMenuByDate(LocalDate date);
+
+    Restaurant getRestaurantById(int id);
 }

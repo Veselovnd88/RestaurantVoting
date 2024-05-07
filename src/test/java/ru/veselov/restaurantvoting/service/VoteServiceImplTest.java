@@ -20,9 +20,10 @@ import ru.veselov.restaurantvoting.mapper.VoteMapperImpl;
 import ru.veselov.restaurantvoting.model.Vote;
 import ru.veselov.restaurantvoting.repository.UserRepository;
 import ru.veselov.restaurantvoting.repository.VoteRepository;
-import ru.veselov.restaurantvoting.service.menu.MenuService;
+import ru.veselov.restaurantvoting.service.restaurant.RestaurantService;
 import ru.veselov.restaurantvoting.service.vote.VoteServiceImpl;
 import ru.veselov.restaurantvoting.util.MenuTestData;
+import ru.veselov.restaurantvoting.util.RestaurantTestData;
 import ru.veselov.restaurantvoting.util.UserTestData;
 import ru.veselov.restaurantvoting.util.VoteTestData;
 
@@ -39,7 +40,7 @@ class VoteServiceImplTest {
     UserRepository userRepository;
 
     @Mock
-    MenuService menuService;
+    RestaurantService restaurantService;
 
     @InjectMocks
     VoteServiceImpl voteService;
@@ -57,10 +58,9 @@ class VoteServiceImplTest {
     @Test
     void vote_NewVote_AddVote() {
         Mockito.when(userRepository.getReferenceById(UserTestData.USER1_ID)).thenReturn(UserTestData.user1);
-        Mockito.when(menuService.findMenuByRestaurantIdAndLocalDate(Mockito.anyInt(), Mockito.any()))
-                .thenReturn(MenuTestData.getSushiRestaurantMenuWithVotes());
+        Mockito.when(restaurantService.getRestaurantById(Mockito.anyInt())).thenReturn(RestaurantTestData.sushiRestaurant);
 
-        voteService.vote(UserTestData.USER1_ID, MenuTestData.SUSHI_MENU_ID, VoteTestData.VOTING_TIME);
+        voteService.vote(UserTestData.USER1_ID, RestaurantTestData.SUSHI_ID, VoteTestData.VOTING_TIME);
 
         Mockito.verify(voteRepository, Mockito.times(1)).save(voteCaptor.capture());
         Vote vote = voteCaptor.getValue();
@@ -68,13 +68,12 @@ class VoteServiceImplTest {
     }
 
     @Test
-    void changeVote_AllOk_ChangeVoteForAnotherMenu() {
+    void changeVote_AllOk_ChangeVoteForAnotherRestaurant() {
         Mockito.when(voteRepository.findByUserIdForDate(Mockito.anyInt(), Mockito.any()))
                 .thenReturn(Optional.of(VoteTestData.getNewUser1VoteSushi()));
-        Mockito.when(menuService.findMenuByRestaurantIdAndLocalDate(Mockito.anyInt(), Mockito.any()))
-                .thenReturn(MenuTestData.burgerRestaurantMenu);
+        Mockito.when(restaurantService.getRestaurantById(Mockito.anyInt())).thenReturn(RestaurantTestData.burgerRestaurant);
 
-        voteService.changeVote(UserTestData.USER1_ID, MenuTestData.SUSHI_MENU_ID, VoteTestData.VOTING_TIME);
+        voteService.changeVote(UserTestData.USER1_ID, RestaurantTestData.BURGER_ID, VoteTestData.VOTING_TIME);
 
         Mockito.verify(voteRepository, Mockito.times(1)).save(voteCaptor.capture());
         Vote vote = voteCaptor.getValue();

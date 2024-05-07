@@ -14,10 +14,10 @@ import java.util.Optional;
 
 public interface MenuRepository extends JpaRepository<Menu, Integer> {
 
-    @EntityGraph(attributePaths = {"votes", "dishes"})
+    @EntityGraph(attributePaths = {"dishes"})
     @Query("SELECT m FROM Menu m WHERE m.id= :id")
     @NonNull
-    Optional<Menu> findByIdWithDishesAndVotes(@Param("id") int id);
+    Optional<Menu> findByIdWithDishes(@Param("id") int id);
 
     @EntityGraph(attributePaths = {"dishes"})
     @Query("SELECT m FROM Menu m WHERE m.restaurant.id=:restaurantId AND m.date=:date")

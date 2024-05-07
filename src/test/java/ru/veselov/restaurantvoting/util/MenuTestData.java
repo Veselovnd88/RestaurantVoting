@@ -6,9 +6,10 @@ import ru.veselov.restaurantvoting.dto.MenuDto;
 import ru.veselov.restaurantvoting.model.Dish;
 import ru.veselov.restaurantvoting.model.Menu;
 import ru.veselov.restaurantvoting.model.Restaurant;
-import ru.veselov.restaurantvoting.model.Vote;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.List;
 
@@ -16,7 +17,7 @@ import java.util.List;
 public class MenuTestData {
 
     public static final MatcherFactory.Matcher<Menu> MENU_MATCHER = MatcherFactory.usingIgnoringFieldsComparator(
-            Menu.class, "restaurant", "votes", "dishes");
+            Menu.class, "restaurant", "dishes");
 
     public static final MatcherFactory.Matcher<MenuDto> MENU_DTO_MATCHER = MatcherFactory
             .usingIgnoringFieldsComparator(MenuDto.class);
@@ -43,13 +44,13 @@ public class MenuTestData {
     public static Menu burgerRestaurantMenu = new Menu(BURGER_MENU_ID, MENU_DATE, RestaurantTestData.burgerRestaurant,
             DishTestData.doubleBurger, DishTestData.friesPotato, DishTestData.tripleBurger);
 
-    public static Menu menuToCreateWithoutId = new Menu(null, MENU_DATE.plusDays(1), null, null, null);
+    public static Menu menuToCreateWithoutId = new Menu(null, MENU_DATE.plusDays(1), null);
 
     public static MenuDto createdMenuDto = new MenuDto(100022, MENU_DATE.plusDays(1),
             List.of(DishTestData.savedWithMenuNewTastyDish, DishTestData.savedWithMenuNewTastyDish2), null);
 
     public static InputMenuDto menuDtoToCreate = new InputMenuDto(null, MENU_DATE.plusDays(1),
-            List.of(DishTestData.newTastyDish, DishTestData.newTastyDish2));
+            new ArrayList<>(Arrays.asList(DishTestData.newTastyDish, DishTestData.newTastyDish2)));
 
     public static InputMenuDto menuDtoToCreateSimilarDishes = new InputMenuDto(null, MENU_DATE.plusDays(1),
             List.of(DishTestData.newTastyDish, DishTestData.newTastyDish));
@@ -77,15 +78,5 @@ public class MenuTestData {
                 new LinkedHashSet<>(List.of(new Dish(100010, "Philadelphia", 30000),
                         new Dish(100011, "TastyRoll", 55000),
                         new Dish(100009, "Unagi", 40000))));
-    }
-
-    public static Menu getSushiRestaurantMenuWithVotes() {
-        Menu menu = new Menu(100006, MENU_DATE, RestaurantTestData.sushiRestaurant,
-                new LinkedHashSet<>(DishTestData.sushiDishes));
-        Vote user1VoteSushi = new Vote(100018, VoteTestData.VOTED_AT_DATE, UserTestData.user1, menu);
-        Vote adminVoteSushi = new Vote(100019, VoteTestData.VOTED_AT_DATE, UserTestData.admin, menu);
-        Vote user2VoteSushi = new Vote(100020, VoteTestData.VOTED_AT_DATE, UserTestData.user2, menu);
-        menu.setVotes(new LinkedHashSet<>(List.of(user1VoteSushi, adminVoteSushi, user2VoteSushi)));
-        return menu;
     }
 }

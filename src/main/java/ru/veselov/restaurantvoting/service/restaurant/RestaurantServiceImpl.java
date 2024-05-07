@@ -130,7 +130,8 @@ public class RestaurantServiceImpl implements RestaurantService {
         log.info("Restaurant with id: {} deleted", id);
     }
 
-    private Restaurant getRestaurantById(int id) {
+    @Override
+    public Restaurant getRestaurantById(int id) {
         return repository.findById(id).orElseThrow(() -> new RestaurantNotFoundException(id));
     }
 }

@@ -103,7 +103,7 @@ class MenuServiceImplTest {
 
     @Test
     void getMenuById_AllOk_ReturnMenuDtoWithDishes() {
-        Mockito.when(menuRepository.findByIdWithDishesAndVotes(Mockito.anyInt())).thenReturn(Optional.of(MenuTestData.getSushiRestaurantMenuWithVotes()));
+        Mockito.when(menuRepository.findByIdWithDishes(Mockito.anyInt())).thenReturn(Optional.of(MenuTestData.getGetSushiRestaurantMenu()));
 
         MenuDto menuById = menuService.getMenuByIdWithDishesAndVotes(MenuTestData.SUSHI_MENU_ID);
 
@@ -112,7 +112,7 @@ class MenuServiceImplTest {
 
     @Test
     void getMenuById_MenuNotFound_ThrowException() {
-        Mockito.when(menuRepository.findByIdWithDishesAndVotes(Mockito.anyInt())).thenReturn(Optional.empty());
+        Mockito.when(menuRepository.findByIdWithDishes(Mockito.anyInt())).thenReturn(Optional.empty());
 
         Assertions.assertThatThrownBy(() -> menuService.getMenuByIdWithDishesAndVotes(MenuTestData.SUSHI_MENU_ID))
                 .isInstanceOf(NotFoundException.class);
@@ -121,7 +121,7 @@ class MenuServiceImplTest {
     @Test
     void getMenusByRestaurant_AllOk_ReturnListOfMenus() {
         Mockito.when(menuRepository.findByRestaurantId(Mockito.anyInt(), Mockito.any()))
-                .thenReturn(List.of(MenuTestData.getSushiRestaurantMenuWithVotes()));
+                .thenReturn(List.of(MenuTestData.getGetSushiRestaurantMenu()));
 
         List<MenuDto> menusByRestaurant = menuService.getMenusByRestaurant(RestaurantTestData.SUSHI_ID);
 
@@ -131,7 +131,7 @@ class MenuServiceImplTest {
     @Test
     void findMenuByRestaurantIdAndLocalDate_MenuFound_ReturnMenu() {
         Mockito.when(menuRepository.findByRestaurantIdByDate(Mockito.anyInt(), Mockito.any()))
-                .thenReturn(Optional.of(MenuTestData.getSushiRestaurantMenuWithVotes()));
+                .thenReturn(Optional.of(MenuTestData.getGetSushiRestaurantMenu()));
 
         menuService.findMenuByRestaurantIdAndLocalDate(RestaurantTestData.SUSHI_ID, LocalDate.of(2024, 4, 20));
 

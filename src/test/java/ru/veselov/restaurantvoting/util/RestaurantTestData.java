@@ -21,19 +21,22 @@ public class RestaurantTestData {
 
     public static final int NOT_FOUND = 200000;
 
+    public static final String SUSHI_WOK = "SushiWok";
+
+    public static final String PIZZA = "DoDoPizza";
+
+    public static final String BURGER = "BurgerPizza";
+
     public static final MatcherFactory.Matcher<Restaurant> RESTAURANT_MATCHER = MatcherFactory
-            .usingIgnoringFieldsComparator(Restaurant.class, "menus");
+            .usingIgnoringFieldsComparator(Restaurant.class, "menus", "votes");
 
     public static final MatcherFactory.Matcher<RestaurantDto> RESTAURANT_DTO_MATCHER =
             MatcherFactory.usingIgnoringFieldsComparator(RestaurantDto.class);
 
-    public static final String SUSHI_WOK = "SushiWok";
     public static Restaurant sushiRestaurant = new Restaurant(SUSHI_ID, SUSHI_WOK);
 
-    public static final String PIZZA = "DoDoPizza";
     public static Restaurant pizzaRestaurant = new Restaurant(PIZZA_ID, PIZZA);
 
-    public static final String BURGER = "BurgerPizza";
     public static Restaurant burgerRestaurant = new Restaurant(BURGER_ID, BURGER);
 
     public static InputRestaurantDto inputRestaurantDto = new InputRestaurantDto(null, "New tasty restaurant");

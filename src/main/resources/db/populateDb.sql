@@ -51,10 +51,10 @@ VALUES ('Unagi', 40000, 100006),         --9
        ('Triple Burger', 75000, 100008), --16
        ('Fries Potato', 35000, 100008); --17
 
-INSERT INTO vote (user_id, menu_id)
-VALUES (100000, 100006), --18
-       (100001, 100006), --19
-       (100002, 100006); --20
+INSERT INTO vote (user_id, restaurant_id)
+VALUES (100000, 100003), --18
+       (100001, 100003), --19
+       (100002, 100003); --20
 
 INSERT INTO users (name, email, password)
 VALUES

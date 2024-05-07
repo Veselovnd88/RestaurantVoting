@@ -10,9 +10,9 @@ import java.util.List;
 
 public class VoteTestData {
 
-    public static final MatcherFactory.Matcher<Vote> VOTE_MATCHER = MatcherFactory.usingIgnoringFieldsComparator(Vote.class, "user", "menu");
+    public static final MatcherFactory.Matcher<Vote> VOTE_MATCHER = MatcherFactory.usingIgnoringFieldsComparator(Vote.class, "user", "restaurant");
 
-    public static final MatcherFactory.Matcher<Vote> VOTE_MATCHER_WITH_USER_VOTES = MatcherFactory.usingIgnoringFieldsComparator(Vote.class, "user", "menu");
+    public static final MatcherFactory.Matcher<Vote> VOTE_MATCHER_WITH_USER_VOTES = MatcherFactory.usingIgnoringFieldsComparator(Vote.class, "user", "restaurant");
 
     public static final MatcherFactory.Matcher<VoteDto> VOTE_DTO_MATCHER = MatcherFactory.usingIgnoringFieldsComparator(VoteDto.class);
 
@@ -47,10 +47,10 @@ public class VoteTestData {
     public static List<VoteDto> sushiVotesDto = List.of(user1VoteSushiDto, adminVoteSushiDto, user2VoteSushiDto);
 
     public static Vote getNewUser1VoteSushi() {
-        return new Vote(100018, VOTED_AT_DATE, UserTestData.user1, MenuTestData.getSushiRestaurantMenuWithVotes());
+        return new Vote(100018, VOTED_AT_DATE, UserTestData.user1,RestaurantTestData.sushiRestaurant);
     }
 
     public static Vote getUpdatedUser1VoteBurger() {
-        return new Vote(100018, VOTED_AT_DATE, UserTestData.user1, MenuTestData.burgerRestaurantMenu);
+        return new Vote(100018, VOTED_AT_DATE, UserTestData.user1);
     }
 }

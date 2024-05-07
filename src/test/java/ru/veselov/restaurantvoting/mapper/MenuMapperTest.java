@@ -3,13 +3,11 @@ package ru.veselov.restaurantvoting.mapper;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.util.ReflectionTestUtils;
-import ru.veselov.restaurantvoting.dto.MenuDto;
 import ru.veselov.restaurantvoting.model.Menu;
 import ru.veselov.restaurantvoting.util.DishTestData;
 import ru.veselov.restaurantvoting.util.MenuTestData;
 
 import java.time.LocalDate;
-import java.util.List;
 
 class MenuMapperTest {
 
@@ -17,27 +15,6 @@ class MenuMapperTest {
 
     public MenuMapperTest() {
         ReflectionTestUtils.setField(menuMapper, "dishMapper", new DishMapperImpl(), DishMapper.class);
-    }
-
-    @Test
-    void toDto_AllOk_ReturnCorrectMappedMenuDto() {
-        MenuDto menuDto = menuMapper.toDto(MenuTestData.getSushiRestaurantMenuWithVotes());
-
-        Assertions.assertThat(menuDto).isEqualTo(MenuTestData.sushiRestaurantMenuDto);
-    }
-
-    @Test
-    void toDtoWithoutVotes_AllOk_ReturnDtoWithoutVotes() {
-        MenuDto menuDto = menuMapper.toDtoWithoutVotes(MenuTestData.getSushiRestaurantMenuWithVotes());
-
-        Assertions.assertThat(menuDto).isEqualTo(MenuTestData.sushiRestaurantMenuDto);
-    }
-
-    @Test
-    void toDtosWithoutVotesWithoutVotes_AllOk_ReturnEntityWIthDishesAndDate() {
-        List<MenuDto> dtos = menuMapper.toDtosWithoutVotes(List.of(MenuTestData.getSushiRestaurantMenuWithVotes()));
-
-        Assertions.assertThat(dtos).hasSameElementsAs(List.of(MenuTestData.sushiRestaurantMenuDto));
     }
 
     @Test
@@ -50,7 +27,7 @@ class MenuMapperTest {
 
     @Test
     void toEntityUpdate_AllOk_ReturnEntityWithDishes() {
-        Menu menuToUpdate = new Menu(null, LocalDate.of(2019, 3, 3), null, null, null);
+        Menu menuToUpdate = new Menu(null, LocalDate.of(2019, 3, 3), null);
         Menu menu = menuMapper.toEntityUpdate(menuToUpdate, MenuTestData.menuDtoToCreate);
 
         Assertions.assertThat(menu).extracting(Menu::getDate).isEqualTo(MenuTestData.MENU_DATE.plusDays(1));

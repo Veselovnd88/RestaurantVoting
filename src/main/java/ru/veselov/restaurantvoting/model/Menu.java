@@ -14,11 +14,12 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -43,17 +44,11 @@ public class Menu extends AbstractBaseEntity {
     @OrderBy("name")
     private Set<Dish> dishes;
 
-    //https://stackoverflow.com/questions/4334970/hibernate-throws-multiplebagfetchexception-cannot-simultaneously-fetch-multipl/51055523#51055523
-    @OneToMany(mappedBy = "menu", fetch = FetchType.LAZY)
-    @OrderBy("id")
-    @ToString.Exclude
-    private Set<Vote> votes;
-
     public Menu(Integer id, LocalDate date, Restaurant restaurant, Dish... dishes) {
         super(id);
         this.date = date;
         this.restaurant = restaurant;
-        this.dishes = Set.of(dishes);
+        this.dishes = new HashSet<>(Arrays.asList(dishes));
     }
 
     public Menu(Integer id, LocalDate date, Restaurant restaurant, Set<Dish> dishes) {
@@ -61,13 +56,5 @@ public class Menu extends AbstractBaseEntity {
         this.date = date;
         this.restaurant = restaurant;
         this.dishes = dishes;
-    }
-
-    public Menu(Integer id, LocalDate date, Restaurant restaurant, Set<Dish> dishes, Set<Vote> votes) {
-        super(id);
-        this.date = date;
-        this.restaurant = restaurant;
-        this.dishes = dishes;
-        this.votes = votes;
     }
 }

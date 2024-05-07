@@ -8,7 +8,6 @@ import org.mapstruct.MappingTarget;
 import ru.veselov.restaurantvoting.dto.InputMenuDto;
 import ru.veselov.restaurantvoting.dto.MenuDto;
 import ru.veselov.restaurantvoting.mapper.annotation.WithDishes;
-import ru.veselov.restaurantvoting.mapper.annotation.WithoutVotes;
 import ru.veselov.restaurantvoting.mapper.config.MapStructConfig;
 import ru.veselov.restaurantvoting.model.Dish;
 import ru.veselov.restaurantvoting.model.Menu;
@@ -17,26 +16,14 @@ import java.util.List;
 import java.util.Set;
 
 @Mapper(config = MapStructConfig.class,
-        uses = {DishMapper.class, VoteMapper.class})
+        uses = {DishMapper.class})
 public interface MenuMapper {
 
     @Mapping(target = "id", source = "id")
     @Mapping(target = "date", source = "date")
     @Mapping(target = "dishes", source = "dishes")
-    @Mapping(target = "votes", ignore = true)
     @WithDishes
     MenuDto toDto(Menu menu);
-
-
-    @Mapping(target = "id", source = "id")
-    @Mapping(target = "date", source = "date")
-    @Mapping(target = "dishes", source = "dishes")
-    @Mapping(target = "votes", ignore = true)
-    @WithoutVotes
-    MenuDto toDtoWithoutVotes(Menu menu);
-
-    @IterableMapping(qualifiedBy = WithoutVotes.class)
-    List<MenuDto> toDtosWithoutVotes(List<Menu> menus);
 
     @IterableMapping(qualifiedBy = WithDishes.class)
     List<MenuDto> toDtos(List<Menu> menus);
@@ -48,7 +35,6 @@ public interface MenuMapper {
     @Mapping(target = "date", source = "date")
     @Mapping(target = "dishes", source = "dishes")
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "votes", ignore = true)
     @Mapping(target = "restaurant", ignore = true)
     Menu toEntityUpdate(@MappingTarget Menu menu, InputMenuDto menuDto);
 

@@ -12,12 +12,12 @@ import ru.veselov.restaurantvoting.exception.MenuNotFoundException;
 import ru.veselov.restaurantvoting.exception.VoteNotFoundException;
 import ru.veselov.restaurantvoting.exception.VotingTimeLimitExceedsException;
 import ru.veselov.restaurantvoting.mapper.VoteMapper;
-import ru.veselov.restaurantvoting.model.Menu;
+import ru.veselov.restaurantvoting.model.Restaurant;
 import ru.veselov.restaurantvoting.model.User;
 import ru.veselov.restaurantvoting.model.Vote;
 import ru.veselov.restaurantvoting.repository.UserRepository;
 import ru.veselov.restaurantvoting.repository.VoteRepository;
-import ru.veselov.restaurantvoting.service.menu.MenuService;
+import ru.veselov.restaurantvoting.service.restaurant.RestaurantService;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -35,7 +35,7 @@ public class VoteServiceImpl implements VoteService {
 
     private final VoteRepository repository;
     private final UserRepository userRepository;
-    private final MenuService menuService;
+    private final RestaurantService restaurantService;
     private final VoteMapper voteMapper;
 
     @Value("${vote.limit-time}")
@@ -54,8 +54,8 @@ public class VoteServiceImpl implements VoteService {
     @Transactional
     public VoteDto vote(int userId, int restaurantId, LocalDateTime localDateTime) {
         User user = userRepository.getReferenceById(userId);
-        Menu menu = menuService.findMenuByRestaurantIdAndLocalDate(restaurantId, localDateTime.toLocalDate());
-        Vote vote = new Vote(user, menu, localDateTime.toLocalDate());
+        Restaurant restaurant = restaurantService.getRestaurantById(restaurantId);
+        Vote vote = new Vote(user, restaurant, localDateTime.toLocalDate());
         Vote saved = repository.save(vote);
         log.info("User [id: {}] voted for menu [id: {}]", userId, restaurantId);
         return voteMapper.toDto(saved);
@@ -77,8 +77,8 @@ public class VoteServiceImpl implements VoteService {
         checkVoteTimeExceedsLimit(userId, localDateTime);
         Vote vote = repository.findByUserIdForDate(userId, localDateTime.toLocalDate())
                 .orElseThrow(() -> new VoteNotFoundException(userId, localDateTime.toLocalDate()));
-        Menu menu = menuService.findMenuByRestaurantIdAndLocalDate(restaurantId, localDateTime.toLocalDate());
-        vote.setMenu(menu);
+        Restaurant restaurant = restaurantService.getRestaurantById(restaurantId);
+        vote.setRestaurant(restaurant);
         repository.save(vote);
         log.info("User [id: {}] changes his mind and re-voted for menu [id: {}]", userId, restaurantId);
     }

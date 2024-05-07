@@ -10,7 +10,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import ru.veselov.restaurantvoting.exception.MenuNotFoundException;
+import ru.veselov.restaurantvoting.exception.RestaurantNotFoundException;
 import ru.veselov.restaurantvoting.exception.VotingTimeLimitExceedsException;
 import ru.veselov.restaurantvoting.service.menu.MenuService;
 import ru.veselov.restaurantvoting.service.vote.VoteService;
@@ -72,7 +72,7 @@ class VoteControllerTest extends AbstractRestControllerTest {
 
     @Test
     @SneakyThrows
-    void vote_MenuNotFoundForFirstVote_ReturnError() {
+    void vote_RestaurantFoundForFirstVote_ReturnError() {
         configureClockMockForTimeNotExceeds();
 
         ResultActions resultActions = mockMvc.perform(MockMvcUtils.vote(RestaurantTestData.NOT_FOUND)
@@ -80,8 +80,7 @@ class VoteControllerTest extends AbstractRestControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isNotFound());
 
         ResultActionErrorsUtil.checkNotFoundFields(resultActions,
-                MenuNotFoundException.MESSAGE_WITH_REST_ID_FOR_DATE
-                        .formatted(RestaurantTestData.NOT_FOUND, VoteTestData.VOTED_AT_DATE),
+                RestaurantNotFoundException.MSG_WITH_ID.formatted(RestaurantTestData.NOT_FOUND),
                 MockMvcUtils.VOTE_RESTAURANT_ID_URL.formatted(RestaurantTestData.NOT_FOUND));
     }
 
@@ -110,7 +109,7 @@ class VoteControllerTest extends AbstractRestControllerTest {
 
     @Test
     @SneakyThrows
-    void vote_MenuNotFoundReVote_ReturnError() {
+    void vote_RestaurantNotFoundReVote_ReturnError() {
         configureClockMockForTimeNotExceeds();
 
         ResultActions resultActions = mockMvc.perform(MockMvcUtils.changeVote(RestaurantTestData.NOT_FOUND)
@@ -118,8 +117,7 @@ class VoteControllerTest extends AbstractRestControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isNotFound());
 
         ResultActionErrorsUtil.checkNotFoundFields(resultActions,
-                MenuNotFoundException.MESSAGE_WITH_REST_ID_FOR_DATE
-                        .formatted(RestaurantTestData.NOT_FOUND, VoteTestData.VOTED_AT_DATE),
+                RestaurantNotFoundException.MSG_WITH_ID.formatted(RestaurantTestData.NOT_FOUND),
                 MockMvcUtils.VOTE_RESTAURANT_ID_URL.formatted(RestaurantTestData.NOT_FOUND));
     }
 

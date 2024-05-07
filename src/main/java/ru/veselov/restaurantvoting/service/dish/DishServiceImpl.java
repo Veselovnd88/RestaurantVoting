@@ -35,7 +35,7 @@ public class DishServiceImpl implements DishService {
     @Override
     @Transactional
     public DishDto save(int menuId, DishDto dishDto) {
-        Menu menu = menuRepository.findByIdWithDishesAndVotes(menuId)
+        Menu menu = menuRepository.findByIdWithDishes(menuId)
                 .orElseThrow(() -> new MenuNotFoundException(menuId));
         Dish dish = mapper.toEntity(dishDto);
         dish.setMenu(menu);

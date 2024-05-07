@@ -82,7 +82,7 @@ public class MenuServiceImpl implements MenuService {
     @Override
     public MenuDto getMenuByIdWithDishesAndVotes(int id) {
         log.info("Retrieving menu by id: {}", id);
-        Menu menu = repository.findByIdWithDishesAndVotes(id).orElseThrow(() -> new MenuNotFoundException(id));
+        Menu menu = repository.findByIdWithDishes(id).orElseThrow(() -> new MenuNotFoundException(id));
         return mapper.toDto(menu);
     }
 
@@ -90,13 +90,13 @@ public class MenuServiceImpl implements MenuService {
      * Get all menus of restaurant
      *
      * @param restaurantId restaurant id
-     * @return list of menu dtos (with dishes, without votes)
+     * @return list of menu dtos (with dishes)
      */
     @Cacheable(value = "menus")
     @Override
     public List<MenuDto> getMenusByRestaurant(int restaurantId) {
         log.info("Retrieving all menus for restaurant id: {}", restaurantId);
-        return mapper.toDtosWithoutVotes(repository.findByRestaurantId(restaurantId, SORT_BY_DATE));
+        return mapper.toDtos(repository.findByRestaurantId(restaurantId, SORT_BY_DATE));
     }
 
     /**
