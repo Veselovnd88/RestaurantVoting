@@ -3,6 +3,7 @@ package ru.veselov.restaurantvoting.service.restaurant;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Sort;
@@ -35,7 +36,7 @@ public class RestaurantServiceImpl implements RestaurantService {
      * @param restaurantDto dto with initial data about restaurant
      * @return {@link RestaurantDto} dto with data about saved restaurant
      */
-    @CacheEvict(value = {"restaurants", "menus"}, allEntries = true)
+    @CachePut(cacheNames="restaurants", key="#restaurantDto.id()")
     @Override
     @Transactional
     public RestaurantDto create(InputRestaurantDto restaurantDto) {
@@ -78,6 +79,7 @@ public class RestaurantServiceImpl implements RestaurantService {
      * @return {@link RestaurantDto} found restaurant
      * @throws RestaurantNotFoundException if restaurant with such id not found
      */
+    @Cacheable(value = "restaurants", key = "id")
     @Override
     public RestaurantDto findByIdWithMenuForDate(int id, LocalDate date) {
         Restaurant restaurant = repository.findByIdWithMenuByDate(id, date)
@@ -92,6 +94,7 @@ public class RestaurantServiceImpl implements RestaurantService {
      * @param date preferred date to find menu
      * @return {@link List<RestaurantDto>} found restaurants
      */
+    @Cacheable(value = "restaurants")
     @Override
     public List<RestaurantDto> findAllWithMenuByDate(LocalDate date) {
         List<Restaurant> allRestaurantsWithMenu = repository.findAllWithMenuByDate(date, SORT_BY_NAME);
