@@ -19,5 +19,5 @@ public interface MenuService {
 
     void deleteMenu(int id);
 
-    Menu findMenuByRestaurantIdAndLocalDate(int restaurantId, LocalDate localDate);
+    Menu findById(int id);
 }

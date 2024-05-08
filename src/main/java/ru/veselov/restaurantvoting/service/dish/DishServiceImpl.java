@@ -7,12 +7,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.veselov.restaurantvoting.dto.DishDto;
 import ru.veselov.restaurantvoting.exception.DishNotFoundException;
-import ru.veselov.restaurantvoting.exception.MenuNotFoundException;
 import ru.veselov.restaurantvoting.mapper.DishMapper;
 import ru.veselov.restaurantvoting.model.Dish;
 import ru.veselov.restaurantvoting.model.Menu;
 import ru.veselov.restaurantvoting.repository.DishRepository;
-import ru.veselov.restaurantvoting.repository.MenuRepository;
+import ru.veselov.restaurantvoting.service.menu.MenuService;
 
 @Service
 @RequiredArgsConstructor
@@ -21,7 +20,7 @@ import ru.veselov.restaurantvoting.repository.MenuRepository;
 public class DishServiceImpl implements DishService {
 
     private final DishRepository repository;
-    private final MenuRepository menuRepository;
+    private final MenuService menuService;
     private final DishMapper mapper;
 
     /**
@@ -35,7 +34,7 @@ public class DishServiceImpl implements DishService {
     @Override
     @Transactional
     public DishDto save(int menuId, DishDto dishDto) {
-        Menu menu = menuRepository.findById(menuId).orElseThrow(() -> new MenuNotFoundException(menuId));
+        Menu menu = menuService.findById(menuId);
         Dish dish = mapper.toEntity(dishDto);
         dish.setMenu(menu);
         Dish savedDish = repository.save(dish);

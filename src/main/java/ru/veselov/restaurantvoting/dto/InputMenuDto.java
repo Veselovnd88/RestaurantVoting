@@ -18,14 +18,6 @@ public record InputMenuDto(
         @JsonProperty("date")
         @Schema(description = "Day of menu added", defaultValue = "2024-04-26")
         LocalDate date
-
-/*        @NotEmpty
-        @Size(min = 2, max = 5)
-        @DifferentDishes
-        @JsonProperty("dishes")
-        @ArraySchema(schema = @Schema(implementation = DishDto.class, maximum = "5", minimum = "2",
-                description = "Dishes to add"))
-        List<@Valid DishDto> dishes*/
 ) implements HasId {
 
     @Override

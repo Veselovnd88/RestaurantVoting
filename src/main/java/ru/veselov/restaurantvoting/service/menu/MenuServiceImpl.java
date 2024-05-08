@@ -64,7 +64,7 @@ public class MenuServiceImpl implements MenuService {
     @Override
     @Transactional
     public MenuDto update(int id, InputMenuDto menuDto) {
-        Menu menu = repository.findById(id).orElseThrow(() -> new MenuNotFoundException(id));
+        Menu menu = findById(id);
         mapper.toEntityUpdate(menu, menuDto);
         Menu updated = repository.save(menu);
         log.info("Menu id: {} updated", id);
@@ -111,18 +111,7 @@ public class MenuServiceImpl implements MenuService {
         log.info("Menu with id: {} deleted", id);
     }
 
-    /**
-     * Find menu by restaurant id for specified date
-     *
-     * @param restaurantId id of restaurant
-     * @param localDate    date
-     * @return Menu object
-     * @throws MenuNotFoundException if no menu found for such conditions
-     */
-    @Cacheable(value = "menus")
-    @Override
-    public Menu findMenuByRestaurantIdAndLocalDate(int restaurantId, LocalDate localDate) {
-        return repository.findByRestaurantIdByDate(restaurantId, localDate)
-                .orElseThrow(() -> new MenuNotFoundException(restaurantId, localDate));
+    public Menu findById(int id) {
+        return repository.findById(id).orElseThrow(() -> new MenuNotFoundException(id));
     }
 }
