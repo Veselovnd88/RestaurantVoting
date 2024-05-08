@@ -36,7 +36,7 @@ public class RestaurantServiceImpl implements RestaurantService {
      * @param restaurantDto dto with initial data about restaurant
      * @return {@link RestaurantDto} dto with data about saved restaurant
      */
-    @CachePut(cacheNames="restaurants", key="#restaurantDto.id()")
+    @CachePut(cacheNames = "restaurants")
     @Override
     @Transactional
     public RestaurantDto create(InputRestaurantDto restaurantDto) {
@@ -79,7 +79,7 @@ public class RestaurantServiceImpl implements RestaurantService {
      * @return {@link RestaurantDto} found restaurant
      * @throws RestaurantNotFoundException if restaurant with such id not found
      */
-    @Cacheable(value = "restaurants", key = "id")
+    @Cacheable(value = "restaurants")
     @Override
     public RestaurantDto findByIdWithMenuForDate(int id, LocalDate date) {
         Restaurant restaurant = repository.findByIdWithMenuByDate(id, date)
@@ -127,7 +127,7 @@ public class RestaurantServiceImpl implements RestaurantService {
      * @param id restaurant id
      */
     @Caching(evict = {
-            @CacheEvict(value = "restaurants", key = "id"),
+            @CacheEvict(value = "restaurants", key = "#id"),
             @CacheEvict(value = "menus", allEntries = true)
     })
     @Override
