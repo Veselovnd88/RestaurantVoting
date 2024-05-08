@@ -25,6 +25,7 @@ import ru.veselov.restaurantvoting.repository.RestaurantRepository;
 import ru.veselov.restaurantvoting.service.menu.MenuServiceImpl;
 import ru.veselov.restaurantvoting.util.MenuTestData;
 import ru.veselov.restaurantvoting.util.RestaurantTestData;
+import ru.veselov.restaurantvoting.util.TestUtils;
 
 import java.util.List;
 import java.util.Optional;
@@ -110,7 +111,7 @@ class MenuServiceImplTest {
         Mockito.when(menuRepository.findByIdWithDishes(Mockito.anyInt())).thenReturn(Optional.empty());
 
         Assertions.assertThatExceptionOfType(MenuNotFoundException.class)
-                .isThrownBy(() -> menuService.getMenuByIdWithDishes(MenuTestData.NOT_FOUND))
+                .isThrownBy(() -> menuService.getMenuByIdWithDishes(TestUtils.NOT_FOUND))
                 .isInstanceOf(NotFoundException.class);
     }
 

@@ -13,6 +13,7 @@ import ru.veselov.restaurantvoting.repository.RestaurantRepository;
 import ru.veselov.restaurantvoting.repository.VoteRepository;
 import ru.veselov.restaurantvoting.service.restaurant.RestaurantService;
 import ru.veselov.restaurantvoting.util.RestaurantTestData;
+import ru.veselov.restaurantvoting.util.TestUtils;
 import ru.veselov.restaurantvoting.util.VoteTestData;
 
 import java.util.List;
@@ -49,7 +50,7 @@ class RestaurantServiceImplTest {
 
     @Test
     void findById_NotFound_ThrowException() {
-        Assertions.assertThatThrownBy(() -> restaurantService.findById(RestaurantTestData.NOT_FOUND))
+        Assertions.assertThatThrownBy(() -> restaurantService.findById(TestUtils.NOT_FOUND))
                 .isInstanceOf(NotFoundException.class);
     }
 
@@ -64,7 +65,7 @@ class RestaurantServiceImplTest {
     @Test
     void findByIdWithMenuForDate_NotFound_ThrowException() {
         Assertions.assertThatThrownBy(() -> restaurantService
-                        .findByIdWithMenuForDate(RestaurantTestData.NOT_FOUND, VoteTestData.VOTED_AT_DATE))
+                        .findByIdWithMenuForDate(TestUtils.NOT_FOUND, VoteTestData.VOTED_AT_DATE))
                 .isInstanceOf(NotFoundException.class);
     }
 

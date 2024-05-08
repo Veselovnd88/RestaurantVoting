@@ -18,6 +18,7 @@ import ru.veselov.restaurantvoting.util.MockMvcUtils;
 import ru.veselov.restaurantvoting.util.RestaurantTestData;
 import ru.veselov.restaurantvoting.util.ResultActionErrorsUtil;
 import ru.veselov.restaurantvoting.util.SecurityUtils;
+import ru.veselov.restaurantvoting.util.TestUtils;
 import ru.veselov.restaurantvoting.util.UserTestData;
 import ru.veselov.restaurantvoting.util.VoteTestData;
 
@@ -75,12 +76,12 @@ class VoteControllerTest extends AbstractRestControllerTest {
     void vote_RestaurantFoundForFirstVote_ReturnError() {
         configureClockMockForTimeNotExceeds();
 
-        ResultActions resultActions = mockMvc.perform(MockMvcUtils.vote(RestaurantTestData.NOT_FOUND)
+        ResultActions resultActions = mockMvc.perform(MockMvcUtils.vote(TestUtils.NOT_FOUND)
                         .with(SecurityUtils.userHttpBasic(UserTestData.user3)))
                 .andExpect(MockMvcResultMatchers.status().isNotFound());
 
         ResultActionErrorsUtil.checkNotFoundFields(resultActions,
-                RestaurantNotFoundException.MSG_WITH_ID.formatted(RestaurantTestData.NOT_FOUND),
+                RestaurantNotFoundException.MSG_WITH_ID.formatted(TestUtils.NOT_FOUND),
                 VoteController.REST_URL);
     }
 
@@ -112,12 +113,12 @@ class VoteControllerTest extends AbstractRestControllerTest {
     void vote_RestaurantNotFoundReVote_ReturnError() {
         configureClockMockForTimeNotExceeds();
 
-        ResultActions resultActions = mockMvc.perform(MockMvcUtils.changeVote(RestaurantTestData.NOT_FOUND)
+        ResultActions resultActions = mockMvc.perform(MockMvcUtils.changeVote(TestUtils.NOT_FOUND)
                         .with(SecurityUtils.userHttpBasic(UserTestData.user1)))
                 .andExpect(MockMvcResultMatchers.status().isNotFound());
 
         ResultActionErrorsUtil.checkNotFoundFields(resultActions,
-                RestaurantNotFoundException.MSG_WITH_ID.formatted(RestaurantTestData.NOT_FOUND),
+                RestaurantNotFoundException.MSG_WITH_ID.formatted(TestUtils.NOT_FOUND),
                 VoteController.REST_URL);
     }
 

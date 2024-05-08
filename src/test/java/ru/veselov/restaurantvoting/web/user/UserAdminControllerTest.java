@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import ru.veselov.restaurantvoting.dto.UserDto;
 import ru.veselov.restaurantvoting.exception.UserNotFoundException;
 import ru.veselov.restaurantvoting.model.User;
 import ru.veselov.restaurantvoting.repository.UserRepository;
@@ -14,6 +15,7 @@ import ru.veselov.restaurantvoting.service.user.UserService;
 import ru.veselov.restaurantvoting.util.MockMvcUtils;
 import ru.veselov.restaurantvoting.util.ResultActionErrorsUtil;
 import ru.veselov.restaurantvoting.util.SecurityUtils;
+import ru.veselov.restaurantvoting.util.TestUtils;
 import ru.veselov.restaurantvoting.util.UserTestData;
 import ru.veselov.restaurantvoting.web.AbstractRestControllerTest;
 import ru.veselov.restaurantvoting.web.GlobalExceptionHandler;
@@ -73,12 +75,12 @@ class UserAdminControllerTest extends AbstractRestControllerTest {
     @Test
     @SneakyThrows
     void getById_UserNotFound_ReturnError() {
-        ResultActions resultActions = mockMvc.perform(MockMvcUtils.getUserById(UserTestData.NOT_FOUND)
+        ResultActions resultActions = mockMvc.perform(MockMvcUtils.getUserById(TestUtils.NOT_FOUND)
                 .with(SecurityUtils.userHttpBasic(UserTestData.admin)));
 
         ResultActionErrorsUtil.checkNotFoundFields(resultActions,
-                UserNotFoundException.MESSAGE_WITH_ID.formatted(UserTestData.NOT_FOUND),
-                MockMvcUtils.USER_ID_URL.formatted(UserTestData.NOT_FOUND));
+                UserNotFoundException.MESSAGE_WITH_ID.formatted(TestUtils.NOT_FOUND),
+                MockMvcUtils.USER_ID_URL.formatted(TestUtils.NOT_FOUND));
     }
 
     @Test
@@ -138,13 +140,13 @@ class UserAdminControllerTest extends AbstractRestControllerTest {
     @Test
     @SneakyThrows
     void update_UserNotFound_ReturnError() {
-        ResultActions resultActions = mockMvc.perform(MockMvcUtils.updateUser(UserTestData.NOT_FOUND,
-                        UserTestData.userNotFoundToUpdate)
+        UserDto userNotFoundToUpdate = new UserDto(TestUtils.NOT_FOUND, "UsernfUpd", "usernfUpd@gmail.com", null);
+        ResultActions resultActions = mockMvc.perform(MockMvcUtils.updateUser(TestUtils.NOT_FOUND, userNotFoundToUpdate)
                 .with(SecurityUtils.userHttpBasic(UserTestData.admin)));
 
         ResultActionErrorsUtil.checkNotFoundFields(resultActions,
-                UserNotFoundException.MESSAGE_WITH_ID.formatted(UserTestData.NOT_FOUND),
-                MockMvcUtils.USER_ID_URL.formatted(UserTestData.NOT_FOUND));
+                UserNotFoundException.MESSAGE_WITH_ID.formatted(TestUtils.NOT_FOUND),
+                MockMvcUtils.USER_ID_URL.formatted(TestUtils.NOT_FOUND));
     }
 
     @Test
@@ -171,10 +173,10 @@ class UserAdminControllerTest extends AbstractRestControllerTest {
     @Test
     @SneakyThrows
     void enable_UserNotFound_ReturnError() {
-        ResultActions resultActions = mockMvc.perform(MockMvcUtils.changeUserStatus(UserTestData.NOT_FOUND, false)
+        ResultActions resultActions = mockMvc.perform(MockMvcUtils.changeUserStatus(TestUtils.NOT_FOUND, false)
                 .with(SecurityUtils.userHttpBasic(UserTestData.admin)));
         ResultActionErrorsUtil.checkNotFoundFields(resultActions,
-                UserNotFoundException.MESSAGE_WITH_ID.formatted(UserTestData.NOT_FOUND),
-                MockMvcUtils.USER_ID_URL.formatted(UserTestData.NOT_FOUND));
+                UserNotFoundException.MESSAGE_WITH_ID.formatted(TestUtils.NOT_FOUND),
+                MockMvcUtils.USER_ID_URL.formatted(TestUtils.NOT_FOUND));
     }
 }

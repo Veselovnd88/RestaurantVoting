@@ -20,6 +20,7 @@ import ru.veselov.restaurantvoting.util.MockMvcUtils;
 import ru.veselov.restaurantvoting.util.RestaurantTestData;
 import ru.veselov.restaurantvoting.util.ResultActionErrorsUtil;
 import ru.veselov.restaurantvoting.util.SecurityUtils;
+import ru.veselov.restaurantvoting.util.TestUtils;
 import ru.veselov.restaurantvoting.util.UserTestData;
 import ru.veselov.restaurantvoting.web.menu.MenuAdminController;
 
@@ -58,12 +59,12 @@ class MenuAdminControllerTest extends AbstractRestControllerTest {
     @Test
     @SneakyThrows
     void create_RestaurantNotFound_ReturnError() {
-        ResultActions resultActions = mockMvc.perform(MockMvcUtils.createMenu(RestaurantTestData.NOT_FOUND,
+        ResultActions resultActions = mockMvc.perform(MockMvcUtils.createMenu(TestUtils.NOT_FOUND,
                         MenuTestData.MENU_DATE)
                 .with(SecurityUtils.userHttpBasic(UserTestData.admin)));
 
         ResultActionErrorsUtil.checkNotFoundFields(resultActions,
-                RestaurantNotFoundException.MSG_WITH_ID.formatted(RestaurantTestData.NOT_FOUND),
+                RestaurantNotFoundException.MSG_WITH_ID.formatted(TestUtils.NOT_FOUND),
                 MenuAdminController.REST_URL);
     }
 

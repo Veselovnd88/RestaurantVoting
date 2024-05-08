@@ -14,35 +14,25 @@ import java.util.List;
 @UtilityClass
 public class MenuTestData {
 
+    public static final LocalDate MENU_DATE = LocalDate.of(2024, 3, 6);
+
+    public static final int SUSHI_MENU_ID = TestUtils.START_SEQ + 6;
+
+    public static final int PIZZA_MENU_ID = TestUtils.START_SEQ + 7;
+
+    public static final int BURGER_MENU_ID = TestUtils.START_SEQ + 8;
+
     public static final MatcherFactory.Matcher<Menu> MENU_MATCHER = MatcherFactory.usingIgnoringFieldsComparator(
             Menu.class, "restaurant", "dishes");
 
     public static final MatcherFactory.Matcher<MenuDto> MENU_DTO_MATCHER = MatcherFactory
             .usingIgnoringFieldsComparator(MenuDto.class);
 
-    public static final LocalDate MENU_DATE = LocalDate.of(2024, 3, 6);
-
-    public static final int SUSHI_MENU_ID = 100006;
-
-    public static final int PIZZA_MENU_ID = SUSHI_MENU_ID + 1;
-
-    public static final int BURGER_MENU_ID = SUSHI_MENU_ID + 2;
-
-    public static final int NOT_FOUND = 200006;
-
     public static MenuDto sushiRestaurantMenuDto = new MenuDto(SUSHI_MENU_ID, MENU_DATE, DishTestData.sushiDishesDtos, null);
 
     public static MenuDto pizzaRestaurantMenuDto = new MenuDto(PIZZA_MENU_ID, MENU_DATE, DishTestData.pizzaDishesDtos, null);
 
     public static MenuDto burgerRestaurantMenuDto = new MenuDto(BURGER_MENU_ID, MENU_DATE, DishTestData.burgerDishesDtos, null);
-
-    public static Menu pizzaRestaurantMenu = new Menu(PIZZA_MENU_ID, MENU_DATE, RestaurantTestData.pizzaRestaurant,
-            DishTestData.diabloPizza, DishTestData.margarita, DishTestData.pizzaArriva);
-
-    public static Menu burgerRestaurantMenu = new Menu(BURGER_MENU_ID, MENU_DATE, RestaurantTestData.burgerRestaurant,
-            DishTestData.doubleBurger, DishTestData.friesPotato, DishTestData.tripleBurger);
-
-    public static Menu menuToCreateWithoutId = new Menu(null, MENU_DATE.plusDays(1), null);
 
     public static MenuDto createdMenuDto = new MenuDto(100022, MENU_DATE.plusDays(1), null, null);
 

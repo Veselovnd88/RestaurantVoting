@@ -19,6 +19,7 @@ import ru.veselov.restaurantvoting.service.user.UserService;
 import ru.veselov.restaurantvoting.util.MockMvcUtils;
 import ru.veselov.restaurantvoting.util.ResultActionErrorsUtil;
 import ru.veselov.restaurantvoting.util.SecurityUtils;
+import ru.veselov.restaurantvoting.util.TestUtils;
 import ru.veselov.restaurantvoting.util.UserTestData;
 import ru.veselov.restaurantvoting.web.GlobalExceptionHandler;
 import ru.veselov.restaurantvoting.web.user.UserAdminController;
@@ -69,13 +70,13 @@ class UserAdminControllerValidationTest {
     @Test
     @SneakyThrows
     void update_DifferentId_ReturnValidationError() {
-        ResultActions resultActions = mockMvc.perform(MockMvcUtils.updateUser(UserTestData.NOT_FOUND,
+        ResultActions resultActions = mockMvc.perform(MockMvcUtils.updateUser(TestUtils.NOT_FOUND,
                         UserTestData.user2Dto)
                 .with(SecurityUtils.userHttpBasic(UserTestData.admin)));
 
         ResultActionErrorsUtil.checkRequestValidationError(resultActions,
                 GlobalExceptionHandler.REQUEST_VALIDATION_FAILED,
-                MockMvcUtils.USER_ID_URL.formatted(UserTestData.NOT_FOUND));
+                MockMvcUtils.USER_ID_URL.formatted(TestUtils.NOT_FOUND));
     }
 
     @ParameterizedTest

@@ -4,22 +4,32 @@ import lombok.experimental.UtilityClass;
 import ru.veselov.restaurantvoting.dto.DishDto;
 import ru.veselov.restaurantvoting.model.Dish;
 
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 
 @UtilityClass
 public class DishTestData {
 
+    public static final int UNAGI_ID = TestUtils.START_SEQ + 9;
+
+    public static final int PHILADELPHIA_ID = TestUtils.START_SEQ + 10;
+
+    public static final int TASTY_ROLL_ID = TestUtils.START_SEQ + 11;
+
+    public static final int PIZZA_ARRIVA_ID = TestUtils.START_SEQ + 12;
+
+    public static final int DIABLO_PIZZA_ID = TestUtils.START_SEQ + 13;
+
+    public static final int MARGARITA_PIZZA_ID = TestUtils.START_SEQ + 14;
+
+    public static final int DOUBLE_BURGER_ID = TestUtils.START_SEQ + 15;
+
+    public static final int TRIPLE_BURGER_ID = TestUtils.START_SEQ + 16;
+
+    public static final int FRIES_POTATO_ID = TestUtils.START_SEQ + 17;
+
     public static final MatcherFactory.Matcher<Dish> DISH_MATCHER = MatcherFactory.usingIgnoringFieldsComparator(Dish.class, "menu");
 
     public static final MatcherFactory.Matcher<DishDto> DISH_DTO_MATCHER = MatcherFactory.usingIgnoringFieldsComparator(DishDto.class);
-
-    public static final int TASTY_ROLL_ID = 100011;
-
-    public static final int UNAGI_ID = 100009;
-
-    public static final int PHILADELPHIA_ID = 100010;
 
     public static Dish unagi = new Dish(UNAGI_ID, "Unagi", 40000);
 
@@ -29,19 +39,7 @@ public class DishTestData {
 
     public static List<Dish> sushiDishes = List.of(philadelphia, tastyRoll, unagi);
 
-    public static Dish pizzaArriva = new Dish(100012, "Pizza Arriva", 60000);
-
-    public static Dish diabloPizza = new Dish(100013, "Diablo Pizza", 85000);
-
-    public static Dish margarita = new Dish(100014, "Margarita", 55000);
-
-    public static Dish doubleBurger = new Dish(100015, "Double Burger", 65000);
-
-    public static Dish tripleBurger = new Dish(100016, "Triple Burger", 75000);
-
-    public static Dish friesPotato = new Dish(100017, "Fries Potato", 35000);
-
-    public static DishDto philadelphiaDto = new DishDto(100010, "Philadelphia", 30000);
+    public static DishDto philadelphiaDto = new DishDto(PHILADELPHIA_ID, "Philadelphia", 30000);
 
     public static DishDto philadelphiaDtoForConflict = new DishDto(null, "Philadelphia", 30000);
 
@@ -53,47 +51,25 @@ public class DishTestData {
 
     public static List<DishDto> sushiDishesDtos = List.of(philadelphiaDto, tastyRollDto, unagiDto);
 
-    public static DishDto pizzaArrivaDto = new DishDto(100012, "Pizza Arriva", 60000);
+    public static DishDto pizzaArrivaDto = new DishDto(PIZZA_ARRIVA_ID, "Pizza Arriva", 60000);
 
-    public static DishDto diabloPizzaDto = new DishDto(100013, "Diablo Pizza", 85000);
+    public static DishDto diabloPizzaDto = new DishDto(DIABLO_PIZZA_ID, "Diablo Pizza", 85000);
 
-    public static DishDto margaritaDto = new DishDto(100014, "Margarita", 55000);
+    public static DishDto margaritaDto = new DishDto(MARGARITA_PIZZA_ID, "Margarita", 55000);
 
     public static List<DishDto> pizzaDishesDtos = List.of(diabloPizzaDto, margaritaDto, pizzaArrivaDto);
 
-    public static DishDto doubleBurgerDto = new DishDto(100015, "Double Burger", 65000);
+    public static DishDto doubleBurgerDto = new DishDto(DOUBLE_BURGER_ID, "Double Burger", 65000);
 
-    public static DishDto tripleBurgerDto = new DishDto(100016, "Triple Burger", 75000);
+    public static DishDto tripleBurgerDto = new DishDto(TRIPLE_BURGER_ID, "Triple Burger", 75000);
 
-    public static DishDto friesPotatoDto = new DishDto(100017, "Fries Potato", 35000);
+    public static DishDto friesPotatoDto = new DishDto(FRIES_POTATO_ID, "Fries Potato", 35000);
 
     public static List<DishDto> burgerDishesDtos = List.of(doubleBurgerDto, friesPotatoDto, tripleBurgerDto);
 
     public static DishDto newTastyDish = new DishDto(null, "veryTasty", 10000);
 
-    public static DishDto newTastyDish2 = new DishDto(null, "veryTasty2", 10000);
-
-    public static Dish tastyDishEntity = new Dish(null, "veryTasty", 10000);
-
-    public static Dish tastyDishEntity2 = new Dish(null, "veryTasty2", 10000);
-
-    public static DishDto savedNewTastyDish = new DishDto(100022, "veryTasty", 10000);
-
-    public static DishDto savedWithMenuNewTastyDish = new DishDto(100023, "veryTasty", 10000);
-
-    public static DishDto savedWithMenuNewTastyDish2 = new DishDto(100024, "veryTasty2", 10000);
+    public static DishDto savedNewTastyDish = new DishDto(TestUtils.LAST_SEQ, "veryTasty", 10000);
 
     public static DishDto dishToUpdate = new DishDto(TASTY_ROLL_ID, "TastyRoll", 10000);
-
-    public static List<DishDto> allDishes = List.of(diabloPizzaDto, doubleBurgerDto, friesPotatoDto, margaritaDto,
-            philadelphiaDto, pizzaArrivaDto, tastyRollDto, tripleBurgerDto, unagiDto);
-
-    public static DishDto changedUnagiDto = new DishDto(UNAGI_ID, "UnagiUpd", 45000);
-
-    public static Set<Dish> getUpdatedDishesInSortedSet() {
-        LinkedHashSet<Dish> linkedHashSet = new LinkedHashSet<>();
-        linkedHashSet.add(DishTestData.tastyDishEntity);
-        linkedHashSet.add(DishTestData.tastyDishEntity2);
-        return linkedHashSet;
-    }
 }

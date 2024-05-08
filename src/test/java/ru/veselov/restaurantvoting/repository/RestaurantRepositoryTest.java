@@ -9,6 +9,7 @@ import org.springframework.test.context.jdbc.SqlConfig;
 import ru.veselov.restaurantvoting.model.Restaurant;
 import ru.veselov.restaurantvoting.service.restaurant.RestaurantServiceImpl;
 import ru.veselov.restaurantvoting.util.RestaurantTestData;
+import ru.veselov.restaurantvoting.util.TestUtils;
 
 import java.util.List;
 import java.util.Optional;
@@ -42,6 +43,6 @@ class RestaurantRepositoryTest {
 
     @Test
     void findById_AllOk_ReturnEmptyOptional() {
-        Assertions.assertThat(repository.findById(RestaurantTestData.NOT_FOUND)).isEmpty();
+        Assertions.assertThat(repository.findById(TestUtils.NOT_FOUND)).isEmpty();
     }
 }
