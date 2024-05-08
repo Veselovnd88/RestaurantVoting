@@ -5,7 +5,6 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import ru.veselov.restaurantvoting.dto.InputMenuDto;
@@ -24,7 +23,6 @@ import ru.veselov.restaurantvoting.util.TestUtils;
 import ru.veselov.restaurantvoting.util.UserTestData;
 import ru.veselov.restaurantvoting.web.menu.MenuAdminController;
 
-@WithMockUser(value = "ADMIN")
 class MenuAdminControllerTest extends AbstractRestControllerTest {
 
     @Autowired

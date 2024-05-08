@@ -4,8 +4,11 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
+import ru.veselov.restaurantvoting.configuration.CacheTestConfiguration;
 import ru.veselov.restaurantvoting.dto.RestaurantDto;
 import ru.veselov.restaurantvoting.exception.NotFoundException;
 import ru.veselov.restaurantvoting.repository.MenuRepository;
@@ -20,6 +23,8 @@ import java.util.List;
 
 
 @SpringBootTest
+@ContextConfiguration(classes = {CacheTestConfiguration.class})
+@ActiveProfiles("test")
 @Sql(scripts = {"classpath:db/init.sql", "classpath:db/populateDbTest.sql"}, config = @SqlConfig(encoding = "UTF-8"))
 class RestaurantServiceImplTest {
 
