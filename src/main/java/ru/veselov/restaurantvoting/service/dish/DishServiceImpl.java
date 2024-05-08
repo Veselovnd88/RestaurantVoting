@@ -3,6 +3,7 @@ package ru.veselov.restaurantvoting.service.dish;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.veselov.restaurantvoting.dto.DishDto;
@@ -30,7 +31,10 @@ public class DishServiceImpl implements DishService {
      * @param dishDto dto for creating new Dish
      * @return {@link DishDto} saved dish
      */
-    @CacheEvict(value = {"restaurants", "menus"}, allEntries = true)
+    @Caching(evict = {
+            @CacheEvict(value = "restaurants", allEntries = true),
+            @CacheEvict(value = "menus", key = "menuId")
+    })
     @Override
     @Transactional
     public DishDto save(int menuId, DishDto dishDto) {

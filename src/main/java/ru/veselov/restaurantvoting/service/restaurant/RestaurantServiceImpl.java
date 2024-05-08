@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -106,7 +107,7 @@ public class RestaurantServiceImpl implements RestaurantService {
      * @return {@link RestaurantDto} updated restaurant
      * @throws RestaurantNotFoundException if restaurant with such id not found
      */
-    @CacheEvict(value = "restaurants", allEntries = true)
+    @CacheEvict(value = "restaurants", key = "#restaurantDto.id()")
     @Override
     @Transactional
     public RestaurantDto update(int id, InputRestaurantDto restaurantDto) {
@@ -122,7 +123,10 @@ public class RestaurantServiceImpl implements RestaurantService {
      *
      * @param id restaurant id
      */
-    @CacheEvict(value = {"restaurants", "menus"}, allEntries = true)
+    @Caching(evict = {
+            @CacheEvict(value = "restaurants", key = "id"),
+            @CacheEvict(value = "menus", allEntries = true)
+    })
     @Override
     @Transactional
     public void delete(int id) {

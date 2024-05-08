@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,7 +39,10 @@ public class MenuServiceImpl implements MenuService {
      * @throws RestaurantNotFoundException                             if restaurant doesn't exist
      * @throws org.springframework.dao.DataIntegrityViolationException if menu/local date conflict occurred
      */
-    @CacheEvict(value = {"restaurants", "menus"}, allEntries = true)
+    @Caching(evict = {
+            @CacheEvict(value = "restaurants", key = "restaurantId"),
+            @CacheEvict(value = "menus", allEntries = true)
+    })
     @Override
     @Transactional
     public MenuDto create(int restaurantId, LocalDate date) {
@@ -60,7 +64,7 @@ public class MenuServiceImpl implements MenuService {
      * @throws org.springframework.dao.DataIntegrityViolationException if dish exists for this menu
      * @throws org.springframework.dao.DataIntegrityViolationException if menu/local date conflict occurred
      */
-    @CacheEvict(value = "menus", allEntries = true)
+    @CacheEvict(value = "menus", key = "#menuDto.id()")
     @Override
     @Transactional
     public MenuDto update(int id, InputMenuDto menuDto) {
@@ -103,7 +107,10 @@ public class MenuServiceImpl implements MenuService {
      *
      * @param id menu id
      */
-    @CacheEvict(value = {"restaurants", "menus"}, allEntries = true)
+    @Caching(evict = {
+            @CacheEvict(value = "restaurants", allEntries = true),
+            @CacheEvict(value = "menus", key = "id")
+    })
     @Override
     @Transactional
     public void deleteMenu(int id) {

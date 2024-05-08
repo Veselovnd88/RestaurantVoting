@@ -28,7 +28,8 @@ public class CaffeineCacheConfiguration {
         return Caffeine.newBuilder()
                 .initialCapacity(20)
                 .maximumSize(100)
-                .expireAfterAccess(3, TimeUnit.HOURS)
+                .expireAfterAccess(1, TimeUnit.HOURS)
+                .expireAfterWrite(1, TimeUnit.HOURS)
                 .evictionListener((Object key, Object value,
                                    RemovalCause cause) ->
                         log.info("Key %s was evicted (%s)%n".formatted(key, cause)))
