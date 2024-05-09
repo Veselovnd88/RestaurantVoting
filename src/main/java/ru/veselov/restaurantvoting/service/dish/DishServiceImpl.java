@@ -16,7 +16,6 @@ import ru.veselov.restaurantvoting.service.menu.MenuService;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-@Transactional(readOnly = true)
 public class DishServiceImpl implements DishService {
 
     private final DishRepository repository;
@@ -68,7 +67,6 @@ public class DishServiceImpl implements DishService {
      */
     @CacheEvict(value = "restaurants", allEntries = true)
     @Override
-    @Transactional
     public void delete(int id) {
         repository.deleteById(id);
         log.info("Dish with id: {} deleted", id);

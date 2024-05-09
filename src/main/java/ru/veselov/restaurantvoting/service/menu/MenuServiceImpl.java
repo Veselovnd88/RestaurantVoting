@@ -22,7 +22,6 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 @Slf4j
 public class MenuServiceImpl implements MenuService {
 
@@ -107,7 +106,6 @@ public class MenuServiceImpl implements MenuService {
      */
     @CacheEvict(value = "restaurants", allEntries = true)
     @Override
-    @Transactional
     public void deleteMenu(int id) {
         repository.deleteById(id);
         log.info("Menu with id: {} deleted", id);

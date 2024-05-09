@@ -19,7 +19,6 @@ import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 @Slf4j
 public class UserServiceImpl implements UserService {
 
@@ -70,7 +69,6 @@ public class UserServiceImpl implements UserService {
      * @param id id of user to delete
      */
     @Override
-    @Transactional
     public void deleteById(int id) {
         repository.deleteById(id);
         log.info("User with id: {} deleted", id);

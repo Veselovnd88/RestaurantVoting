@@ -21,7 +21,6 @@ import java.util.List;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class RestaurantServiceImpl implements RestaurantService {
 
     public static final Sort SORT_BY_NAME = Sort.by(Sort.Direction.ASC, "name");
@@ -134,7 +133,6 @@ public class RestaurantServiceImpl implements RestaurantService {
             @CacheEvict(value = "restaurants", key = "'restaraunts'")
     })
     @Override
-    @Transactional
     public void delete(int id) {
         repository.deleteById(id);
         log.info("Restaurant with id: {} deleted", id);

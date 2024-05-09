@@ -58,4 +58,4 @@ Application stack:
 - HSQLDB as Database;
 - Maven;
 
-166 Unit and Integration tests, coverage is 92% 
+166 Unit and Integration tests, coverage is 93% 

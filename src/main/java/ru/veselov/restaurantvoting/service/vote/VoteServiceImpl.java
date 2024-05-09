@@ -28,7 +28,6 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-@Transactional(readOnly = true)
 public class VoteServiceImpl implements VoteService {
 
     public static final Sort SORT_BY_DATE_DESC = Sort.by(Sort.Direction.DESC, "votedAt");
