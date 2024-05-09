@@ -3,7 +3,6 @@ package ru.veselov.restaurantvoting.service.dish;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.veselov.restaurantvoting.dto.DishDto;
@@ -31,10 +30,7 @@ public class DishServiceImpl implements DishService {
      * @param dishDto dto for creating new Dish
      * @return {@link DishDto} saved dish
      */
-    @Caching(evict = {
-            @CacheEvict(value = "restaurants", allEntries = true),
-            @CacheEvict(value = "menus", key = "menuId")
-    })
+    @CacheEvict(value = "restaurants", allEntries = true)
     @Override
     @Transactional
     public DishDto save(int menuId, DishDto dishDto) {
@@ -53,7 +49,7 @@ public class DishServiceImpl implements DishService {
      * @param dishDto dto with data to update
      * @return {@link DishDto}
      */
-    @CacheEvict(value = {"restaurants", "menus"}, allEntries = true)
+    @CacheEvict(value = "restaurants", allEntries = true)
     @Override
     @Transactional
     public DishDto update(int id, DishDto dishDto) {
@@ -70,7 +66,7 @@ public class DishServiceImpl implements DishService {
      *
      * @param id of dish to delete
      */
-    @CacheEvict(value = {"restaurants", "menus"}, allEntries = true)
+    @CacheEvict(value = "restaurants", allEntries = true)
     @Override
     @Transactional
     public void delete(int id) {

@@ -3,7 +3,6 @@ package ru.veselov.restaurantvoting.service.menu;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -40,8 +39,8 @@ public class MenuServiceImpl implements MenuService {
      * @throws org.springframework.dao.DataIntegrityViolationException if menu/local date conflict occurred
      */
     @Caching(evict = {
-            @CacheEvict(value = "restaurants", key = "restaurantId"),
-            @CacheEvict(value = "menus", allEntries = true)
+            @CacheEvict(value = "restaurants", key = "#restaurantId"),
+            @CacheEvict(value = "restaurants", key = "'restaraunts-with-menus'")
     })
     @Override
     @Transactional
@@ -64,7 +63,7 @@ public class MenuServiceImpl implements MenuService {
      * @throws org.springframework.dao.DataIntegrityViolationException if dish exists for this menu
      * @throws org.springframework.dao.DataIntegrityViolationException if menu/local date conflict occurred
      */
-    @CacheEvict(value = "menus", key = "#menuDto.id()")
+    @CacheEvict(value = "restaurants", allEntries = true)
     @Override
     @Transactional
     public MenuDto update(int id, InputMenuDto menuDto) {
@@ -95,7 +94,6 @@ public class MenuServiceImpl implements MenuService {
      * @param restaurantId restaurant id
      * @return list of menu dtos (with dishes)
      */
-    @Cacheable(value = "menus")
     @Override
     public List<MenuDto> getMenusByRestaurant(int restaurantId) {
         log.info("Retrieving all menus for restaurant id: {}", restaurantId);
@@ -107,10 +105,7 @@ public class MenuServiceImpl implements MenuService {
      *
      * @param id menu id
      */
-    @Caching(evict = {
-            @CacheEvict(value = "restaurants", allEntries = true),
-            @CacheEvict(value = "menus", key = "id")
-    })
+    @CacheEvict(value = "restaurants", allEntries = true)
     @Override
     @Transactional
     public void deleteMenu(int id) {

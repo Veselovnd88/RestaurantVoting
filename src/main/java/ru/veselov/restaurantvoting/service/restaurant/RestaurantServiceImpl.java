@@ -3,7 +3,6 @@ package ru.veselov.restaurantvoting.service.restaurant;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Sort;
@@ -36,7 +35,7 @@ public class RestaurantServiceImpl implements RestaurantService {
      * @param restaurantDto dto with initial data about restaurant
      * @return {@link RestaurantDto} dto with data about saved restaurant
      */
-    @CachePut(cacheNames = "restaurants")
+    @CacheEvict(value = "restaurants", key = "'restaurants'")
     @Override
     @Transactional
     public RestaurantDto create(InputRestaurantDto restaurantDto) {
@@ -50,7 +49,7 @@ public class RestaurantServiceImpl implements RestaurantService {
      *
      * @return {@link RestaurantDto} list of dtos
      */
-    @Cacheable(value = "restaurants")
+    @Cacheable(value = "restaurants", key = "'restaurants'")
     @Override
     public List<RestaurantDto> getAll() {
         log.info("Retrieving restaurants from repository");
@@ -64,7 +63,6 @@ public class RestaurantServiceImpl implements RestaurantService {
      * @return {@link RestaurantDto} found restaurant
      * @throws RestaurantNotFoundException if restaurant not found by id
      */
-    @Cacheable(value = "restaurants")
     @Override
     public RestaurantDto findById(int id) {
         log.info("Retrieving restaurant by id");
@@ -79,7 +77,7 @@ public class RestaurantServiceImpl implements RestaurantService {
      * @return {@link RestaurantDto} found restaurant
      * @throws RestaurantNotFoundException if restaurant with such id not found
      */
-    @Cacheable(value = "restaurants")
+    @Cacheable(value = "restaurants", key = "#id")
     @Override
     public RestaurantDto findByIdWithMenuForDate(int id, LocalDate date) {
         Restaurant restaurant = repository.findByIdWithMenuByDate(id, date)
@@ -94,7 +92,7 @@ public class RestaurantServiceImpl implements RestaurantService {
      * @param date preferred date to find menu
      * @return {@link List<RestaurantDto>} found restaurants
      */
-    @Cacheable(value = "restaurants")
+    @Cacheable(value = "restaurants", key = "'restaraunts-with-menus'")
     @Override
     public List<RestaurantDto> findAllWithMenuByDate(LocalDate date) {
         List<Restaurant> allRestaurantsWithMenu = repository.findAllWithMenuByDate(date, SORT_BY_NAME);
@@ -110,7 +108,11 @@ public class RestaurantServiceImpl implements RestaurantService {
      * @return {@link RestaurantDto} updated restaurant
      * @throws RestaurantNotFoundException if restaurant with such id not found
      */
-    @CacheEvict(value = "restaurants", key = "#restaurantDto.id()")
+    @Caching(evict = {
+            @CacheEvict(value = "restaurants", key = "#id"),
+            @CacheEvict(value = "restaurants", key = "'restaraunts-with-menus'"),
+            @CacheEvict(value = "restaurants", key = "'restaraunts'")
+    })
     @Override
     @Transactional
     public RestaurantDto update(int id, InputRestaurantDto restaurantDto) {
@@ -128,7 +130,8 @@ public class RestaurantServiceImpl implements RestaurantService {
      */
     @Caching(evict = {
             @CacheEvict(value = "restaurants", key = "#id"),
-            @CacheEvict(value = "menus", allEntries = true)
+            @CacheEvict(value = "restaurants", key = "'restaraunts-with-menus'"),
+            @CacheEvict(value = "restaurants", key = "'restaraunts'")
     })
     @Override
     @Transactional
