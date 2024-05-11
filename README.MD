@@ -31,9 +31,9 @@ P.P.S.: Assume that your API will be used by a frontend developer to build front
 
 --------------
 Run: `mvn spring-boot:run` to start app  
-Application will be launched on http://localhost:8082, and can be tested with Swagger API
+Application will be launched on http://localhost:8080, and can be tested with Swagger API
 
-[Swagger UI implemented for testing API](http://localhost:8082/swagger-ui.html)
+[Swagger UI implemented for testing API](http://localhost:8080/swagger-ui.html)
 
 Credentials for testing API:
 
